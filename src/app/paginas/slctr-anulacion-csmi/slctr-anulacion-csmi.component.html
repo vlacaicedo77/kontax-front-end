@@ -1,0 +1,101 @@
+<div class="preloader">
+    <div class="lds-ripple">
+        <div class="lds-pos"></div>
+        <div class="lds-pos"></div>
+    </div>
+</div>
+<hr class="mt-0">
+<div class='row'>
+    <div class='col'>
+        <div class='card border border-info rounded'>
+            <div class="card-header bg-info text-white rounded-top">
+                Solicitar la anulación de Certificado Sanitario de Movilización Interna (CSMI)
+            </div>
+            <div class='card-body'>
+                <hr class="mt-0">
+                <form class="form-horizontal r-separator">
+                    <div class="card-body">
+                        <h4 class="card-title">Información sobre CSMI(s) emitido(s)</h4>
+                        <div class="form-group row align-items-center mb-0">
+                            <label for="inputEmail3" class="col-md-3 text-right control-label col-form-label">Filtrar código de CSMI</label>
+                            <div class="col-md-9 border-left pb-2 pt-2 input-group">
+                                <input class="form-control" placeholder="(escriba * si desea buscar todos los CSMI que puede solicitar anulación)">
+                                <div class="input-group-append">
+                                    <button class="btn btn-success" type="button"><i class="ti-search"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr class="mt-0">
+                    <div class="card-body">
+                        <div class="row container-fluid p-0">
+                            <!-- CSMI para ser anulados -->
+                            <div class="col">
+                                <div class="card border border-light-info rounded">
+                                    <div class="card-header">Certificados Sanitarios de Movilización Interna (CSMI) disponibles: </div>
+                                    <div class='card-body'>
+                                        <div class="table-wrapper-scroll-y custom-scrollbar">
+                                            <table class="table table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Fecha</th>
+                                                        <th>Código</th>
+                                                        <th>Procedencia</th>
+                                                        <th>Sitio</th>
+                                                        <th>Área</th>
+                                                        <th>Cantidad total de animales</th>
+                                                        <th>Estado</th>
+                                                        <th>Solicitar anulación</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                        <tr>
+                                                        <td>31-Ago-2020</td>
+                                                        <td>CSMI-03</td>
+                                                        <td>Pichincha</td>
+                                                        <td>Cochamora</td>
+                                                        <td>Área de producción lechera A1</td>
+                                                        <td>1</td>
+                                                        <td>En tránsito</td>
+                                                        <td>
+                                                            <div class="form-group row align-items-center mb-1">
+                                                                <div class="col-md-9 border-left pb-2 pt-2">
+                                                                    <textarea class="form-control" rows="1" placeholder="(motivo solicitud)"></textarea>
+                                                                </div>
+                                                                <button type="button" class="btn btn-danger btn-circle waves-effect waves-light">
+                                                                    <span class="btn-label">
+                                                                        <i class="fas fa-times"></i>
+                                                                    </span> 
+                                                                </button>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>18-Ago-2020</td>
+                                                        <td>CSMI-00</td>
+                                                        <td>Pichincha</td>
+                                                        <td>Cochamora</td>
+                                                        <td>Área de producción lechera A1</td>
+                                                        <td>2</td>
+                                                        <td bgcolor="#FFB6C1">Anulado</td>
+                                                        <td>Solicitud de anulación aprobada por técnico Sanidad Animal</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>                                                                                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group mb-0">
+                            <button type="button" class="btn btn-info waves-effect waves-light">Aceptar</button>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

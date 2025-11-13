@@ -1,0 +1,67 @@
+.report-btn {
+    background-color: #2e9732; /* Color de fondo verde */
+    color: white; /* Texto en blanco */
+    border: none;
+    padding: 7px 15px; /* Espaciado alrededor del texto e ícono */
+    font-size: 14px; /* Tamaño del texto */
+    cursor: pointer;
+    border-radius: 16px; /* Bordes redondeados */
+    align-items: center; /* Centrar ícono y texto verticalmente */
+    float: right; /* alinear a la derecha*/
+    transition: background-color 0.3s ease, box-shadow 0.3s ease; /* Transiciones suaves */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra ligera */
+    width: 175px;
+    font-weight: bold;
+  }
+
+  .report-btn:hover {
+    background-color: #1e7a23;; /* Cambiar color al pasar el cursor */
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2); /* Sombra más profunda al hacer hover */
+  }
+  
+  .report-btn:active {
+    background-color: #135303; /* Color más oscuro al hacer clic */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Sombra más ligera al hacer clic */
+  }
+  
+  .report-btn:focus {
+    outline: none; /* Remover el borde de enfoque por defecto */
+  }
+  
+  .report-btn i {
+    margin-right: 8px; /* Espaciado entre el ícono y el texto */
+    font-size: 18px; /* Tamaño del ícono */
+  }
+
+  .search-button {
+    background-color: #007bff; /* Color de fondo azul */
+    color: white; /* Color de texto */
+    border: none; /* Sin borde */
+    padding: 7px 20px; /* Espaciado interno del botón */
+    font-size: 14px; /* Tamaño de fuente */
+    border-radius: 16px; /* Bordes redondeados */
+    cursor: pointer; /* Cursor en forma de mano */
+    transition: background-color 0.3s ease, box-shadow 0.3s ease; /* Transiciones suaves */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra ligera */
+    width: 175px;
+    font-weight: bold;
+  }
+  
+  .search-button:hover {
+    background-color: #0056b3; /* Cambiar color al pasar el cursor */
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2); /* Sombra más profunda al hacer hover */
+  }
+  
+  .search-button:active {
+    background-color: #0b13eb; /* Color más oscuro al hacer clic */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Sombra más ligera al hacer clic */
+  }
+  
+  .search-button:focus {
+    outline: none; /* Remover el borde de enfoque por defecto */
+  }
+
+  .search-button i {
+    margin-right: 8px; /* Espaciado entre el ícono y el texto */
+    font-size: 18px; /* Tamaño del ícono */
+  }

@@ -1,0 +1,86 @@
+<hr class="mt-0">
+<div class='row'>
+    <div class='col-12'>
+        <div class='card'>
+            <div class="card-header bg-info text-white rounded-top">
+                Consulta de Solicitudes de Reareteo
+            </div>
+            <hr class="mt-0">
+            <form ngNativeValidate [formGroup]="formulario" (ngSubmit)="consultarReporteSolicitudes()" class="form-horizontal r-separator" action="index.html">
+            <div class="card-body">
+                <h4 class="card-title">Ingrese la información de búsqueda de la solicitud</h4>
+                <div class="form-group row align-items-center mb-0">
+                    <label for="inputIdentificacionSolicitante" class="col-md-3 text-right control-label col-form-label">Número de identificación del solicitante</label>
+                    <div class="col-md-9 border-left pb-2 pt-2">
+                        <input type="text" class="form-control" (keyup)="mascara($event,'ruc')" formControlName="inputIdentificacionSolicitante" name="inputIdentificacionSolicitante" placeholder="Ingrese la identificación del solicitante">
+                    </div>
+                </div>
+                <div class="form-group row align-items-center mb-0">
+                    <label for="inputIdentificacionResponsable" class="col-md-3 text-right control-label col-form-label">Número de identificación del responsable</label>
+                    <div class="col-md-9 border-left pb-2 pt-2">
+                        <input type="text" class="form-control" (keyup)="mascara($event,'numerico')" formControlName="inputIdentificacionResponsable" name="inputIdentificacionResponsable" placeholder="Ingrese la identificación del responsable">
+                    </div>
+                </div>
+                <div class="form-group row align-items-center mb-0">
+                    <label for="inputNombreSolicitante" class="col-md-3 text-right control-label col-form-label">Nombre del solicitante</label>
+                    <div class="col-md-9 border-left pb-2 pt-2">
+                        <input type="text" class="form-control" (keyup)="mascara($event,'alfanumerico')" formControlName="inputNombreSolicitante" name="inputNombreSolicitante" placeholder="Ingrese el nombre del solicitante">
+                    </div>
+                </div>
+                <div class="form-group row align-items-center mb-0">
+                    <label for="inputNombreResponsable" class="col-md-3 text-right control-label col-form-label">Nombre del responsable</label>
+                    <div class="col-md-9 border-left pb-2 pt-2">
+                        <input type="text" class="form-control" (keyup)="mascara($event,'alfanumerico')" formControlName="inputNombreResponsable" name="inputNombreResponsable" placeholder="Ingrese el nombre del responsable">
+                    </div>
+                </div>
+                <div class="form-group row align-items-center mb-0">
+                    <label for="inputEstado" class="col-md-3 text-right control-label col-form-label">Estado</label>
+                    <div class="col-md-9 border-left pb-2 pt-2">
+                        <select class="form-control" formControlName="inputEstado" name="inputEstado">
+                            <option value ='' selected>Todos</option>
+                            <option *ngFor="let estado of listaEstados" value="{{estado.id_estados_solicitudes}}">{{estado.nombre}}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="card-body ">
+                    <div class="form-group mb-0 text-right ">
+                        <button class="btn btn-info btn-lg btn-block text-uppercase waves-effect waves-light" type="submit">Consultar</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+            <hr class="mt-0">
+                <div class="card-body">
+                    <h4 class="card-title">Resultado de la búsqueda</h4>
+                    <div class="form-group row align-items-center mb-0">
+                        <table class="table">
+                            <thead>
+                            <tr class="d-flex">
+                                <th scope="col" class="col-sm-2"># Solicitud</th>
+                                <th scope="col" class="col-sm-2">Solicitante</th>
+                                <th scope="col" class="col-sm-2">Responsable</th>
+                                <th scope="col" class="col-sm-2">Paso Actual</th>
+                                <th scope="col" class="col-sm-2">Estado</th>
+                                <th scope="col" class="col-sm-2">Identificador a rearetear</th>
+                                <th scope="col" class="col-sm-2">Proveedor</th>
+                                <th scope="col" class="col-sm-2">Días en espera</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr *ngFor="let solicitud of listaSolicitudes" class="d-flex">
+                                <td class="col-sm-2">{{solicitud.id_solicitudes_identificadores}}</td>
+                                <td class="col-sm-2">{{solicitud.solicitante}}</td>
+                                <td class="col-sm-2">{{solicitud.responsable}}</td>
+                                <td class="col-sm-2">{{solicitud.paso}}</td>
+                                <td class="col-sm-2">{{solicitud.estado}}</td>
+                                <td class="col-sm-2">{{solicitud.codigo_oficial}}</td>
+                                <td class="col-sm-2">{{solicitud.proveedor}}</td>
+                                <ng-template [ngIf]="solicitud.id_estados_solicitudes == 1" [ngIfElse]="noDiasPasados"><td class="col-sm-2"> {{solicitud.dias_espera}} </td></ng-template>
+                                <ng-template #noDiasPasados><td class="col-sm-2"> - </td></ng-template>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+</div>

@@ -1,0 +1,21 @@
+@media screen and (min-width: 600px) {
+  .map-container  {
+    width: 50%;
+    height: 400px;
+    }
+}
+
+  @media screen and (max-width: 600px) {
+    .map-container {
+      width: 50%;
+      height: 200px;
+      }
+  }
+
+  .contrasena-temporal
+  {
+      font-weight: bolder !important;
+      font-size: 2rem !important;
+      color: #555555;
+      font-family: "Times New Roman", Times, serif !important;
+  }

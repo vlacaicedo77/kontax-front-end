@@ -1,0 +1,161 @@
+<form ngNativeValidate [formGroup]="formulario" (ngSubmit)="registrarTransferencia()" (keydown.enter)="$event.preventDefault()"
+    class="form-horizontal r-separator">
+    <div class="card border border-info rounded">
+        <div class="card-header bg-info font-weight-bold text-white rounded-top">
+            Transferir aretes oficiales (extemporáneos)
+        </div>
+        <div class="card-body">
+            <div class="card-body">
+                <div class="form-group mb-0 text-center">
+                    <button type="submit" class="btn btn-info font-weight-bold waves-effect waves-light"
+                        style="width: 25%;">
+                        <i class="fas fa-exchange-alt mr-2"></i> Transferir
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <!-- Usuario de origen -->
+        <div class="col">
+            <div class="card border border-secondary rounded">
+                <div class="card-header bg-secondary text-white font-weight-bold rounded-top">
+                    Usuario origen
+                </div>
+                <div class="card-body">
+                    <div class="form-group row align-items-center mb-0">
+                        <label class="col-md-3 text-right control-label col-form-label">Identificación</label>
+                        <div class="col-md-6 border-left pb-2 pt-2 input-group">
+                            <input type="text" formControlName="inputIdentificacionOrigen"
+                                (input)="limpiarDatosUsuarioOrigen()" class="form-control border-secondary"
+                                (keydown.enter)="buscarUsuario(ciPropietario.value,true)"
+                                #ciPropietario placeholder="Ingrese # de identificación">
+                            <div class="input-group-append">
+                                <button type="button" class="btn btn-secondary border-secondary"
+                                    (click)="buscarUsuario(ciPropietario.value,true)"><i class="ti-search"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <label class="col-md-3 text-right control-label col-form-label">Número de arete</label>
+                        <div class="col-md-9 border-left pb-2 pt-2 input-group">
+                            <input type="text" class="form-control border-secondary" autocomplete="on"
+                                formControlName="inputCodigoOficial" maxlength="11" placeholder="Ejemplo: EC006132716"
+                                (input)="buscarAretesIndividual()">
+                        </div>
+                    </div>
+                </div>
+                <div class="card-header bg-secondary text-white" *ngIf="listaAretesOrigen.length > 0">
+                    <span class="font-weight-bold">
+                        Aretes no asignados (origen)
+                    </span>
+                    <span class="round rounded-circle text-white font-weight-bold d-inline-block text-center bg-info">{{
+                        listaAretesOrigen.length }}</span>
+                </div>
+                <div class="card-body p-1" *ngIf="listaAretesOrigen.length > 0">
+                    <div class="table-wrapper-scroll-y custom-scrollbar">
+                        <table class="table table-bordered table-hover">
+                            <tbody>
+                                <tr *ngFor="let arete of listaAretesOrigen">
+                                    <td class="text-center">
+                                        <span class="badge rounded-pill badge-amarillo">
+                                            {{ arete.codigoOficial }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <p><span class="badge rounded-pill font-weight-bold"
+                                                [ngClass]="{'badge-info':arete.origen==2, 'badge-secondary':arete.origen==1}">
+                                                {{ arete.origen == 1 ? 'extemporáneo' : 'automático' }}
+                                            </span>
+                                        </p>
+                                        <p class="font-weight-bold" style="font-size:small;">
+                                            [{{ arete.numeroIdentificacionSolicitante }}] {{
+                                            arete.nombresSolicitante.toUpperCase() }}
+                                        </p>
+                                    </td>
+                                    <td>
+                                        <button type="button" (click)="agregarArete(arete.idAretesBovinos)"
+                                            class="btn btn-success btn-circle">
+                                            <li class="fas fa-arrow-right"></li>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Usuario de destino -->
+        <div class="col">
+            <div class="card border border-secondary rounded">
+                <div class="card-header bg-secondary font-weight-bold text-white rounded-top">
+                    Usuario destino
+                </div>
+                <div class="card-body">
+                    <div class="form-group row align-items-center mb-0">
+                        <label class="col-md-3 text-right control-label col-form-label">Identificación</label>
+                        <div class="col-md-6 border-left pb-2 pt-2 input-group">
+                            <input type="text" formControlName="inputIdentificacionDestino"
+                                (input)="limpiarDatosUsuarioDestino()" class="form-control border-secondary"
+                                (keydown.enter)="buscarUsuario(ciPropietarioD.value)"
+                                #ciPropietarioD placeholder="Ingrese # de identificación">
+                            <div class="input-group-append">
+                                <button type="button" class="btn btn-danger border-secondary"
+                                    (click)="buscarUsuario(ciPropietarioD.value)"><i class="ti-search"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <label class="col-md-3 text-right control-label col-form-label">Destinatario</label>
+                        <div class="col-md-9 border-left pb-2 pt-2 input-group">
+                            <input type="text" class="form-control border-secondary"
+                                formControlName="inputNombresDestinatario" placeholder="Ingrese apellidos y nombres"
+                                readonly>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-header bg-secondary text-white" *ngIf="listaAretesDestino.length > 0">
+                    <span class="font-weight-bold">
+                        Aretes no asignados (destino)
+                    </span>
+                    <span
+                        class="round rounded-circle text-white font-weight-bold d-inline-block text-center bg-warning">{{
+                        listaAretesDestino.length }}</span>
+                </div>
+                <div class="card-body p-1" *ngIf="listaAretesDestino.length > 0">
+                    <div class="table-wrapper-scroll-y custom-scrollbar">
+                        <table class="table table-bordered table-hover">
+                            <tbody>
+                                <tr *ngFor="let arete of listaAretesDestino">
+                                    <td class="text-center">
+                                        <span class="badge rounded-pill badge-amarillo">
+                                            {{ arete.codigoOficial }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <p><span class="badge rounded-pill font-weight-bold"
+                                                [ngClass]="{'badge-info':arete.origen==2, 'badge-secondary':arete.origen==1}">
+                                                {{ arete.origen == 1 ? 'extemporáneo' : 'automático' }}
+                                            </span>
+                                        </p>
+                                        <p class="font-weight-bold" style="font-size:small;">
+                                            [{{ numeroIdentificacionDestino }}] {{
+                                            nombresUsuarioDestino.toUpperCase()}}
+                                        </p>
+                                    </td>
+                                    <td>
+                                        <button type="button" (click)="quitarArete(arete.idAretesBovinos)"
+                                            class="btn btn-danger btn-circle">
+                                            <li class="fas fa-trash"></li>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

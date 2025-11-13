@@ -1,0 +1,227 @@
+<!-- ============================================================== -->
+<!-- Preloader - style you can find in spinners.css -->
+<!-- ============================================================== -->
+<div class="preloader">
+    <div class="lds-ripple">
+        <div class="lds-pos"></div>
+        <div class="lds-pos"></div>
+    </div>
+</div>
+<hr class="mt-0" />
+<!-- Formulario para autorizar o rechazar la solicitud de corrección de catastro -->
+<div class="row">
+    <div class="col">
+        <div class='card border border-info rounded'>
+            <div class="card-header bg-info text-white rounded-top">
+                Tramitar solicitud de corrección de catastro bovino
+            </div>
+            <div class="card-body">
+                <!-- Datos de la solicitud -->
+                <div class="card-body">
+                    <h4 class="card-title">Datos de la solicitud</h4>
+                    <div class="form-group row align-items-center mb-0">
+                        <label class="col-md-3 text-right control-label col-form-label">Número de solicitud</label>
+                        <div class="col-md-9 border-left pb-2 pt-2">
+                            <span class="form-control"> {{ solicitudCorreccionCatastro?.codigoSolicitud }} </span>
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <label class="col-md-3 text-right control-label col-form-label">Fecha de la solicitud</label>
+                        <div class="col-md-9 border-left pb-2 pt-2">
+                            <span class="form-control"> {{ solicitudCorreccionCatastro?.fechaCreacion }} </span>
+                        </div>
+                    </div>
+                </div>
+                <hr class="mt-0">
+                <!-- Datos del solicitante -->
+                <div class="card-body">
+                    <h4 class="card-title">Datos del solicitante</h4>
+                    <div class="form-group row align-items-center mb-0">
+                        <label class="col-md-3 text-right control-label col-form-label">CI/RUC</label>
+                        <div class="col-md-9 border-left pb-2 pt-2">
+                            <span class="form-control"> {{ solicitudCorreccionCatastro?.productor?.numeroIdentificacion }} </span>
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <label class="col-md-3 text-right control-label col-form-label">Nombres y apellidos</label>
+                        <div class="col-md-9 border-left pb-2 pt-2">
+                            <span class="form-control"> {{ solicitudCorreccionCatastro?.productor?.nombres }} {{ solicitudCorreccionCatastro?.productor?.apellidos }} </span>
+                        </div>
+                    </div>
+                </div>
+                <hr class="mt-0">
+                <!-- Técnico asignado -->
+                <div class="card-body">
+                    <h4 class="card-title">Técnico asignado</h4>
+                    <div class="form-group row align-items-center mb-0">
+                        <label class="col-md-3 text-right control-label col-form-label">CI</label>
+                        <div class="col-md-9 border-left pb-2 pt-2">
+                            <span class="form-control"> {{ solicitudCorreccionCatastro?.tecnico?.numeroIdentificacion }} </span>
+                        </div>
+                        <label class="col-md-3 text-right control-label col-form-label">Nombres y apellidos</label>
+                        <div class="col-md-9 border-left pb-2 pt-2">
+                            <span class="form-control"> {{ solicitudCorreccionCatastro?.tecnico?.nombres }} {{ solicitudCorreccionCatastro?.tecnico?.apellidos }} </span>
+                        </div>
+                    </div>
+                </div>
+                <hr class="mt-0">
+                <!-- Catastro actual -->
+                <div class="card-body">
+                    <h4 class="card-title">Catastro actual</h4>
+                    <div class="row">
+                        <div class="col">
+                            <table class="table mt-3 table-borderless v-middle">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th class="pl-0 text-center"><img width="50" src="assets/images/icon/vaca.svg" alt="Income" /></th>
+                                        <th></th>
+                                        <th class="pl-0 text-center"><img width="50" src="assets/images/icon/toro.svg" alt="Income" /></th>
+                                        <th></th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td></td>
+                                        <td class="pl-0 text-left">Terneras:</td>
+                                        <td class="pl-0 text-left">
+                                            <span class="form-control"> {{ solicitudCorreccionCatastro?.ternerasActual }} </span>
+                                        </td>
+                                        <td class="pl-0 text-left">Terneros:</td>
+                                        <td class="pl-0 text-left">
+                                            <span class="form-control"> {{ solicitudCorreccionCatastro?.ternerosActual }} </span>
+                                        </td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                        <td class="pl-0 text-left">Vaconas:</td>
+                                        <td class="pl-0 text-left">
+                                            <span class="form-control"> {{ solicitudCorreccionCatastro?.vaconasActual }} </span> </td>
+                                        <td class="pl-0 text-left">Toretes:</td>
+                                        <td class="pl-0 text-left">
+                                            <span class="form-control"> {{ solicitudCorreccionCatastro?.toretesActual }} </span>
+                                        </td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                        <td class="pl-0 text-left">Vacas:</td>
+                                        <td class="pl-0 text-left">
+                                            <span class="form-control"> {{ solicitudCorreccionCatastro?.vacasActual }} </span>
+                                        </td>
+                                        <td class="pl-0 text-left">Toros:</td>
+                                        <td class="pl-0 text-left">
+                                            <span class="form-control"> {{ solicitudCorreccionCatastro?.torosActual }} </span>
+                                        </td>
+                                        <td></td>
+                                    </tr>
+                                </tbody>
+                                <tfoot>
+                                    <tr class="table-secondary">
+                                        <td class=" pl-0 font-weight-bold">Total</td>
+                                        <td class="pl-0 text-left font-weight-bold" colspan="4">
+                                            {{ solicitudCorreccionCatastro?.ternerasActual + solicitudCorreccionCatastro?.ternerosActual + solicitudCorreccionCatastro?.vaconasActual + solicitudCorreccionCatastro?.toretesActual + solicitudCorreccionCatastro?.vacasActual + solicitudCorreccionCatastro?.torosActual
+                                            }}
+                                        </td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <!-- Nuevo Catastro -->
+                <hr class="mt-0">
+                <div class="card-body">
+                    <h4 class="card-title">Catastro solicitado</h4>
+                    <div class="row">
+                        <div class="col">
+                            <table class="table mt-3 table-borderless v-middle">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th class="pl-0 text-center"><img width="50" src="assets/images/icon/vaca.svg" alt="Income" /></th>
+                                        <th></th>
+                                        <th class="pl-0 text-center"><img width="50" src="assets/images/icon/toro.svg" alt="Income" /></th>
+                                        <th></th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td></td>
+                                        <td class="pl-0 text-left">Terneras:</td>
+                                        <td class="pl-0 text-left">
+                                            <span class="form-control"> {{ solicitudCorreccionCatastro?.ternerasSolicitado }} </span>
+                                        </td>
+                                        <td class="pl-0 text-left">Terneros:</td>
+                                        <td class="pl-0 text-left">
+                                            <span class="form-control"> {{ solicitudCorreccionCatastro?.ternerosSolicitado }} </span>
+                                        </td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                        <td class="pl-0 text-left">Vaconas:</td>
+                                        <td class="pl-0 text-left">
+                                            <span class="form-control"> {{ solicitudCorreccionCatastro?.vaconasSolicitado }} </span>
+                                        </td>
+                                        <td class="pl-0 text-left">Toretes:</td>
+                                        <td class="pl-0 text-left">
+                                            <span class="form-control"> {{ solicitudCorreccionCatastro?.toretesSolicitado }} </span>
+                                        </td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                        <td class="pl-0 text-left">Vacas:</td>
+                                        <td class="pl-0 text-left">
+                                            <span class="form-control"> {{ solicitudCorreccionCatastro?.vacasSolicitado }} </span>
+                                        </td>
+                                        <td class="pl-0 text-left">Toros:</td>
+                                        <td class="pl-0 text-left">
+                                            <span class="form-control"> {{ solicitudCorreccionCatastro?.torosSolicitado }} </span>
+                                        </td>
+                                        <td></td>
+                                    </tr>
+                                </tbody>
+                                <tfoot>
+                                    <tr class="table-secondary">
+                                        <td class=" pl-0 font-weight-bold">Total</td>
+                                        <td class="pl-0 text-left font-weight-bold" colspan="4">
+                                            {{ solicitudCorreccionCatastro?.ternerasSolicitado + solicitudCorreccionCatastro?.ternerosSolicitado + solicitudCorreccionCatastro?.vaconasSolicitado + solicitudCorreccionCatastro?.toretesSolicitado + solicitudCorreccionCatastro?.vacasSolicitado + solicitudCorreccionCatastro?.torosSolicitado
+                                            }}
+                                        </td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <!-- Observación -->
+                <form class="form-horizontal r-separator" ngNativeValidate [formGroup]="formularioTramite" (ngSubmit)="tramitarSolicitud()">
+                    <hr class="mt-0">
+                    <div class="card-body">
+                        <h4 class="card-title">Otros datos</h4>
+                        <div class="form-group row align-items-center mb-0">
+                            <label class="col-md-3 text-right control-label col-form-label">Observación</label>
+                            <div class="col-md-9 border-left pb-2 pt-2">
+                                <textarea *ngIf="servicioUsuario?.usuarioInterno" formControlName="observacion" maxlength="2048" class="form-control" cols="30" rows="5"></textarea>
+                                <span class="form-control" *ngIf="servicioUsuario.usuarioExterno">
+                                    {{ solicitudCorreccionCatastro?.observacion }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body" *ngIf="solicitudCorreccionCatastro?.estadoDocumento?.codigo === 'ABR' && servicioUsuario?.usuarioInterno">
+                        <div class="form-group mb-0">
+                            <button type="submit" class="btn btn-success waves-effect waves-light mr-1">Autorizar solicitud</button>
+                            <button type="button" class="btn btn-youtube waves-effect waves-light ml-1" (click)="rechazarSolicitud()">Rechazar solicitud</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

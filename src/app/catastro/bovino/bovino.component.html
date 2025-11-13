@@ -1,0 +1,296 @@
+<!-- ============================================================== -->
+<!-- Preloader - style you can find in spinners.css -->
+<!-- ============================================================== -->
+<div class="preloader">
+    <div class="lds-ripple">
+        <div class="lds-pos"></div>
+        <div class="lds-pos"></div>
+    </div>
+</div>
+<hr class="mt-0">
+<div class='row'>
+    <div class='col'>
+        <div class='card border border-info rounded'>
+            <div class="card-header bg-info text-white rounded-top font-weight-bold">
+                Registrar nacimiento de bovino / búfalo
+            </div>
+            <div class="card-body">
+                <form ngNativeValidate [formGroup]="formulario" (ngSubmit)="registrarBovino()" class="form-horizontal r-separator">
+                    <!-- Tipo de registro -->
+                    <div class="card-body">
+                        <h4 class="card-title">Tipo de registro del animal</h4>
+                        <div class="form-group row align-items-center mb-0">
+                            <label class="col-md-3 text-right control-label col-form-label">Seleccione una opción</label>
+                            <div class="col-md-9 border-left pb-2 pt-2">
+                                <select #identificador formControlName="id_tipo_registro" class="form-control" [ngClass]="{'is-invalid':(formulario.controls['id_tipo_registro'].status==='INVALID' && formulario.touched)}" (change)="cambioTipoRegistro()">
+                                    <option [value]="null" selected disabled>Seleccione el tipo de registro</option>
+                                    <option *ngFor="let tipoRegistro of tiposRegistros" [value]="tipoRegistro.id_tipo_registro" >{{ tipoRegistro.nombre }}</option>
+                                </select>
+                                <div class="invalid-feedback" *ngIf="formulario.controls['id_tipo_registro'].status==='INVALID' && formulario.touched">
+                                    Seleccione el tipo de registro
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr class="mt-0">
+                    <!-- Identificación -->
+                    <div class="card-body" [hidden]="identificador.value!=1">
+                        <h4 class="card-title">Datos de identificación</h4>
+                        <div class="form-group row align-items-center mb-0" [hidden]="identificador.value!=1">
+                            <label for="inputEmail3" class="col-md-3 text-right control-label col-form-label">Identificación oficial</label>
+                            <div class="col-md-9 border-left pb-2 pt-2">
+                                <select formControlName="id_identificador" class="form-control" (change)="cambioIdentificador($event)">
+                                    <option [value]="null" selected>Seleccione el identificador...</option>
+                                    <option [value]="item.idIdentificadorBovino" *ngFor="let item of listaIdentificadores">{{ item.codigoOficial }}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row align-items-center mb-0" style="display:none;">
+                            <label for="inputEmail3" class="col-md-3 text-right control-label col-form-label">Registro de Nacimiento Provisional (RNP)</label>
+                            <div class="col-md-9 border-left pb-2 pt-2">
+                                <input formControlName="registro_nacimiento_provisional" type="text" class="form-control" placeholder="">
+                            </div>
+                        </div>
+                        <div class="form-group row align-items-center mb-0" style="display:none;">
+                            <label for="inputEmail3" class="col-md-3 text-right control-label col-form-label">Registro de Nacimiento Definitivo (RND)</label>
+                            <div class="col-md-9 border-left pb-2 pt-2">
+                                <input formControlName="registro_nacimiento_definitivo" type="text" class="form-control" placeholder="">
+                            </div>
+                        </div>
+                        <div class="form-group row align-items-center mb-0">
+                            <label for="inputEmail3" class="col-md-3 text-right control-label col-form-label">Tatuaje</label>
+                            <div class="col-md-9 border-left pb-2 pt-2">
+                                <input formControlName="tatuaje" type="text" class="form-control" placeholder="Tatuaje">
+                            </div>
+                        </div>
+                        <div class="form-group row align-items-center mb-0" >
+                            <label for="inputEmail3" class="col-md-3 text-right control-label col-form-label">Marca</label>
+                            <div class="col-md-9 border-left pb-2 pt-2">
+                                <input formControlName="marca" type="text" class="form-control" placeholder="Marca">
+                            </div>
+                        </div>
+                    </div>
+                    <hr class="mt-0">
+                    <!-- Lugar de nacimiento -->
+                    <div class="card-body">
+                        <h4 class="card-title">Ubicación <b>(predios activos)</b></h4>
+                        <div class="form-group row align-items-center mb-0">
+                            <label class="col-md-3 text-right control-label col-form-label">Predio</label>
+                            <div class="col-md-9 border-left pb-2 pt-2 input-group">
+                                <select formControlName="id_area_nacimiento" class="form-control">
+                                    <option [value]="null" selected disabled>Seleccione un predio</option>
+                                    <option *ngFor="let area of areas" [value]="area.idArea" >{{ area.nombreProvinciaSitio.toUpperCase() }} - {{ area.nombreCantonSitio.toUpperCase() }} | {{ area.nombre.toUpperCase() }} ({{ area.nombreTipoActividad}})</option>
+                                </select>
+                            </div>
+                        </div>
+                        <!--<div class="form-group row align-items-center mb-0">
+                            <label for="inputEmail3" class="col-md-3 text-right control-label col-form-label">Finca</label>
+                            <div class="col-md-9 border-left pb-2 pt-2">
+                                <select formControlName="id_sitio_nacimiento" #finca (change)="cambioFinca(finca.value)" class="form-control" [disabled]="controlFinca" [ngClass]="{'is-invalid':(formulario.controls['id_sitio_nacimiento'].status==='INVALID' && formulario.touched)}">
+                                    <option [value]="null" selected disabled>Seleccione la finca</option>
+                                    <option *ngFor="let sitio of sitios" [value]="sitio.idSitio" >{{ sitio.nombre }}</option>
+                                </select>
+                                <div class="invalid-feedback" *ngIf="formulario.controls['id_sitio_nacimiento'].status==='INVALID' && formulario.touched">
+                                    Seleccione una finca
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row align-items-center mb-0">
+                            <label for="inputEmail3" class="col-md-3 text-right control-label col-form-label">Explotación</label>
+                            <div class="col-md-9 border-left pb-2 pt-2">
+                                <select formControlName="id_area_nacimiento" #explotacion class="form-control" [ngClass]="{'is-invalid':(formulario.controls['id_area_nacimiento'].status==='INVALID' && formulario.touched)}">
+                                    <option [value]="null" selected disabled>Seleccione la explotación pecuaria</option>
+                                    <option *ngFor="let area of areas" [value]="area.idArea"> {{ area.nombre }} </option>
+                                </select>
+                                <div class="invalid-feedback" *ngIf="formulario.controls['id_area_nacimiento'].status==='INVALID' && formulario.touched">
+                                    Seleccione una explotación pecuaria
+                                </div>
+                            </div>
+                        </div>-->
+                    </div>
+                    <hr class="mt-0">
+                    <!-- Datos de nacimiento-->
+                    <div class="card-body">
+                        <h4 class="card-title">Datos de nacimiento</h4>
+                        <div class="form-group row align-items-center mb-0">
+                            <label for="inputEmail3" class="col-md-3 text-right control-label col-form-label">Fecha de nacimiento</label>
+                            <div class="col-md-9 border-left pb-2 pt-2">
+                                <input formControlName="fecha_nacimiento" type="date" class="form-control" placeholder="Fecha de nacimiento" [ngClass]="{'is-invalid':((formulario.controls['fecha_nacimiento'].status==='INVALID' || formulario.errors?.fechaNacimiento) && formulario.touched)}">
+                                <div class="invalid-feedback d-block" *ngIf="formulario.errors?.nacimientoTemporal">
+                                    La fecha de nacimiento no puede ser mayor a 3 meses.
+                                </div>
+                                <div class="invalid-feedback" *ngIf="formulario.controls['fecha_nacimiento'].status==='INVALID' && formulario.touched">
+                                    Ingrese la fecha de nacimiento.
+                                </div>
+                                <div class="invalid-feedback" *ngIf="formulario.errors?.fechaNacimiento && formulario.touched">
+                                    La fecha de nacimiento no puede ser mayor a la fecha actual.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row align-items-center mb-0">
+                            <label for="inputEmail3" class="col-md-3 text-right control-label col-form-label">Sexo</label>
+                            <div class="col-md-9 border-left pb-2 pt-2">
+                                <select formControlName="id_sexo" class="form-control" [ngClass]="{'is-invalid':(formulario.controls['id_sexo'].status==='INVALID' && formulario.touched)}">
+                                    <option [value]="null" selected disabled>Seleccione el sexo del bovino</option>
+                                    <option [value]="sexo.id_sexo" *ngFor="let sexo of sexos">{{ sexo.nombre }}</option>
+                                </select>
+                                <div class="invalid-feedback" *ngIf="formulario.controls['id_sexo'].status==='INVALID' && formulario.touched">
+                                    Seleccione el sexo del bovino
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row align-items-center mb-0">
+                            <label for="inputEmail3" class="col-md-3 text-right control-label col-form-label">Pureza</label>
+                            <div class="col-md-9 border-left pb-2 pt-2">
+                                <div class="switch">
+                                    <label>
+                                        <input formControlName="id_pureza" type="checkbox"><span class="lever switch-col-light-blue"></span>
+                                    </label>
+                                    <label [hidden]="!formulario.controls.id_pureza.value">Puro</label>
+                                    <label [hidden]="formulario.controls.id_pureza.value">Mestizo</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row align-items-center mb-0">
+                            <label for="inputEmail3" class="col-md-3 text-right control-label col-form-label">Especie</label>
+                            <div class="col-md-9 border-left pb-2 pt-2">
+                                <select class="form-control" formControlName="taxonomia" (change)="cambioTaxonomia()">
+                                    <option [value]="null" selected disabled>Seleccione la especie</option>
+                                    <option [value]="taxonomia.id_taxonomia" *ngFor="let taxonomia of listaTaxonomias"  >{{ taxonomia.nombre_comun }}</option>
+                                </select>
+                                <div class="invalid-feedback d-block" *ngIf="formulario.controls.taxonomia.errors?.required && formulario.touched">
+                                    Seleccione la especie
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row align-items-center mb-0" *ngIf="bufalo === false && formulario.value.taxonomia">
+                            <label for="inputEmail3" class="col-md-3 text-right control-label col-form-label">Raza predominante</label>
+                            <div class="col-md-9 border-left pb-2 pt-2">
+                                <select formControlName="id_raza" class="form-control">
+                                    <option [value]="null" selected disabled>Seleccione la raza predominante</option>
+                                    <option [value]="raza.id_raza" *ngFor="let raza of razas">{{ raza.nombre_comun }}</option>
+                                </select>
+                                <div class="invalid-feedback d-block" *ngIf="formulario.touched && formulario.errors?.razaRequerida">
+                                    Seleccione la raza del bovino
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row align-items-center mb-0" style="display:none;">
+                            <label for="inputEmail3" class="col-md-3 text-right control-label col-form-label">Características adicionales</label>
+                            <div class="col-md-9 border-left pb-2 pt-2">
+                                <textarea formControlName="caracteristicas" class="form-control" rows="5"></textarea>
+                            </div>
+                        </div>
+                        <div class="form-group row align-items-center mb-0">
+                            <label for="inputEmail3" class="col-md-3 text-right control-label col-form-label">Peso al nacer (Kg)</label>
+                            <div class="col-md-9 border-left pb-2 pt-2">
+                                <input formControlName="peso_nacimiento_kg" class="form-control" type="number" value="0.0" min="0.0">
+                            </div>
+                        </div>
+                    </div>
+                    <hr class="mt-0">
+                    <div class="card-body">
+                        <!--<h4 class="card-title">Datos de la madre y padre</h4>-->
+                        <h4 class="card-title">Datos de reproducción</h4>
+                        <div class="form-group row align-items-center mb-0">
+                            <label for="inputEmail3" class="col-md-3 text-right control-label col-form-label">Tipo de servicio</label>
+                            <div class="col-md-9 border-left pb-2 pt-2">
+                                <select formControlName="id_tipo_servicio" #tipoServicioBovino (change)="cambioTipoServicio(tipoServicioBovino.value)" class="form-control" [ngClass]="{'is-invalid':(formulario.controls['id_tipo_servicio'].status==='INVALID' && formulario.touched)}">
+                                    <option [value]="null" selected disabled>Seleccione el tipo de servicio</option>
+                                    <option [value]="item.id_tipo_servicio" *ngFor="let item of tiposServicios"> {{ item.nombre }} </option>
+                                </select>
+                                <div class="invalid-feedback" *ngIf="formulario.controls['id_tipo_servicio'].status==='INVALID' && formulario.touched">
+                                    Seleccione un tipo de servicio
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Inseminación -->
+                    <div class="card-body" [hidden]="tipoServicioSeleccionado!=='inseminacion'" style="display:none;">
+                        <div class="form-group row align-items-center mb-0">
+                            <label for="inputEmail3" class="col-md-3 text-right control-label col-form-label">Código de pajuela del padre</label>
+                            <div class="col-md-9 border-left pb-2 pt-2">
+                                <!--<input formControlName="codigo_pajuela_padre_inseminacion" type="text" class="form-control" placeholder="Código de pajuela" [ngClass]="{'is-invalid':(formulario.errors?.codigoPajuelaInseminacion && formulario.touched)}">-->
+                                <input formControlName="codigo_pajuela_padre_inseminacion" type="text" class="form-control" placeholder="Código de pajuela">
+                                <!--<div class="invalid-feedback" *ngIf="formulario.errors?.codigoPajuelaInseminacion">
+                                    Ingrese el código de pajuela del padre.
+                                </div>-->
+                            </div>
+                        </div>
+                        <div class="form-group row align-items-center mb-0">
+                            <label for="inputEmail3" class="col-md-3 text-right control-label col-form-label">Identificador de la madre</label>
+                            <div class="col-md-9 border-left pb-2 pt-2">
+                                <select formControlName="id_bovino_madre_inseminacion" class="form-control">
+                                    <option [value]="null" selected disabled>Seleccione un identificador de la madre</option>
+                                    <option [value]="madre.idBovino" *ngFor="let madre of bovinosMadres">{{ madre.codigoIdentificacion }}</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Monta -->
+                    <div class="card-body" [hidden]="tipoServicioSeleccionado!=='monta'" style="display:none;">
+                        <div class="form-group row align-items-center mb-0">
+                            <label for="inputEmail3" class="col-md-3 text-right control-label col-form-label">Identificador de la madre</label>
+                            <div class="col-md-9 border-left pb-2 pt-2">
+                                <select formControlName="id_bovino_madre_monta" class="form-control">
+                                    <option [value]="null" selected disabled>Seleccione un identificador de la madre</option>
+                                    <option [value]="madre.idBovino" *ngFor="let madre of bovinosMadres">{{ madre.codigoIdentificacion }}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row align-items-center mb-0">
+                            <label for="inputEmail3" class="col-md-3 text-right control-label col-form-label">Identificador del padre</label>
+                            <div class="col-md-9 border-left pb-2 pt-2">
+                                <select formControlName="id_bovino_padre" class="form-control">
+                                    <option [value]="null" selected disabled>Seleccione un identificador del padre</option>
+                                    <option [value]="padre.idBovino" *ngFor="let padre of bovinosPadres">{{ padre.codigoIdentificacion }}</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Embrión -->
+                    <div class="card-body" [hidden]="tipoServicioSeleccionado!=='embrion'" style="display:none;">
+                        <div class=" form-group row align-items-center mb-0 ">
+                            <label for="inputEmail3 " class="col-md-3 text-right control-label col-form-label ">Código de pajuela del padre</label>
+                            <div class="col-md-9 border-left pb-2 pt-2 ">
+                                <!--<input type="text" formControlName="codigo_pajuela_padre_embrion" class="form-control" placeholder="Código de pajuela" [ngClass]="{'is-invalid':(formulario.errors?.codigoPajuelaEmbrion && formulario.touched)}">-->
+                                <input type="text" formControlName="codigo_pajuela_padre_embrion" class="form-control" placeholder="Código de pajuela">
+                                <!--<div class="invalid-feedback" *ngIf="formulario.errors?.codigoPajuelaEmbrion">
+                                    Ingrese el código de pajuela del padre.
+                                </div>-->
+                            </div>
+                        </div>
+                        <div class="form-group row align-items-center mb-0 ">
+                            <label for="inputEmail3 " class="col-md-3 text-right control-label col-form-label">Madre donadora</label>
+                            <div class="col-md-9 border-left pb-2 pt-2 ">
+                                <select class="form-control" formControlName="id_bovino_madre_donadora_embrion">
+                                    <option [value]="null" selected disabled>Seleccione un identificador de la madre donadora</option>
+                                    <option [value]="madre.idBovino" *ngFor="let madre of bovinosMadres">{{ madre.codigoIdentificacion }}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row align-items-center mb-0 ">
+                            <label for="inputEmail3 " class="col-md-3 text-right control-label col-form-label ">Madre receptora</label>
+                            <div class="col-md-9 border-left pb-2 pt-2 ">
+                                <!--<select class="form-control" formControlName="id_bovino_madre_receptora_embrion" [ngClass]="{'is-invalid':(formulario.errors?.madreReceptoraEmbrion && formulario.touched)}">-->
+                                <select class="form-control" formControlName="id_bovino_madre_receptora_embrion">
+                                    <option [value]="null" selected disabled>Seleccione un identificador de la madre receptora</option>
+                                    <option [value]="madre.idBovino" *ngFor="let madre of bovinosMadres">{{ madre.codigoIdentificacion }}</option>
+                                </select>
+                                <!--<div class="invalid-feedback" *ngIf="formulario.errors?.madreReceptoraEmbrion">
+                                    Seleccione la madre receptora
+                                </div>-->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-body ">
+                        <div class="form-group mb-0 text-right ">
+                            <button type="button " class="btn btn-info waves-effect waves-light ">Guardar</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,143 @@
+<hr class="mt-0">
+<div class='row'>
+    <div class='col-12'>
+        <div class='card'>
+            <div class="card-header bg-info text-white rounded-top">
+                Registrar Usuario Interno
+            </div>
+            <hr class="mt-0">
+            <form class="form-horizontal r-separator" ngNativeValidate [formGroup]="formulario" (ngSubmit)="registrarUsuarioInterno()" class="form-horizontal r-separator" action="index.html">
+            <hr class="mt-0">
+                 <div class="card-body">
+                    <h4 class="card-title">Datos del usuario</h4>
+                    <div class="form-group row align-items-center mb-0">
+                        <label for="numero_identificacion" class="col-md-3 text-right control-label col-form-label">Número de cédula</label>
+                        <div class="col-md-9 border-left pb-2 pt-2 input-group">
+                            <input formControlName="numero_identificacion" (keyup)="mascara($event,'cedula')" #idCedula name="numero_identificacion" class="form-control" type="text" required placeholder="CI">
+                            <div class="input-group-append">
+                                <button class="btn btn-success" type="button" (click)="buscarFuncionario(idCedula.value)"><i class="ti-search"></i></button>
+                            </div>
+                            <div class="invalid-feedback d-block" *ngIf="formulario.controls.numero_identificacion.errors?.required && formulario.touched">
+                                Ingrese la cédula del funcionario
+                            </div>
+                        </div>
+                    </div>
+                    <div *ngIf="funcionarioEncontrado">
+                        <div class="form-group row align-items-center mb-0">
+                            <label for="nombres" class="col-md-3 text-right control-label col-form-label">Nombres</label>
+                            <div class="col-md-9 border-left pb-2 pt-2">
+                                <input formControlName="nombres" name="nombres" (keyup)="mascara($event,'alfabetico')" class="form-control" type="text" required placeholder="Nombres" [(ngModel)]="funcionario.nombres">
+                                <div class="invalid-feedback d-block" *ngIf="formulario.controls.nombres.errors?.required && formulario.touched">
+                                    Ingrese los nombres del funcionario
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row align-items-center mb-0">
+                            <label for="apellidos" class="col-md-3 text-right control-label col-form-label">Apellidos</label>
+                            <div class="col-md-9 border-left pb-2 pt-2">
+                                <input formControlName="apellidos" name="apellidos" class="form-control" (keyup)="mascara($event,'alfabetico')" type="text" required placeholder="Apellidos" [(ngModel)]="funcionario.apellidos">
+                                <div class="invalid-feedback d-block" *ngIf="formulario.controls.apellidos.errors?.required && formulario.touched">
+                                    Ingrese los apellidos del funcionario
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row align-items-center mb-0">
+                            <label for="email" class="col-md-3 text-right control-label col-form-label">Correo electrónico institucional</label>
+                            <div class="col-md-9 border-left pb-2 pt-2">
+                                <input formControlName="email" name="email" class="form-control" type="email" required placeholder="Correo electrónico" [(ngModel)]="funcionario.email">
+                                <div class="invalid-feedback d-block" *ngIf="formulario.controls.email.errors?.required && formulario.touched">
+                                    Ingrese el correo electrónico institucional del funcionario
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row align-items-center mb-0">
+                            <label for="provincia" class="col-md-3 text-right control-label col-form-label">Provincia (GUIA)</label>
+                            <div class="col-md-9 border-left pb-2 pt-2">
+                                <label for="provincia" class="col-md-6 text-left">{{funcionario.provincia}}
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group row align-items-center mb-0">
+                            <label for="provincia" class="col-md-3 text-right control-label col-form-label">Oficina (GUIA)</label>
+                            <div class="col-md-9 border-left pb-2 pt-2">
+                                <label for="provincia" class="col-md-6 text-left">{{funcionario.oficina}}
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group row align-items-center mb-0">
+                            <label for="provincia" class="col-md-3 text-right control-label col-form-label">Provincia</label>
+                            <div class="col-md-9 border-left pb-2 pt-2">
+                                <select class="form-control" formControlName="provincia" #idProvincia (change)="cargarOficinasPorProvincia(idProvincia.value)" name="provincia">
+                                    <option value=null selected disabled>Seleccione una opción</option>
+                                    <option *ngFor="let provincia of listaProvincias" value="{{provincia.id_provincia}}">{{provincia.nombre}} - {{provincia.codigo}}</option>
+                                </select>
+                                <div class="invalid-feedback d-block" *ngIf="formulario.controls.provincia.errors?.required && formulario.touched">
+                                    Seleccione una provincia (idealmente debe ser la misma del GUIA)
+                                </div>
+                            </div>
+                        </div>
+                        <!--div class="form-group row align-items-center mb-0">
+                            <label for="email" class="col-md-3 text-right control-label col-form-label">Cantón</label>
+                            <div class="col-md-9 border-left pb-2 pt-2">
+                                <label class="col-md-3 text-left control-label col-form-label">{{funcionario.canton}}</label>
+                            </div>
+                        </div-->
+                        <div class="form-group row align-items-center mb-0">
+                            <label for="oficina" class="col-md-3 text-right control-label col-form-label">Oficina</label>
+                            <div class="col-md-9 border-left pb-2 pt-2">
+                                <select class="form-control" formControlName="oficina" name="oficina">
+                                    <option value=null selected disabled>Seleccione una opción</option>
+                                    <option *ngFor="let oficina of listaOficinas" value="{{oficina.id_oficina}}">{{oficina.nombre}} - {{oficina.codigo}}</option>
+                                </select>
+                                <div class="invalid-feedback d-block" *ngIf="formulario.controls.oficina.errors?.required && formulario.touched">
+                                    Seleccione una oficina (idealmente debe ser la misma del GUIA)
+                                </div>
+                            </div>
+                        </div>
+                        <!--div class="form-group row align-items-center mb-0">
+                            <label for="email" class="col-md-3 text-right control-label col-form-label">Coordinación</label>
+                            <div class="col-md-9 border-left pb-2 pt-2">
+                                <label class="col-md-3 text-left control-label col-form-label">{{funcionario.coordinacion}}</label>
+                            </div>
+                        </div>
+                        <div class="form-group row align-items-center mb-0">
+                            <label for="email" class="col-md-3 text-right control-label col-form-label">Dirección</label>
+                            <div class="col-md-9 border-left pb-2 pt-2">
+                                <label class="col-md-3 text-left control-label col-form-label">{{funcionario.direccion}}</label>
+                            </div>
+                        </div>
+                        <div class="form-group row align-items-center mb-0">
+                            <label for="email" class="col-md-3 text-right control-label col-form-label">Gestión</label>
+                            <div class="col-md-9 border-left pb-2 pt-2">
+                                <label class="col-md-3 text-left control-label col-form-label">{{funcionario.gestion}}</label>
+                            </div>
+                        </div>
+                        <div class="form-group row align-items-center mb-0">
+                            <label for="email" class="col-md-3 text-right control-label col-form-label">Puesto</label>
+                            <div class="col-md-9 border-left pb-2 pt-2">
+                                <label class="col-md-3 text-left control-label col-form-label">{{funcionario.puesto}}</label>
+                            </div>
+                        </div>
+                        <div class="form-group row align-items-center mb-0">
+                            <label for="password" class="col-md-3 text-right control-label col-form-label">Contraseña</label>
+                            <div class="col-md-9 border-left pb-2 pt-2">
+                                <input formControlName="password" name="password" class="form-control" type="password" required placeholder="Contraseña">
+                            </div>
+                        </div>
+                        <div class="form-group row align-items-center mb-0">
+                            <label for="confirmar_password" class="col-md-3 text-right control-label col-form-label">Confirmar contraseña</label>
+                            <div class="col-md-9 border-left pb-2 pt-2">
+                                <input formControlName="confirmar_password" name="confirmar_password" class="form-control" type="password" required placeholder="Confirmar contraseña">
+                            </div>
+                        </div-->
+                        <div class="form-group text-center mt-3">
+                            <div class="col-xs-12">
+                                <button class="btn btn-info btn-lg btn-block text-uppercase waves-effect waves-light" type="submit">Registrar</button>
+                            </div>
+                        </div>
+                    </div>
+                 </div>
+            </form>
+        </div>
+    </div>
+</div>

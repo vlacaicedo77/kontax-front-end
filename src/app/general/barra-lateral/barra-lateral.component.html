@@ -1,0 +1,62 @@
+<!-- ============================================================== -->
+<!-- Left Sidebar - style you can find in sidebar.scss  -->
+<!-- ============================================================== -->
+<aside class="left-sidebar">
+    <!-- Sidebar scroll-->
+    <div class="scroll-sidebar">
+        <!-- Sidebar navigation-->
+        <nav class="sidebar-nav">
+            <ul id="sidebarnav">
+                <li class="nav-small-cap"><i class="mdi mdi-dots-horizontal"></i> <span class="hide-menu">SIFAE</span></li>
+                <li class="sidebar-item" *ngFor="let menuItem of menu">
+                    <a class="sidebar-link has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><i data-feather="home" class="feather-icon"></i><span class="hide-menu text-wrap"> {{menuItem.etiqueta}} </span></a>                   
+                    <ul aria-expanded="false" class="collapse  first-level" *ngIf="menuItem.hijos && menuItem.hijos.length > 0">
+                        <li class="sidebar-item" *ngFor="let hijoItem of menuItem.hijos">
+                            <a href="{{hijoItem.ruta}}" target="_blank" class="sidebar-link navtoggler" *ngIf="hijoItem.ruta.startsWith('http') ; else elseBlock">
+                                <i class="mdi mdi-adjust"></i>
+                                <span class="hide-menu text-wrap"> {{hijoItem.etiqueta}} </span>
+                            </a>
+                            <ng-template #elseBlock >
+                                <a routerLinkActive="active" routerLink="/{{hijoItem.ruta}}" class="sidebar-link navtoggler" *ngIf="hijoItem.ruta != ''; else elseBlock2">
+                                    <i class="mdi mdi-adjust"></i>
+                                    <span class="hide-menu text-wrap"> {{hijoItem.etiqueta}} </span>
+                                </a>
+                                <ng-template #elseBlock2 >
+                                    <a href="javascript:void(0)" class="sidebar-link">
+                                        <i class="mdi mdi-adjust"></i>
+                                        <span class="hide-menu text-wrap"> {{hijoItem.etiqueta}} </span>
+                                    </a>
+                                </ng-template>
+                            </ng-template>
+                            <ul aria-expanded="false" class="collapse  second-level">
+                                <li class="sidebar-item" *ngFor="let nietoItem of hijoItem.hijos">
+                                    <a href="{{nietoItem.ruta}}" target="_blank" class="sidebar-link navtoggler" *ngIf="nietoItem.ruta.startsWith('http') ; else elseBlock">
+                                        <i class="mdi mdi-adjust"></i>
+                                        <span class="hide-menu text-wrap"> {{nietoItem.etiqueta}} </span>
+                                    </a>
+                                    <ng-template #elseBlock >
+                                        <a routerLinkActive="active" routerLink="/{{nietoItem.ruta}}" class="sidebar-link navtoggler" *ngIf="nietoItem.ruta != ''; else elseBlock2">
+                                            <i class="mdi mdi-adjust"></i>
+                                            <span class="hide-menu text-wrap"> {{nietoItem.etiqueta}} </span>
+                                        </a>
+                                        <ng-template #elseBlock2>
+                                            <a href="javascript:void(0)" class="sidebar-link">
+                                                <i class="mdi mdi-adjust"></i>
+                                                <span class="hide-menu text-wrap"> {{nietoItem.etiqueta}} </span>
+                                            </a>
+                                        </ng-template>
+                                    </ng-template>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+        <!-- End Sidebar navigation -->
+    </div>
+    <!-- End Sidebar scroll-->
+</aside>
+<!-- ============================================================== -->
+<!-- End Left Sidebar - style you can find in sidebar.scss  -->
+<!-- ============================================================== -->

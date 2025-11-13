@@ -1,0 +1,100 @@
+<hr class="mt-0">
+<div class='row'>
+    <div class='col-12'>
+        <div class='card'>
+            <div class="card-header bg-info text-white rounded-top">
+                Asignación de roles a usuario interno
+            </div>
+            <hr class="mt-0">
+            <div class="card-body">
+                <h4 class="card-title">Búsqueda del usuario interno</h4>
+                <form class="form-horizontal r-separator" ngNativeValidate [formGroup]="formularioBusqueda" (ngSubmit)="buscarUsuarioInterno()" class="form-horizontal r-separator" action="index.html">
+                    <div class="form-group row align-items-center mb-0">
+                        <label for="inputIdentificacionUsuarioInterno" class="col-md-3 text-right control-label col-form-label">Número de identificación del usuario interno</label>
+                        <div class="col-md-9 border-left pb-2 pt-2">
+                            <input type="text" class="form-control" formControlName="inputIdentificacionUsuarioInterno" name="inputIdentificacionUsuarioInterno" placeholder="Ingrese la identificación del usuario interno">
+                            <div class="invalid-feedback" *ngIf="formularioBusqueda.controls['inputIdentificacionUsuarioInterno'].status==='INVALID' && formularioBusqueda.touched">
+                                Número de identificación del usuario interno requerido
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group text-center mt-3">
+                        <div class="col-xs-12">
+                            <button class="btn btn-info btn-lg btn-block text-uppercase waves-effect waves-light" type="submit">Buscar</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class='card' *ngIf="this.formularioVisible">
+            <div class="card-header bg-info text-white rounded-top">
+                Detalle del usuario interno
+            </div>
+            <div class="card-body">
+                <h4 class="card-title">Información del usuario interno</h4>
+                <div class="form-group row align-items-center mb-0 col-12">
+                    <label class="col-md-3 text-right control-label col-form-label">Nombre Completo</label>
+                    <div class="col-md-9 border-left pb-2 pt-2">
+                        <label class="text-left control-label col-form-label" >{{usuarioReporte.apellidos}} {{usuarioReporte.nombres}}</label>
+                    </div>
+                </div>
+                <div class="form-group row align-items-center mb-0 col-12">
+                    <label class="col-md-3 text-right control-label col-form-label">Número Identificación</label>
+                    <div class="col-md-9 border-left pb-2 pt-2">
+                        <label class="text-left control-label col-form-label" >{{usuarioReporte.numero_identificacion}}</label>
+                    </div>
+                </div>
+                <div class="form-group row align-items-center mb-0 col-12">
+                    <label class="col-md-3 text-right control-label col-form-label">Provincia</label>
+                        <div class="col-md-9 border-left pb-2 pt-2">
+                            <label class="text-left control-label col-form-label" >{{usuarioReporte.provincia}}</label>
+                        </div>
+                </div>
+                <div class="form-group row align-items-center mb-0 col-12">
+                        <label class="col-md-3 text-right control-label col-form-label">Email</label>
+                        <div class="col-md-9 border-left pb-2 pt-2">
+                            <label class="text-left control-label col-form-label" >{{usuarioReporte.email}}</label>
+                        </div>
+                </div>
+                <div class="form-group row align-items-center mb-0 col-12">
+                    <label class="col-md-3 text-right control-label col-form-label">Oficina</label>
+                    <div class="col-md-9 border-left pb-2 pt-2">
+                        <label class="text-left control-label col-form-label" >{{usuarioReporte.oficina}}</label>
+                    </div>
+                </div>
+            </div>
+            <h4 class="card-title ml-4">Selección de roles del usuario</h4>
+            <form class="form-horizontal r-separator" ngNativeValidate [formGroup]="formularioPrincipal" (ngSubmit)="asginarRolesUsuarioInterno()" class="form-horizontal r-separator" action="index.html">   
+                <div class="card-body contenedor-tabla-overflow pb-2 pt-2 pl-5 pr-4 col-12" *ngIf="this.formularioVisible">
+                    <table class="table">
+                        <thead>
+                            <tr class="d-flex">
+                                <th scope="col"></th>
+                                <th scope="col">Rol</th>
+                                <th scope="col">Descripción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <ng-container *ngFor="let rol of listaRoles">
+                                <tr *ngIf="rol.idRoles != 4" class="d-flex">
+                                    <td class="col-sm-1 col-md-1 col-lg-1"><input type="checkbox" class="form-control-lg" id='inputCheckRol{{rol.idRoles}}' name="inputRol" value='{{rol.idRoles}}'></td>
+                                    <td class="col-sm-5 col-md-5 col-lg-5">{{rol.nombreRol}}</td>
+                                    <td class="col-sm-6 col-md-6 col-lg-6">{{rol.descripcionRol}}</td>
+                                </tr>
+                            </ng-container>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="form-group text-center mt-3">
+                    <div class="col-xs-12">
+                        <button class="btn btn-info btn-lg btn-block text-uppercase waves-effect waves-light" type="submit">Guardar</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+

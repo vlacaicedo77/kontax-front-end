@@ -1,0 +1,103 @@
+<!-- ============================================================== -->
+<!-- Preloader - style you can find in spinners.css -->
+<!-- ============================================================== -->
+<div class="preloader">
+    <div class="lds-ripple">
+        <div class="lds-pos"></div>
+        <div class="lds-pos"></div>
+    </div>
+</div>
+<hr class="mt-0">
+<div class="card border border-info rounded">
+    <div class="card-header bg-info text-white rounded-top">
+        Buscar Certificados de Movilización por Tickets
+    </div>
+    <form ngNativeValidate [formGroup]="formularioBusqueda" (ngSubmit)="buscarCertificado()" class="form-horizontal r-separator">
+        <div class="card-body">
+            <div class="form-group row align-items-center mb-0">
+                <label for="inputEmail3" class="col-md-3 text-right control-label col-form-label">Número de Ticket</label>
+                <div class="col-md-9 border-left pb-2 pt-2">
+                    <input type="text" formControlName="numero_certificado" class="form-control" >
+                    <div class="invalid-feedback d-block" *ngIf="formularioBusqueda.controls.numero_certificado.errors?.required && formularioBusqueda.touched">
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="form-group mb-0 text-right">
+                <button type="submit" class="btn btn-info waves-effect waves-light">Buscar</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="card border border-info rounded">
+    <div class="card-header bg-info text-white rounded-top">
+        <span class="font-weight-bold">
+            Certificados de Movilización
+        </span>
+        <!-- Cantidad mostrados -->
+        <span class="round rounded-circle text-white d-inline-block text-center bg-warning">{{ CertificadoTicket.length }}</span>
+        <!-- Navegación -->
+    </div>
+    <div class="card-body">
+        <div class="row p-3">
+            <div class="col table-wrapper-scroll-y custom-scrollbar">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Certificado</th>
+                            <th>Fechas</th>
+                            <th>Origen</th>
+                            <th>Destino</th>
+                            <th>Info Ticket</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let certificado of CertificadoTicket">
+                            <td>
+                                <p>{{ certificado.codigoCertificadoMovilizacion }}</p>
+                                <p><span class="badge badge-light-info rounded-pill" >{{ certificado.nombreEstadoDocumentoCsmi }}</span></p>
+                            </td>
+                            <td>
+                                <p><span class="font-weight-bold">Emisión: </span> {{ certificado.fechaEmision }} </p>
+                                <p><span class="font-weight-bold">Movilización: </span> {{ certificado.fechaHoraMovilizacion }} </p>
+                                <p><span class="font-weight-bold">Válido hasta: </span> {{ certificado.fechaFinValidez }} </p>
+                            </td>
+                            <td>
+                                
+                                <p><span class="font-weight-bold">Provincia: </span> {{ certificado.nombreProvinciaOrigen }}  </p>
+                                <p><span class="font-weight-bold">Sitio: </span> {{ certificado.nombreAreaOrigen }} </p>
+                                <p><span class="font-weight-bold">Tipo: </span> {{ certificado.nombreTiposAreasOrigen }} </p>
+                            </td>
+                            <td>
+                                <p><span class="font-weight-bold">Provincia: </span> {{ certificado.nombreProvinciaDestino }}  </p>
+                                <p><span class="font-weight-bold">Sitio: </span> {{ certificado.nombreAreaDestino }} </p>
+                                <p><span class="font-weight-bold">Tipo: </span> {{ certificado.nombreTiposAreasDestino }} </p>
+                            </td>
+                            <td>
+                                <p><span class="font-weight-bold">Ticket: </span> {{ certificado.idBovinoC }} </p>
+                                <p><span class="font-weight-bold">Categoría: </span> {{ certificado.nombreCategoriaBovino }} </p>
+                                <p><span class="font-weight-bold">Ubicación: </span> {{ certificado.nombreEstadoUbicacion }} </p>
+                            </td>
+                            <td>
+                                <button class="btn btn-warning waves-effect waves-light" type="button" (click)="descargarCertificadoMovilizacion(certificado.idCertificadoMovilizacion)"> <span><i class="fas fa-download"></i></span> </button>
+                            </td>
+                            <!--td>
+                                <span class="badge badge-light-info rounded-pill" *ngIf="vehiculo.codigoEstadoVehiculo==='R'">{{ vehiculo.nombreEstadoVehiculo }}</span>
+                                <span class="badge  rounded-pill" *ngIf="vehiculo.codigoEstadoVehiculo==='H'">{{ vehiculo.nombreEstadoVehiculo }}</span>
+                                <span class="badge  rounded-pill" *ngIf="vehiculo.codigoEstadoVehiculo==='D'">{{ vehiculo.nombreEstadoVehiculo }}</span>
+                                <span class="badge badge-danger rounded-pill" *ngIf="vehiculo.codigoEstadoVehiculo==='ER'">{{ vehiculo.nombreEstadoVehiculo }}</span>
+                            </td-->
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Visor PDF -->
+<app-visor-pdf>
+</app-visor-pdf>

@@ -1,0 +1,509 @@
+<div class="preloader">
+    <div class="lds-ripple">
+        <div class="lds-pos"></div>
+        <div class="lds-pos"></div>
+    </div>
+</div>
+<hr class="mt-0">
+<div class='row'>
+    <div class='col'>
+        <div class='card border rounded' [ngClass]="{'border-danger': destino==='' }">
+            <div class="card-header rounded-top bg-danger text-white font-weight-bold" *ngIf="destino !== 'cen_faen' && destino !== 'ex_pec_bov' && destino !== 'fer_com' && destino !== 'fer_exp' && destino !== 'cen_hos' " >
+                Certificado Zoosanitario de Producción y Movilidad - Movilización [CZPM-M]
+            </div>
+            <div class="card-header rounded-top bg-danger text-white font-weight-bold" *ngIf="destino === 'cen_faen' || destino === 'ex_pec_bov'">
+                Certificado Zoosanitario de Producción y Movibilidad - Movilización [CZPM-M] | Definitivo
+            </div>
+            <div class="card-header rounded-top btn-danger text-white font-weight-bold" *ngIf="destino === 'fer_com' || destino === 'fer_exp' || destino === 'cen_hos'">
+                Certificado Zoosanitario de Producción y Movibilidad - Movilización [CZPM-M] | Temporal
+            </div>
+            <div class='card-body'>
+                <hr class="mt-0">
+                <form ngNativeValidate [formGroup]="formulario" (keydown.enter)="$event.preventDefault()" (ngSubmit)="registrarCertificado()" class="form-horizontal r-separator needs-validation">
+                    <!-------------------------Predio Origen------------------------------------------------------>
+                <div class="card-body">
+                    <h4 class="card-title">Origen</h4>
+                    <div class="form-group row align-items-center mb-0">
+                        <label class="col-md-3 text-right control-label col-form-label">Centro de concentración:</label>
+                        <div class="col-md-9 border-left">
+                            <select class="form-control border-secondary" formControlName="area_origen" (change)="cambioAreaOrigen()">
+                                <option [value]="null" selected disabled>Seleccione un centro de concentración de animales</option>
+                                <option *ngFor="let area of listaAreaOrigen" [value]="area.idArea" >{{ area.nombreProvinciaSitio.toUpperCase()}} - {{ area.nombreCantonSitio.toUpperCase()}} | {{ area.nombre.toUpperCase() }}</option>
+                                <!--<option *ngFor="let area of listaAreaOrigen" [value]="area.idArea" >{{ area.nombre }}( {{ area.nombreTipoArea }} ) - {{ area.nombreSitio }} ( {{ area.nombreParroquiaSitio }} | {{ area.nombreCantonSitio}} | {{ area.nombreProvinciaSitio}} )</option>-->
+                            </select>
+                            <div class="invalid-feedback d-block" *ngIf="formulario.controls.area_origen.errors?.required && formulario.touched">
+                            </div>
+                        </div>
+                        <label class="col-md-3 text-right control-label col-form-label"></label>
+                        <div class="col-md-9 border-left">
+                            <div class="row p-1 m-b-5"></div>
+                            <div class="row p-1 m-b-5"></div>
+                            <u><h4 class="mb-0 font-weight-medium">Propietario</h4></u>
+                            <div class="row p-1 m-b-5"></div>
+                            <h5 class="mb-0 font-weight-medium">Identificación: 
+                                <small class="text-muted">{{ origenSeleccionado?.numeroIdentificacion }}</small>
+                            </h5>
+                            <h5 class="mb-0 font-weight-medium">Apellidos y nombres / Razón Social: 
+                                <small class="text-muted">{{ origenSeleccionado?.nombres.toUpperCase() }}</small>
+                            </h5>
+                            <div class="row p-1 m-b-5"></div>
+                            <u><h4 class="mb-0 font-weight-medium">Descripción </h4></u>
+                            <div class="row p-1 m-b-5"></div>
+                            <h5 class="mb-0 font-weight-medium">Tipo área: 
+                                <small class="text-muted">{{ origenSeleccionado?.nombreTipoArea.toUpperCase() }}</small>
+                            </h5>
+                            <h5 class="mb-0 font-weight-medium">Nombre: 
+                                <small class="text-muted">{{ origenSeleccionado?.nombre.toUpperCase() }}</small>
+                            </h5>
+                            <h5 *ngIf="origenSeleccionado?.nombreTipoActividad" class="mb-0 font-weight-medium">Tipo actividad: 
+                                <small class="text-muted">{{ origenSeleccionado?.nombreTipoActividad.toUpperCase() }}</small>
+                            </h5>
+                            <h5 class="mb-0 font-weight-medium">Código: 
+                                <small class="text-muted">{{ origenSeleccionado?.codigoSitio }}</small>
+                            </h5>
+                            <div class="row p-1 m-b-5"></div>
+                            <u><h4 class="mb-0 font-weight-medium">Ubicación </h4></u>
+                            <div class="row p-1 m-b-5"></div>
+                            <h5 class="mb-0 font-weight-medium">Provincia:
+                                <small class="text-muted">{{ origenSeleccionado?.nombreProvinciaSitio.toUpperCase() }}</small>
+                            </h5>
+                            <h5 class="mb-0 font-weight-medium">Cantón: 
+                                <small class="text-muted">{{ origenSeleccionado?.nombreCantonSitio.toUpperCase() }}</small>
+                            </h5>
+                            <h5 class="mb-0 font-weight-medium">Parroquia: 
+                                <small class="text-muted">{{ origenSeleccionado?.nombreParroquiaSitio.toUpperCase() }}</small>
+                            </h5>
+                            <h5 class="mb-0 font-weight-medium">Sitio/Vía: 
+                                <small class="text-muted">{{ origenSeleccionado?.callePrincipalSitio.toUpperCase() }}</small>
+                            </h5>
+                        </div>
+                    </div>
+                </div>
+                    <!------------------------------------------------------------------------------------------------------------>
+                    <div id="top" class="card-body">
+                        <h4 class="card-title">Ingreso de identificadores (Tickets)</h4>    
+                        <hr class="mt-0" *ngIf="listaNacimientosDisponibles.length > 0">
+                    <!--------------------------------------------------------------------------------------------------------------------------->
+                    <!-- Bovinos agregados por ticket -->
+                    <div class="row">
+                        <div class="card-body">
+                            <div class="form-group row align-items-center mb-0">
+                                <label class="col-md-3 text-right control-label col-form-label">Número de identificador (Ticket)</label>
+                                <div class="col-md-6 border-left pb-2 pt-2 input-group">
+                                    <input lang="es" type='text' formControlName="numero_ticket" (keydown.enter)="agregarBovinoTicket()" class="form-control text-center border-secondary" >
+                                    <div class="input-group-append">
+                                        <button class="btn btn-success border-secondary" type="button" (click)="agregarBovinoTicket()"><i class="ti-plus"></i></button>
+                                        <button class="btn btn-info border-secondary" type="button" (click)="actualizarTickets()"><i class="ti-import"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" *ngIf="listaBovinosTicketsD.length > 0">
+                        <div class="col">
+                            <div class="card border border-danger rounded">
+                                <div class="card-header bg-danger text-white rounded-top font-weight-bold">Nacimientos agregados
+                                    <span class="round rounded-circle text-white d-inline-block text-center bg-warning ml-2">{{ listaBovinosTicketsD.length }}</span>
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col">Número identificador (Ticket)</th>
+                                                    <th scope="col">Animales</th>
+                                                    <th scope="col"></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr *ngFor="let bovino of listaBovinosTicketsD">
+                                                    <th scope="col">{{ bovino.idBovino }}</th>
+                                                    <th scope="col">
+                                                        <h6 *ngIf="!bovino.nombre" class="mb-0 font-weight-medium">Categoría: 
+                                                            <small class="text-muted">Búfalo</small>
+                                                        </h6>
+                                                        <h6 *ngIf="bovino.nombre" class="mb-0 font-weight-medium">Categoría: 
+                                                            <small class="text-muted">{{ bovino?.nombre }}</small>
+                                                        </h6>
+                                                        <h6 class="mb-0 font-weight-medium">Sexo: 
+                                                            <small class="text-muted">{{ bovino?.codigoSexo }}</small>
+                                                        </h6>
+                                                        <!--<h6 class="mb-0 font-weight-medium">Tipo: 
+                                                            <small class="text-muted">{{ bovino?.nombreComunTaxonomia }}</small>
+                                                        </h6>-->
+                                                    </th>
+                                                    <th scope="col">
+                                                        <button class="btn btn-danger" type="button" (click)="quitarBovinoTicketD(bovino.idBovino)"><i class="ti-trash"></i></button>
+                                                    </th>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" *ngIf="listaBovinosTickets.length > 0">
+                        <div class="col">
+                            <div class="card border border-info rounded">
+                                <div class="card-header bg-info text-white rounded-top font-weight-bold">Vacunados agregados
+                                    <span class="round rounded-circle text-white d-inline-block text-center bg-warning ml-2">{{ listaBovinosTickets.length }}</span>
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col">Número identificador (Ticket)</th>
+                                                    <th scope="col">Animales</th>
+                                                    <th scope="col"></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr *ngFor="let bovino of listaBovinosTickets">
+                                                    <th scope="col">{{ bovino.idBovino }}</th>
+                                                    <th scope="col">
+                                                        <h6 *ngIf="!bovino.nombre" class="mb-0 font-weight-medium">Categoría: 
+                                                            <small class="text-muted">Búfalo</small>
+                                                        </h6>
+                                                        <h6 *ngIf="bovino.nombre" class="mb-0 font-weight-medium">Categoría: 
+                                                            <small class="text-muted">{{ bovino?.nombre }}</small>
+                                                        </h6>
+                                                        <h6 class="mb-0 font-weight-medium">Sexo: 
+                                                            <small class="text-muted">{{ bovino?.codigoSexo }}</small>
+                                                        </h6>
+                                                        <!--<h6 class="mb-0 font-weight-medium">Tipo: 
+                                                            <small class="text-muted">{{ bovino?.nombreComunTaxonomia }}</small>
+                                                        </h6>-->
+                                                    </th>
+                                                    <th scope="col">
+                                                        <button class="btn btn-danger" type="button" (click)="quitarBovinoTicket(bovino.idBovino)"><i class="ti-trash"></i></button>
+                                                    </th>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--------------------------------------------------------------------------------------------------------------------------->
+                    </div>
+                    <!-- Destino -->
+                    <div class="card-body">
+                        <!-- Tipo destino -->
+                        <h4 class="card-title">Destino</h4>
+                        <div class="form-group row align-items-center mb-0">
+                            <label class="col-md-3 text-right control-label col-form-label">Tipo de destino</label>
+                            <div class="col-md-9 border-left pb-2 pt-2">
+                                <!-- Centro de Faenamiento -->
+                                <div class="row">
+                                    <div class="col-md-auto">
+                                        <input name="tipo_area" type="radio" id="c_faenamiento" [(ngModel)]="destino" [ngModelOptions]="{standalone: true}" value="cen_faen" (change)="cambioTipoSitio('cen_faen')" class="material-inputs radio-col-blue">
+                                        <label for="c_faenamiento">Centro de Faenamiento</label>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="row">
+                                            <div class="col-md-auto">
+                                                <input  name="tipo_area" type="radio" id="c_concentracion" [(ngModel)]="centro" [ngModelOptions]="{standalone: true}" value="c_concentracion" (change)="cambioTipoSitio('c_concentracion')" class="material-inputs radio-col-blue" >
+                                                <label for="c_concentracion">Centro de Concentración Animal</label>
+                                            </div>
+                                        </div>
+                                        <div class="row" *ngIf="centro === 'c_concentracion'">
+                                            <div class="col-md-auto ml-4">
+                                                <div class="row">
+                                                    <div class="col-md-auto">
+                                                        <input name="centro_concentracion" type="radio" id="f_exposicion" [(ngModel)]="destino" [ngModelOptions]="{standalone: true}" value="fer_exp" (change)="cambioTipoSitio('fer_exp')" class="material-inputs radio-col-blue">
+                                                        <label for="f_exposicion">Feria de exposición</label>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-auto">
+                                                        <input name="centro_concentracion" type="radio" id="f_comercial" [(ngModel)]="destino" [ngModelOptions]="{standalone: true}" value="fer_com" (change)="cambioTipoSitio('fer_com')" class="material-inputs radio-col-blue">
+                                                        <label for="f_comercial">Feria comercial</label>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-auto">
+                                                        <input name="centro_concentracion" type="radio" id="c_hospedaje" [(ngModel)]="destino" [ngModelOptions]="{standalone: true}" value="cen_hos" (change)="cambioTipoSitio('cen_hos')" class="material-inputs radio-col-blue">
+                                                        <label for="c_hospedaje">Centro de hospedaje</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-auto">
+                                        <input  name="tipo_area" type="radio" id="e_pecuarioa" [(ngModel)]="destino" [ngModelOptions]="{standalone: true}" value="ex_pec_bov" (change)="cambioTipoSitio('ex_pec_bov')" class="material-inputs radio-col-blue" >
+                                        <label for="e_pecuarioa">Explotación Pecuaria</label>
+                                    </div>
+                                </div>
+                                <div class="invalid-feedback d-block" *ngIf="formulario.controls.tipo_area.errors?.required && formulario.touched">
+                                    Seleccione el tipo de destino
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Destino -->
+                        <div class="form-group row align-items-center mb-0" *ngIf="destino == 'ex_pec_bov'">
+                            <label for="ci_productor" class="col-md-3 text-right control-label col-form-label">C.C/C.I/RUC</label>
+                            <div class="col-md-9 border-left pb-2 pt-2">
+                                <div class="input-group-append">
+                                    <input type="text" style="width: 250px;" formControlName="ci_productor" (keydown.enter)="buscarOtrosProductores(productor.value)" class="form-control border-secondary" #productor placeholder="Ingrese # de identificación">
+                                    <button class="btn btn-success border-secondary" type="button" (click)="buscarOtrosProductores(productor.value)"><i class="ti-search"></i></button>
+                                </div>
+                            </div>
+                            <label for="nombre_productor" class="col-md-3 text-right control-label col-form-label">Productor</label>
+                            <div class="col-md-9 border-left pb-2 pt-2 input-group">
+                                <input type="text" class="form-control border-secondary" formControlName="nombre_productor" name="nombre_productor" placeholder="Consulte > Apellidos y nombres" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group row align-items-center mb-0" *ngIf="destino !== 'ex_pec_bov' && destino !== ''">
+                            <label for="provincia_destino" class="col-md-3 text-right control-label col-form-label">Provincia</label>
+                            <div class="col-md-9 border-left pb-2 pt-2">
+                                <select class="form-control border-secondary" formControlName="provincia_destino" (change)="cargarSitioDestino()"  name="provincia_destino">
+                                    <option value=null selected disabled>Seleccione provincia de destino</option>
+                                    <option *ngFor="let provincia of listaProvincias" value="{{provincia.id_provincia}}">{{provincia.nombre.toUpperCase()}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row align-items-center mb-0" *ngIf="destino !== ''">
+                            <label for="inputEmail3" class="col-md-3 text-right control-label col-form-label">Destino</label>
+                            <div class="col-md-9 border-left pb-2 pt-2">
+                                <select class="form-control border-secondary" formControlName="id_area_destino" (change)="cambioDestino()">
+                                    <option [value]="null" selected disabled>Seleccione un destino</option>
+                                    <!--<option *ngFor="let destino of listaDestinos" [value]="destino?.idArea">{{ destino?.nombre }} - {{ destino?.nombreSitio }} (Provincia: {{ destino?.nombreProvinciaSitio}} | Cantón: {{ destino?.nombreCantonSitio}} | Parroquia: {{ destino?.nombreParroquiaSitio }})</option>-->
+                                    <option *ngFor="let destino of listaDestinos" [value]="destino?.idArea">{{ destino?.nombreProvinciaSitio.toUpperCase()}} - {{ destino?.nombreCantonSitio.toUpperCase()}} | {{ destino?.nombre.toUpperCase() }}</option>
+                                </select>
+                                <div class="invalid-feedback d-block" *ngIf="formulario.controls['id_area_destino'].status==='INVALID' && formulario.touched">
+                                    Seleccione el destino.
+                                </div>
+                            </div>
+                            <label class="col-md-3 text-right control-label col-form-label">Destino Seleccionado</label>
+                            <div class="col-md-9 border-left pb-2 pt-2">
+                                <div class="row p-1 m-b-5"></div>
+                                <div class="row p-1 m-b-5"></div>
+                                <u><h4 class="mb-0 font-weight-medium">Destinatario</h4></u>
+                                <div class="row p-1 m-b-5"></div>
+                                <h5 class="mb-0 font-weight-medium">Identificación: 
+                                    <small class="text-muted">{{ destinoSeleccionado?.numeroIdentificacion }}</small>
+                                </h5>
+                                <h5 class="mb-0 font-weight-medium">Apellidos y nombres / Razón Social: 
+                                    <small class="text-muted">{{ destinoSeleccionado?.nombres.toUpperCase() }}</small>
+                                </h5>
+                                <div class="row p-1 m-b-5"></div>
+                                <u><h4 class="mb-0 font-weight-medium">Descripción destino </h4></u>
+                                <div class="row p-1 m-b-5"></div>
+                                <h5 class="mb-0 font-weight-medium">Tipo área: 
+                                    <small class="text-muted">{{ destinoSeleccionado?.nombreTipoArea.toUpperCase() }}</small>
+                                </h5>
+                                <h5 class="mb-0 font-weight-medium">Nombre: 
+                                    <small class="text-muted">{{ destinoSeleccionado?.nombre.toUpperCase() }}</small>
+                                </h5>
+                                <h5 *ngIf="destinoSeleccionado?.nombreTipoActividad" class="mb-0 font-weight-medium">Tipo actividad: 
+                                    <small class="text-muted">{{ destinoSeleccionado?.nombreTipoActividad }}</small>
+                                </h5>
+                                <h5 class="mb-0 font-weight-medium">Código: 
+                                    <small class="text-muted">{{ destinoSeleccionado?.codigoSitio }}</small>
+                                </h5>
+                                <div class="row p-1 m-b-5"></div>
+                                <u><h4 class="mb-0 font-weight-medium">Ubicación destino </h4></u>
+                                <div class="row p-1 m-b-5"></div>
+                                <h5 class="mb-0 font-weight-medium">Provincia:
+                                    <small class="text-muted">{{ destinoSeleccionado?.nombreProvinciaSitio.toUpperCase() }}</small>
+                                </h5>
+                                <h5 class="mb-0 font-weight-medium">Cantón: 
+                                    <small class="text-muted">{{ destinoSeleccionado?.nombreCantonSitio.toUpperCase() }}</small>
+                                </h5>
+                                <h5 class="mb-0 font-weight-medium">Parroquia: 
+                                    <small class="text-muted">{{ destinoSeleccionado?.nombreParroquiaSitio.toUpperCase() }}</small>
+                                </h5>
+                                <h5 class="mb-0 font-weight-medium">Sitio/Vía: 
+                                    <small class="text-muted">{{ destinoSeleccionado?.callePrincipalSitio.toUpperCase() }}</small>
+                                </h5>
+                            </div>
+                            
+                        </div>
+                        <div class="form-group row align-items-center mb-0" *ngIf="destino !== ''">
+                            <label for="inputEmail3" class="col-md-3 text-right control-label col-form-label">Observaciones / Ruta a seguir</label>
+                            <div class="col-md-9 border-left pb-2 pt-2">
+                                <input class="form-control text-uppercase border-secondary" type="text" formControlName="ruta" maxlength="256" placeholder="">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <h4 class="card-title">Información del solicitante</h4>
+                        
+                            <div class="form-group row align-items-center mb-0" *ngIf="destino == 'ex_pec_bov'">
+                                <label for="tipo_solicitante" class="col-md-3 text-right control-label col-form-label">¿Es el mismo productor de destino?</label>
+                                <div class="col-md-9 border-left pb-2 pt-2 input-group">
+                                    <div class="col-md-3">
+                                        <input type="checkbox" class="material-inputs border-secondary" id="tipo_solicitante" formControlName="solicitante_tipo" (change)="cambiarTipoSolicitante()">
+                                        <label for="tipo_solicitante">Sí</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group row align-items-center mb-0" *ngIf="!formulario.value.solicitante_tipo">
+                            <label for="ci_solicitante" class="col-md-3 text-right control-label col-form-label">C.C/C.I/Pasaporte</label>
+                            <div class="col-md-9 border-left pb-2 pt-2">
+                                <div class="input-group-append">
+                                    <input type="text" formControlName="ci_solicitante" maxlength="13" (keydown.enter)="buscarSolicitantes(productor.value)" style="width: 250px;" #productor class="form-control border-secondary" placeholder="Ingrese # de identificación">
+                                    <button class="btn btn-success border-secondary" type="button" (click)="buscarSolicitantes(productor.value)"><i class="ti-search"></i></button>
+                                    <button type="button" class="btn btn-info border-secondary" (click)="agregarCiudadano()"><i class="ti-plus"></i></button>
+                                </div>
+                            </div>
+                            <label for="nombre_solicitante" class="col-md-3 text-right control-label col-form-label">Apellidos y nombres</label>
+                            <div class="col-md-9 border-left pb-2 pt-2 input-group">
+                                <input type="text" class="form-control border-secondary" formControlName="nombre_solicitante" name="nombre_solicitante" placeholder="Consulte > Apellidos y nombres" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group row align-items-center mb-0" *ngIf="formulario.value.solicitante_tipo">
+                            
+                                <label class="col-md-3 text-right control-label col-form-label">C.C/C.I/Pasaporte</label>
+                                <div class="col-md-9 border-left pb-2 pt-2 input-group">
+                                    <p>
+                                        {{ usuarioSolicitanteSeleccionado?.numeroIdentificacion }}
+                                    </p>
+                                </div>
+                                <label class="col-md-3 text-right control-label col-form-label">Apellidos y nombres</label>
+                                <div class="col-md-9 border-left pb-2 pt-2 input-group">
+                                    <p>
+                                        {{ usuarioSolicitanteSeleccionado?.nombres }}
+                                    </p>
+                                </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <h4 class="card-title">Información de la movilización</h4>
+                        <div class="form-group row align-items-center mb-0">
+                            <label class="col-md-3 text-right control-label col-form-label">Medio de transporte</label>
+                            <div class="col-md-9 border-left pb-2 pt-2">
+                                <div class="col" *ngFor="let medio of listaMediosTransportes">
+                                    <input (change)="cambioMedioTransporte(medio.idMedioTransporte)" formControlName="medio_transporte" name="medio_transporte" type="radio" id="{{medio.codigo}}" [value]="medio.idMedioTransporte" class="material-inputs radio-col-blue">
+                                    <label for="{{medio.codigo}}">{{ medio.nombre}}</label>
+                                </div>
+                                <div class="invalid-feedback d-block" *ngIf="formulario.controls['medio_transporte'].status==='INVALID' && formulario.touched">
+                                    Seleccione el medio de transporte que se usará.
+                                </div>
+                            </div>
+                        </div>
+                        <div *ngIf="medioTransporteSeleccionado==='vehiculo'">
+                            <div class="form-group row align-items-baseline mb-0">
+                                <label for="placa" class="col-md-3 text-right control-label col-form-label">Placa</label>
+                                <div class="col-md-9 border-left pb-2 pt-2">
+                                    <div class="row mt-3 input-group">
+                                        <div class="col-md-6 input-group">
+                                            <div class="input-group-append">
+                                                <input type="text" class="form-control text-uppercase border-secondary" (keydown.enter)="buscarVehiculo(placa.value)" #placa placeholder="EJEMPLO: MNA0123">
+                                                <button class="btn btn-success border-secondary" type="button" (click)="buscarVehiculo(placa.value)"><i class="ti-search"></i></button>
+                                            </div>
+                                            </div>
+                                    </div>
+                                    <div class="row mt-3">
+                                        <div class="col mb-2">
+                                            <span class="font-weight-bold ml-1">Placa: </span><span class="invoice-number ml-2">{{ formulario.value.placa }}</span><br>
+                                            <span class="font-weight-bold ml-1">Tipo Transporte: </span><span class="invoice-number ml-2">{{ matriculaVehiculoSeleccionado?.tipoVehiculo }}</span><br>
+                                            <span class="font-weight-bold ml-1">Marca: </span><span class="invoice-number ml-2">{{ vehiculoSeleccionado?.marca }}</span><br>
+                                            <span class="font-weight-bold ml-1">Modelo: </span><span class="invoice-number ml-2">{{ matriculaVehiculoSeleccionado?.modelo }}</span>
+                                            <span class="font-weight-bold ml-1" style="display: none;">Propietario: </span><span class="invoice-number ml-2" style="display: none;">{{ matriculaVehiculoSeleccionado?.propietario }}</span>
+                                        </div>
+                                    </div>
+                                    <div class="invalid-feedback d-block" *ngIf="formulario.errors?.placaObligatoria && formulario.touched">
+                                        Ingrese la placa del vehículo que transportará los animales.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group row align-items-baseline mb-0">
+                                <label for="inputEmail3" class="col-md-3 text-right control-label col-form-label">Transportista</label>
+                                <div class="col-md-9 border-left pb-2 pt-2">
+                                    <div class="row mt-3">
+                                        <div class="col-md-6 input-group">
+                                            <div class="input-group-append">
+                                                <input type="text" class="form-control border-secondary" (keydown.enter)="buscarConductor(cedula.value)" placeholder="Ingrese # de identificación" #cedula>
+                                                <button class="btn btn-success border-secondary" type="button" (click)="buscarConductor(cedula.value)"><i class="ti-search"></i></button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row mt-3">
+                                        <div class="col mb-2">
+                                            <span class="font-weight-bold ml-1">C.C/C.I: </span><span class="invoice-number ml-2">{{ formulario.value.id_transportista }}</span><br>
+                                            <span class="font-weight-bold ml-1">Nombres y Apellidos: </span><span class="invoice-number ml-2">{{ datoLicenciaSeleccionado?.nombres }} {{ datoLicenciaSeleccionado?.apellidos }}</span><br>
+                                        </div>
+                                    </div>
+                                    <div class="invalid-feedback d-block" *ngIf="formulario.errors?.transportistaObligatorio && formulario.touched">
+                                        Ingrese el número de identificación del transportista.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row align-items-center mb-0">
+                            <label for="inputEmail3" class="col-md-3 text-right control-label col-form-label">Fecha de movilización</label>
+                            <div class="col-md-3 border-left pb-2 pt-2 input-group">
+                                <input style="width: 400px;" lang="es" type='date' class="form-control border-secondary" [min]="fechaMinima | date: 'yyyy-MM-dd'" [max]="fechaMaxima | date: 'yyyy-MM-dd'" formControlName="fecha_hora_movilizacion" (change)="cambioFechaHoraMovilizacion()"/>
+                                <div class="invalid-feedback d-block" *ngIf="formulario.controls.fecha_hora_movilizacion.errors?.required && formulario.touched">
+                                    Ingrese la fecha movilización.
+                                </div>
+                                <div class="invalid-feedback d-block" *ngIf="formulario.errors?.fechaMayorPermitida && formulario.touched">
+                                    La fecha no puede ser mayor a 1 (un) día
+                                </div>
+                                
+                            </div>  
+                        </div>
+                        <div class="form-group row align-items-center mb-0">
+                            <label for="hora_movilizacion" class="col-md-3 text-right control-label col-form-label">Hora de movilización</label>
+                            <div class="col-md-3 border-left pb-2 pt-2 input-group">
+                                <input lang="es" type='time' class="form-control border-secondary" min="05:00" max="18:00" formControlName="hora_movilizacion" (change)="cambioFechaHoraMovilizacion()">
+                                <span style="background-color:chartreuse; color:black; font-weight:bold; text-align: center; padding: 5px; border-radius: 5px;">24 horas</span>
+                                <div class="invalid-feedback d-block" *ngIf="formulario.controls.hora_movilizacion.errors?.required && formulario.touched">
+                                    Ingrese la hora de movilización.
+                                </div>
+                                <div class="invalid-feedback d-block" *ngIf="formulario.errors?.fechaRangoNoPermitido && formulario.touched">
+                                    Movilización permitida de 05H00 a 18H00.
+                                </div>
+                                <div class="invalid-feedback d-block" *ngIf="formulario.errors?.fechaMenorActual && formulario.touched">
+                                    La fecha y hora seleccionada debe ser mayor a la fecha y hora actual.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row align-items-center mb-0">
+                            <label for="inputEmail3" class="col-md-3 text-right control-label col-form-label">Tiempo de validez</label>
+                            <div class="col-md-3 border-left pb-2 pt-2 input-group">
+                                <select formControlName="horas" class="form-control border-secondary">
+                                    <option *ngFor="let valor of listaHoras" [value]="valor">{{ valor }}</option>
+                                </select>
+                                <span style="background-color:chartreuse; color:black; font-weight:bold; text-align: center; padding: 5px; border-radius: 5px;">horas</span>
+                                <select formControlName="minutos" class="form-control border-secondary">
+                                    <option *ngFor="let valor of listaMinutos" [value]="valor">{{ valor }}</option>
+                                </select>
+                                <span style="background-color:chartreuse; color:black; font-weight:bold; text-align: center; padding: 5px; border-radius: 5px;">minutos</span>
+                                <div class="invalid-feedback d-block" *ngIf="formulario.touched && formulario.errors?.tiempoValidezRequerido">
+                                    Ingrese el tiempo de validez
+                                </div>
+                                <div class="invalid-feedback d-block" *ngIf="formulario.touched && formulario.errors?.tiempoValidezValorMinimo">
+                                    El tiempo de validez debe ser mínimo 5 minutos
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--------------------------------------------------------------------------------------------------------------------------->
+
+                    <div class="card-body">
+                        <div class="form-group mb-0">
+                            <button type="submit" class="btn btn-danger font-weight-bold waves-effect waves-light">Generar CZPM-M</button>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Visor PDF -->
+<app-visor-pdf>
+</app-visor-pdf>
+
+<!-- Componente para crear un nuevo usuario ciudadano -->
+<app-crear-usuario-externo [correo]="false">
+</app-crear-usuario-externo>

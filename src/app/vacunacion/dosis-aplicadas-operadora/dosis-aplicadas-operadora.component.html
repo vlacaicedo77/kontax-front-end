@@ -1,0 +1,214 @@
+<div class="preloader">
+    <div class="lds-ripple">
+        <div class="lds-pos"></div>
+        <div class="lds-pos"></div>
+    </div>
+</div>
+<hr class="mt-0">
+<div class="row">
+    <div class="col">
+        <div class="card border border-info rounded">
+            <div class="card-header bg-info text-white rounded-top font-weight-bold">
+                Consultar dosis aplicadas
+            </div>
+            <form ngNativeValidate [formGroup]="formularioBusqueda" class="form-horizontal r-separator" (ngSubmit)="buscar()">
+                <div class="card-body">
+                    
+                    <div class="form-group row align-items-center mb-0">
+                            <label class="col-md-3 text-right control-label col-form-label">Fase Vacunación</label>
+                            <div class="col-md-9 border-left pb-2 pt-2">
+                                <select formControlName="fase_vacunacion" class="form-control border-secondary" (change)="cambioFaseVacunacion()">
+                                    <option [value]="null" selected disabled>Seleccione un fase</option>
+                                    <option *ngFor="let fase of listaFasesVacunaciones" [value]="fase.idFaseVacunacion" >{{ fase.nombre.toUpperCase()}}</option>
+                                </select>
+                            </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <label class="col-md-3 text-right control-label col-form-label">Oficina de vacunación</label>
+                        <div class="col-md-9 border-left pb-2 pt-2">
+                        <select formControlName="oficina_vacunacion" class="form-control border-secondary" (change)="cambioOficinaVacunacion()">
+                            <option [value]="null" selected disabled>Seleccione una oficina</option>
+                            <option *ngFor="let digitadora of listaDigitadorasOficinas" [value]="digitadora.idOficina" >{{ digitadora.nombreOficina.toUpperCase()}}</option>
+                        </select>
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <label class="col-md-3 text-right control-label col-form-label">Brigadista (vacunador)</label>
+                        <div class="col-md-9 border-left pb-2 pt-2">
+                        <select formControlName="tecnico_vacunador" class="form-control border-secondary">
+                            <option [value]="-1" selected enabled>Agrupado X Todos</option>
+                            <option *ngFor="let brigadista of listaBrigadistasOficinas" [value]="brigadista.idUsuarioExternoPersona" >{{ brigadista.nombresPersona.toUpperCase() }}</option>
+                        </select>
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <label class="col-md-3 text-right control-label col-form-label">Rango de consulta</label>
+                        <div class="col-md-4 border-left pb-2 pt-2 input-group">
+                            <input formControlName="fecha_inicio" type="date" class="form-control text-center border-secondary" placeholder="Fecha de Inicio">
+                            <label class="col-md-3 text-center font-weight-bold control-label col-form-label">><</label>
+                            <input formControlName="fecha_fin" type="date" class="form-control text-center border-secondary" placeholder="Fecha de Fin">
+                        </div>
+                    </div>
+                    <div class="form-group mb-0 text-right">
+                        <button type="submit" class="btn btn-info waves-effect waves-light">
+                            <span class="btn-label">
+                                <i class="fas fa-search"></i>
+                            </span>
+                            Buscar
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="row" *ngIf="listaCertificadosVacunacion.length > 0">
+    <div class="col">
+        <div class="card border border-secondary rounded">
+            <div class="card-header bg-secondary rounded-top font-weight-bold input-group">
+                <h4 class="mb-0 text-white">
+                    # Brigadistas &nbsp; &nbsp;
+                <!-- Cantidad mostrados -->
+                    <span class="round rounded-circle text-white d-inline-block text-center bg-warning">{{ listaCertificadosVacunacion.length }}</span>
+                </h4>
+                <h4>&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;</h4>
+                <h4 class="mb-0 text-white">
+                    Total dosis aplicadas &nbsp; &nbsp;
+                <!-- Cantidad mostrados -->
+                    <span class="round rounded-circle text-white font-14 d-inline-block text-center bg-success">{{this.totalDosis}}</span>
+                </h4>
+                <h4>&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;</h4>
+                <!-- Navegación -->
+                <div class="btn-group ml-2" role="group" aria-label="Navegar" >
+                    <button (click)="anterior()" type="button" class="btn btn-success"  *ngIf="inicio > 0"><i class="fa fa-fast-backward" ></i></button>
+                    <!--button type="button" class="btn btn-success"><i class="fa fa-play"></i></button-->
+                    <button (click)="siguiente()" type="button" class="btn btn-success"  *ngIf="listaCertificadosVacunacion.length > 0"><i class="fa fa-fast-forward"></i></button>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="table-wrapper-scroll-y custom-scrollbar">
+                    <table class="table table-bordered table-hover v-middle">
+                        <thead>
+                            <tr>
+                                <th class="badge-light-info text-left font-18">Oficina</th>
+                                <th class="badge-light-info text-left font-18">Brigadista</th>
+                                <th class="badge-light-info text-left font-18">Catastro</th>
+                                <th class="badge-light-info text-center font-18">Total Dosis</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let certificado of listaCertificadosVacunacion">
+                                <td>
+                                    <h5><span class="text-muted font-weight-bold font-15 ml-2">{{ certificado.oficina.toUpperCase()}}</span></h5>
+                                    <h5><span class="text-muted font-weight-bold font-15 ml-2">{{ certificado.nombreFase.toUpperCase()}}</span></h5>
+                                </td>
+                                <td>
+                                <h5><span class="text-muted font-weight-bold font-15 ml-2">{{ certificado.identificacionBrigadista}}</span></h5>
+                                <h5><span class="text-muted font-weight-bold font-15 ml-2">{{ certificado.nombreBrigadista.toUpperCase()}}</span></h5>
+                                </td>
+                                <!--td>{{ certificado.nombresProductor }} {{ certificado.apellidosProductor}}</td-->
+                                <td>
+                                    <h5 class="mb-0 font-weight-medium">Terneras: <span class="text-muted font-14 ml-2">{{ certificado.terneras}}</span></h5>
+                                    <h5 class="mb-0 font-weight-medium">Terneros: <span class="text-muted font-14 ml-2">{{ certificado.terneros}}</span></h5>
+                                    <h5 class="mb-0 font-weight-medium">Vacas: <span class="text-muted font-14 ml-2">{{ certificado.vacas}}</span></h5>
+                                    <h5 class="mb-0 font-weight-medium">Vaconas: <span class="text-muted font-14 ml-2">{{ certificado.vaconas}}</span></h5>
+                                    <h5 class="mb-0 font-weight-medium">Toretes: <span class="text-muted font-14 ml-2">{{ certificado.toretes}}</span></h5>
+                                    <h5 class="mb-0 font-weight-medium">Toros: <span class="text-muted font-14 ml-2">{{ certificado.toros}}</span></h5>
+                                    <h5 class="mb-0 font-weight-medium">Búfalo Macho: <span class="text-muted font-14 ml-2">{{ certificado.bufalosM}}</span></h5>
+                                    <h5 class="mb-0 font-weight-medium">Búfalo Hembra: <span class="text-muted font-14 ml-2">{{ certificado.bufalosH}}</span></h5>
+                                    <!--h5 class="mb-0 font-weight-medium">Código predial <span class="text-muted font-14 ml-2">{{ certificado.codigoPredialSitio}}</span></h5>
+                                    <h5 class="mb-0 font-weight-medium">Explotación pecuaria <span class="text-muted font-14 ml-2">{{ certificado.nombreArea}}</span></h5-->
+                                </td>
+                                <td class="text-center">
+                                    <h5><span class="text-center font-weight-bold font-24 ml-2">{{ certificado.totalAplicado}}</span></h5>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    <div class="row" *ngIf="listaCertificadosVacunacionBrigadista.length > 0">
+        <div class="col">
+            <div class="card border border-secondary rounded">
+                <div class="card-header bg-secondary rounded-top font-weight-bold input-group">
+                    <h4 class="mb-0 text-white">
+                        # Certificados de vacunación &nbsp; &nbsp;
+                    <!-- Cantidad mostrados -->
+                        <span class="round rounded-circle text-white d-inline-block text-center bg-warning">{{ listaCertificadosVacunacionBrigadista.length }}</span>
+                    </h4>
+                    <h4>&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;</h4>
+                    <h4 class="mb-0 text-white">
+                        Total dosis aplicadas &nbsp; &nbsp;
+                    <!-- Cantidad mostrados -->
+                        <span class="round rounded-circle text-white font-14 d-inline-block text-center bg-success">{{this.totalDosis}}</span>
+                    </h4>
+                    <h4>&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;</h4>
+                    <!-- Navegación -->
+                    <div class="btn-group ml-2" role="group" aria-label="Navegar" >
+                        <button (click)="anterior()" type="button" class="btn btn-success"  *ngIf="inicio > 0"><i class="fa fa-fast-backward" ></i></button>
+                        <!--button type="button" class="btn btn-success"><i class="fa fa-play"></i></button-->
+                        <button (click)="siguiente()" type="button" class="btn btn-success"  *ngIf="listaCertificadosVacunacionBrigadista.length > 0"><i class="fa fa-fast-forward"></i></button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="table-wrapper-scroll-y custom-scrollbar">
+                        <table class="table table-bordered table-hover v-middle">
+                            <thead>
+                                <tr>
+                                    <th class="badge-light-info text-left font-18">Brigadista</th>
+                                    <th class="badge-light-info text-left font-18">Certificado</th>
+                                    <th class="badge-light-info text-left font-18">Productor</th>
+                                    <th class="badge-light-info text-left font-18">Predio</th>
+                                    <th class="badge-light-info text-left font-18">Catastro</th>
+                                    <th class="badge-light-info text-center font-18">Total Dosis</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let certificado of listaCertificadosVacunacionBrigadista">
+                                    <td>
+                                        <h5><span class="text-muted font-weight-bold font-15 ml-2">{{ certificado.identificacionBrigadista}}</span></h5>
+                                        <h5><span class="text-muted font-weight-bold font-15 ml-2">{{ certificado.nombreBrigadista.toUpperCase()}}</span></h5>
+                                        
+                                    </td>
+                                    <td>
+                                        <h5><span class="text-muted font-weight-bold font-15 ml-2">{{ certificado.nombreFase.toUpperCase()}}</span></h5>
+                                        <h5><span class="text-muted font-weight-bold font-15 ml-2">{{ certificado.secuencia}}</span></h5>
+                                        <h5><span class="text-muted font-weight-bold font-15 ml-2">{{ certificado.fechaVacunacion}}</span></h5>
+                                    </td>
+                                    <td>
+                                        <h5><span class="text-muted font-weight-bold font-15 ml-2">{{ certificado.identificacionProductor}}</span></h5>
+                                        <h5><span class="text-muted font-weight-bold font-15 ml-2">{{ certificado.nombreProductor.toUpperCase()}}</span></h5>
+                                    </td>
+                                    <td>
+                                        <h5><span class="text-muted font-weight-bold font-15 ml-2">{{ certificado.codigoPredio}}</span></h5>
+                                        <h5><span class="text-muted font-weight-bold font-15 ml-2">{{ certificado.nombrePredio.toUpperCase()}}</span></h5>
+                                        <h5><span class="text-muted font-weight-bold font-15 ml-2">Tel: {{ certificado?.telefonoPredio}}</span></h5>
+                                        <h5><span class="text-muted font-weight-bold font-15 ml-2">Lat: {{ certificado?.latitud}} Long: {{ certificado?.longitud}}</span></h5>
+                                    </td>
+                                    <!--td>{{ certificado.nombresProductor }} {{ certificado.apellidosProductor}}</td-->
+                                    <td>
+                                        <h5 class="mb-0 font-weight-medium">Terneras: <span class="text-muted font-14 ml-2">{{ certificado.terneras}}</span></h5>
+                                        <h5 class="mb-0 font-weight-medium">Terneros: <span class="text-muted font-14 ml-2">{{ certificado.terneros}}</span></h5>
+                                        <h5 class="mb-0 font-weight-medium">Vacas: <span class="text-muted font-14 ml-2">{{ certificado.vacas}}</span></h5>
+                                        <h5 class="mb-0 font-weight-medium">Vaconas: <span class="text-muted font-14 ml-2">{{ certificado.vaconas}}</span></h5>
+                                        <h5 class="mb-0 font-weight-medium">Toretes: <span class="text-muted font-14 ml-2">{{ certificado.toretes}}</span></h5>
+                                        <h5 class="mb-0 font-weight-medium">Toros: <span class="text-muted font-14 ml-2">{{ certificado.toros}}</span></h5>
+                                        <h5 class="mb-0 font-weight-medium">Búfalo Macho: <span class="text-muted font-14 ml-2">{{ certificado.bufalosM}}</span></h5>
+                                        <h5 class="mb-0 font-weight-medium">Búfalo Hembra: <span class="text-muted font-14 ml-2">{{ certificado.bufalosH}}</span></h5>
+                                        <!--h5 class="mb-0 font-weight-medium">Código predial <span class="text-muted font-14 ml-2">{{ certificado.codigoPredialSitio}}</span></h5>
+                                        <h5 class="mb-0 font-weight-medium">Explotación pecuaria <span class="text-muted font-14 ml-2">{{ certificado.nombreArea}}</span></h5-->
+                                    </td>
+                                    <td class="text-center">
+                                        <h5><span class="text-center font-weight-bold font-24 ml-2">{{ certificado.totalAplicado}}</span></h5>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>

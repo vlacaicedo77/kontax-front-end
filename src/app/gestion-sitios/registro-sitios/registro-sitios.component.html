@@ -1,0 +1,200 @@
+<hr class="mt-0">
+<div class='row'>
+    <div class='col-12'>
+        <div class='card'>
+            <div class="card-header bg-info text-white rounded-top">
+                Registrar predio
+            </div>
+            <hr class="mt-0">
+            <form class="form-horizontal r-separator" ngNativeValidate [formGroup]="formulario" (ngSubmit)="registrarSitio()" class="form-horizontal r-separator" action="index.html">
+                <div class="card-body">
+                    <h4 class="card-title">Información del predio</h4>
+                    <div class="form-group row align-items-center mb-0">
+                        <label for="inputNombre" class="col-md-3 text-right control-label col-form-label">Nombre del predio</label>
+                        <div class="col-md-9 border-left pb-2 pt-2">
+                            <input type="text" class="form-control" (keyup)="mascara($event,'alfanumerico')" formControlName="inputNombre" name="inputNombre" placeholder="Ingrese el nombre del predio">
+                            <div class="invalid-feedback d-block" *ngIf="formulario.controls.inputNombre.errors?.required && formulario.touched">
+                                Ingrese el nombre del predio
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <label for="inputSuperficieHa" class="col-md-3 text-right control-label col-form-label">Superficie total (Ha)</label>
+                        <div class="col-md-9 border-left pb-2 pt-2">
+                            <input type="text" class="form-control" (keyup)="mascara($event,'decimal')" formControlName="inputSuperficieHa" name="inputSuperficieHa" placeholder="Ingrese la superficie de la finca en hectáreas">
+                            <div class="invalid-feedback d-block" *ngIf="formulario.controls.inputSuperficieHa.errors?.required && formulario.touched">
+                                Ingrese la superficie del predio en hectáreas
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <label for="inputCodigoPredial" class="col-md-3 text-right control-label col-form-label">Código predial</label>
+                        <div class="col-md-9 border-left pb-2 pt-2">
+                            <input type="text" class="form-control" (keyup)="mascara($event,'alfanumerico')" formControlName="inputCodigoPredial" name="inputCodigoPredial" placeholder="Ingrese el código predial de la finca">
+                            <div class="invalid-feedback d-block" *ngIf="formulario.controls.inputCodigoPredial.errors?.required && formulario.touched">
+                                Ingrese el código predial asignado por la autoridad local
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <label for="inputTipoPropiedad" class="col-md-3 text-right control-label col-form-label">Predio propio o alquilado</label>
+                        <div class="col-md-9 border-left pb-2 pt-2">
+                            <select class="form-control" formControlName="inputTipoPropiedad" name="inputTipoPropiedad">
+                                <option value=null selected disabled>Seleccione una opción</option>
+                                <option *ngFor="let tipoPropiedad of listaTiposPropiedad" value="{{tipoPropiedad.id_tipo_propiedad}}">{{tipoPropiedad.nombre}}</option>
+                            </select>
+                            <div class="invalid-feedback d-block" *ngIf="formulario.controls.inputTipoPropiedad.errors?.required && formulario.touched">
+                                Seleccione el tipo de contrato de propiedad
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <label for="documentoPropiedad" class="col-md-3 text-right control-label col-form-label">Documento de propiedad o de arriendo:</label>
+                        <div class="col-md-9 border-left pb-2 pt-2">
+                            <input type="file" class="file" data-browse-on-zone-click="true" name="documentoPropiedad" formControlName="documentoPropiedad" (change)="seleccionarArchivoPropiedad($event)" />
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <label for="inputTipoTelefono" class="col-md-3 text-right control-label col-form-label">Tipo de teléfono</label>
+                        <div class="col-md-9 border-left pb-2 pt-2">
+                            <input type="radio" value="fijo" name="inputTipoTelefono" formControlName="inputTipoTelefono" (change)="cambiarMascaraTelefono()" > Fijo
+                            <input type="radio" value="movil" name="inputTipoTelefono" formControlName="inputTipoTelefono" (change)="cambiarMascaraTelefono()" > Celular
+                            <div class="invalid-feedback d-block" *ngIf="formulario.controls.inputTipoTelefono.errors?.required && formulario.touched">
+                                Seleccione el tipo de teléfono
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <label for="inputTelefono" class="col-md-3 text-right control-label col-form-label">Teléfono de contacto</label>
+                        <div class="col-md-9 border-left pb-2 pt-2">
+                            <input type="text" class="form-control" (keyup)="mascara($event,mascaraTelefono)" formControlName="inputTelefono" name="inputTelefono" placeholder="Ingrese el teléfono incluyendo el código provincial (03)22342234">
+                            <div class="invalid-feedback d-block" *ngIf="formulario.controls.inputTelefono.errors?.required && formulario.touched">
+                                Ingrese el teléfono incluyendo el código provincial (03)22342234
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <h4 class="card-title">Datos de ubicación</h4>
+                    <div class="form-group row align-items-center mb-0">
+                        <label for="inputProvincia" class="col-md-3 text-right control-label col-form-label">Provincia</label>
+                        <div class="col-md-9 border-left pb-2 pt-2">
+                            <select class="form-control" formControlName="inputProvincia" #idProvincia (change)="cargarCantonesPorProvincia(idProvincia.value)" name="inputProvincia">
+                                <option value=null selected disabled>Seleccione una opción</option>
+                                <option *ngFor="let provincia of listaProvincias" value="{{provincia.id_provincia}}">{{provincia.nombre}}</option>
+                            </select>
+                            <div class="invalid-feedback d-block" *ngIf="formulario.controls.inputProvincia.errors?.required && formulario.touched">
+                                Seleccione una provincia
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <label for="inputCanton" class="col-md-3 text-right control-label col-form-label">Cantón</label>
+                        <div class="col-md-9 border-left pb-2 pt-2">
+                            <select class="form-control" #idCanton (change)="cargarParroquiasPorCanton(idCanton.value)"  formControlName="inputCanton" name="inputCanton">
+                                <option value=null selected disabled>Seleccione una opción</option>
+                                <option *ngFor="let canton of listaCantones" value="{{canton.id_canton}}">{{canton.nombre}}</option>
+                            </select>
+                            <div class="invalid-feedback d-block" *ngIf="formulario.controls.inputCanton.errors?.required && formulario.touched">
+                                Seleccione un cantón
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <label for="inputParroquia" class="col-md-3 text-right control-label col-form-label">Parroquia</label>
+                        <div class="col-md-9 border-left pb-2 pt-2">
+                            <select class="form-control" formControlName="inputParroquia" name="inputParroquia" (change)="cargarMapaParroquia()">
+                                <option value=null selected disabled>Seleccione una opción</option>
+                                <option *ngFor="let parroquia of listaParroquias" value="{{parroquia.id_parroquia}}">{{parroquia.nombre}}</option>
+                            </select>
+                            <div class="invalid-feedback d-block" *ngIf="formulario.controls.inputParroquia.errors?.required && formulario.touched">
+                                Seleccione una parroquia
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <label for="inputCallePrincipal" class="col-md-3 text-right control-label col-form-label">Calle principal</label>
+                        <div class="col-md-9 border-left pb-2 pt-2">
+                            <input type="text" class="form-control" (keyup)="mascara($event,'alfanumerico')" formControlName="inputCallePrincipal" name="inputCallePrincipal" placeholder="Ingrese la calle principal">
+                            <div class="invalid-feedback d-block" *ngIf="formulario.controls.inputCallePrincipal.errors?.required && formulario.touched">
+                                Ingrese la calle principal
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <label for="inputInterseccion" class="col-md-3 text-right control-label col-form-label">Intersección</label>
+                        <div class="col-md-9 border-left pb-2 pt-2">
+                            <input type="text" class="form-control" (keyup)="mascara($event,'alfanumerico')" formControlName="inputInterseccion" name="inputInterseccion" placeholder="Ingrese la intersección">
+                            <!--div class="invalid-feedback d-block" *ngIf="formulario.controls.inputInterseccion.errors?.required && formulario.touched">
+                                Ingrese la intersección
+                            </div-->    
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <label for="inputNumeracion" class="col-md-3 text-right control-label col-form-label">Numeración</label>
+                        <div class="col-md-9 border-left pb-2 pt-2">
+                            <input type="text" class="form-control" (keyup)="mascara($event,'alfanumerico')" formControlName="inputNumeracion" name="inputNumeracion" placeholder="Ingrese la numeración">
+                            <!--div class="invalid-feedback d-block" *ngIf="formulario.controls.inputNumeracion.errors?.required && formulario.touched">
+                                Ingrese la numeración del predio
+                            </div-->
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <label for="inputReferencia" class="col-md-3 text-right control-label col-form-label">Referencia</label>
+                        <div class="col-md-9 border-left pb-2 pt-2">
+                            <input type="text" class="form-control" (keyup)="mascara($event,'alfanumerico')" formControlName="inputReferencia" name="inputReferencia" placeholder="Ingrese una referencia">
+                            <div class="invalid-feedback d-block" *ngIf="formulario.controls.inputReferencia.errors?.required && formulario.touched">
+                                Ingrese una referencia de la ubicación del predio
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <label for="inputLatitud" class="col-md-3 text-right control-label col-form-label">Latitud</label>
+                        <div class="col-md-9 border-left pb-2 pt-2">
+                            <input type="text" class="form-control" name="inputLatitudVisible" placeholder="Seleccione un punto en el mapa" readonly value="{{latitudMarcador}}">
+                            <input type="hidden" class="form-control" formControlName="inputLatitud" name="inputLatitud" value="{{latitudMarcador}}">
+                            <div class="invalid-feedback d-block" *ngIf="formulario.controls.inputLatitud.errors?.required && formulario.touched">
+                                Seleccione en el mapa la ubicación del predio
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <label for="inputLongitud" class="col-md-3 text-right control-label col-form-label">Longitud</label>
+                        <div class="col-md-9 border-left pb-2 pt-2">
+                            <input type="text" class="form-control" name="inputLongitudVisible" placeholder="Seleccione un punto en el mapa" readonly value="{{longitudMarcador}}">
+                            <input type="hidden" class="form-control" formControlName="inputLongitud" name="inputLongitud" value="{{longitudMarcador}}">
+                            <div class="invalid-feedback d-block" *ngIf="formulario.controls.inputLongitud.errors?.required && formulario.touched">
+                                Seleccione en el mapa la ubicación del predio
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0" *ngIf="this.mapaVisible">
+                        <label for="inputMapa" class="col-md-3 text-right control-label col-form-label">Mapa</label>
+                        <div class="col-md-9 border-left pb-2 pt-2">
+                        <google-map (mapClick)="clicMapa($event)"
+                            height="300px"    
+                            widht="50px"    
+                            [zoom]="zoom"
+                            [center]="centroMapa"
+                            [options]="opcionesMapa"
+                            >
+                            <map-marker
+                                [position]="posicionMarcador"
+                                [label]="etiquetaMarcador"
+                                [options]="opcionesMarcador"
+                            >
+                            </map-marker>
+                        </google-map>
+                        <button type="button" (click)="centrarUbicacionActual()" class="btn btn-info waves-effect waves-light ">Centrar en ubicación actual</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group text-center mt-3">
+                    <div class="col-xs-12">
+                        <button class="btn btn-info btn-lg btn-block text-uppercase waves-effect waves-light" type="submit">Registrar</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,138 @@
+<hr class="mt-0">
+<div class='row'>
+    <div class='col-12'>
+        <div class='card'>
+            <div class="card-header bg-info text-white rounded-top">
+                Consultar predios por propietario - Registro Centros de Faenamiento
+            </div>
+            <hr class="mt-0">
+            <div class="card-body">
+                <h4 class="card-title">Ingrese la información de búsqueda del predio</h4>
+                <div class="form-group row align-items-center mb-0">
+                    <label for="inputIdentificacionPropietario" class="col-md-3 text-right control-label col-form-label">Número de identificación del propietario</label>
+                    <div class="col-md-9 border-left pb-2 pt-2 input-group">
+                        <input type="text" class="form-control" (keyup)="mascara($event,'numerico')" #idPropietario name="inputIdentificacionPropietario" placeholder="Ingrese la identificación del propietario">
+                        <div class="input-group-append">
+                            <button class="btn btn-success" type="button" (click)="buscarCentrosFaenamiento(idPropietario.value)"><i class="ti-search"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div *ngIf="this.centrosVisible">
+                <div class="card-header bg-info text-white rounded-top">
+                    Datos del centro de faenamiento
+                </div>
+                <hr class="mt-0">
+                <div class="card-body">
+                    <h4 class="card-title">Centros de Faenamiento Registrados en GUIA</h4>
+                    <div class="form-group row align-items-center mb-0">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th scope="col">Id GUIA</th>
+                                <th scope="col">Nombre</th>
+                                <th scope="col">Provincia</th>
+                                <th scope="col">Cantón</th>
+                                <th scope="col">Parroquia</th>
+                                <th scope="col">Dirección</th>
+                                <th scope="col">Tipo de Área</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr *ngFor="let centro of listaCentros">
+                                <td>{{centro.id_sitio}}</td>
+                                <td>{{centro.nombre_lugar}}</td>
+                                <td>{{centro.provincia}}</td>
+                                <td>{{centro.canton}}</td>
+                                <td>{{centro.parroquia}}</td>
+                                <td>{{centro.direccion}}</td>
+                                <td>{{centro.tipo_area}}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <form class="form-horizontal r-separator" ngNativeValidate [formGroup]="formulario" (ngSubmit)="registrarCentroFaenamiento()" class="form-horizontal r-separator" action="index.html">
+                    <div class="card-body">
+                        <h4 class="card-title">Predio donde desea crear el centro de faenamiento</h4>
+                        <div class="form-group row align-items-center mb-0">
+                            <label for="inputSitio" class="col-md-3 text-right control-label col-form-label">Predio</label>
+                            <div class="col-md-9 border-left pb-2 pt-2">
+                                <select class="form-control" formControlName="inputSitio" name="inputSitio">
+                                    <option value=null selected disabled>Seleccione una opción</option>
+                                    <option *ngFor="let sitio of listaSitios" value="{{sitio.idSitio}}">{{sitio.nombre}} - {{sitio.codigoSitio}}</option>
+                                </select>
+                                <div class="invalid-feedback d-block" *ngIf="formulario.controls.inputSitio.errors?.required && formulario.touched">
+                                    Seleccione un predio
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <h4 class="card-title">Información del Centro de Faenamiento</h4>
+                        <div class="form-group row align-items-center mb-0">
+                            <label for="inputNombre" class="col-md-3 text-right control-label col-form-label">Nombre del centro</label>
+                            <div class="col-md-9 border-left pb-2 pt-2">
+                                <input type="text" class="form-control text-uppercase" (keyup)="mascara($event,'alfanumerico')" formControlName="inputNombre" name="inputNombre" placeholder="">
+                                <div class="invalid-feedback d-block" *ngIf="formulario.controls.inputNombre.errors?.required && formulario.touched">
+                                    Ingrese el nombre del centro de faenamiento
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row align-items-center mb-0">
+                            <label for="inputSuperficieHa" class="col-md-3 text-right control-label col-form-label">Superficie total (Ha)</label>
+                            <div class="col-md-9 border-left pb-2 pt-2">
+                                <input type="text" class="form-control" (keyup)="mascara($event,'decimal')"  formControlName="inputSuperficieHa" name="inputSuperficieHa" placeholder="Ingrese la superficie del centro de faenamiento">
+                                <div class="invalid-feedback d-block" *ngIf="formulario.controls.inputSuperficieHa.errors?.required && formulario.touched">
+                                    Ingrese la superficie del centro de faenamiento
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row align-items-center mb-0">
+                            <label for="inputCapacidad" class="col-md-3 text-right control-label col-form-label">Capacidad</label>
+                            <div class="col-md-9 border-left pb-2 pt-2">
+                                <input type="text" class="form-control" (keyup)="mascara($event,'numerico')" formControlName="inputCapacidad" name="inputCapacidad" placeholder="Ingrese la capacidad máxima del centro de faenamiento">
+                                <div class="invalid-feedback d-block" *ngIf="formulario.controls.inputCapacidad.errors?.required && formulario.touched">
+                                    Ingrese la capacidad del centro de faenamiento
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row align-items-center mb-0">
+                            <label for="inputTipoTelefono" class="col-md-3 text-right control-label col-form-label">Tipo de teléfono</label>
+                            <div class="col-md-9 border-left pb-2 pt-2">
+                                <input type="radio" value="fijo" name="inputTipoTelefono" formControlName="inputTipoTelefono" (change)="cambiarMascaraTelefono()" > Fijo
+                                <input type="radio" value="movil" name="inputTipoTelefono" formControlName="inputTipoTelefono" (change)="cambiarMascaraTelefono()" > Celular
+                            </div>
+                        </div>
+                        <div class="form-group row align-items-center mb-0">
+                            <label for="inputTelefono" class="col-md-3 text-right control-label col-form-label">Teléfono de contacto</label>
+                            <div class="col-md-9 border-left pb-2 pt-2">
+                                <input type="text" class="form-control" (keyup)="mascara($event,mascaraTelefono)" formControlName="inputTelefono" name="inputTelefono" placeholder="Ingrese el teléfono de contacto">
+                                <div class="invalid-feedback d-block" *ngIf="formulario.controls.inputTelefono.errors?.required && formulario.touched">
+                                    Ingrese el teléfono del centro de faenamiento
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row align-items-center mb-0">
+                            <label for="inputSitioGUIA" class="col-md-3 text-right control-label col-form-label">Sitio de referencia en el sistema GUIA</label>
+                            <div class="col-md-9 border-left pb-2 pt-2">
+                                <select class="form-control" formControlName="inputSitioGUIA" name="inputSitioGUIA">
+                                    <option value=null selected disabled>Seleccione una opción</option>
+                                    <option *ngFor="let centro of listaCentros" value="{{centro.id_sitio}}">{{centro.id_sitio}} - {{centro.nombre_lugar}}</option>
+                                </select>
+                                <div class="invalid-feedback d-block" *ngIf="formulario.controls.inputSitioGUIA.errors?.required && formulario.touched">
+                                    Seleccione un el sitio de referencia en el sistema GUIA
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group text-center mt-3">
+                        <div class="col-xs-12">
+                            <button class="btn btn-info btn-lg btn-block text-uppercase waves-effect waves-light" type="submit">Registrar</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

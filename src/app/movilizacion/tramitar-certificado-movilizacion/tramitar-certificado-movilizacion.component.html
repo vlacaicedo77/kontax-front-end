@@ -1,0 +1,499 @@
+<!-- ============================================================== -->
+<!-- Preloader - style you can find in spinners.css -->
+<!-- ============================================================== -->
+<div class="preloader">
+    <div class="lds-ripple">
+        <div class="lds-pos"></div>
+        <div class="lds-pos"></div>
+    </div>
+</div>
+<hr class="mt-0">
+<div class="row">
+<div class="col">
+<div class="card border border-info rounded">
+    <div class="card-header bg-info text-white rounded-top font-weight-bold">
+        [ MOVUI01 ] Gestión Movilización | Búsqueda de Certificados Zoosanitarios de Producción y Movilidad - Movilización [CZPM-M]
+    </div>
+    <form ngNativeValidate [formGroup]="formularioBusqueda" class="form-horizontal r-separator">
+        <div class="card-body">
+            
+            <!--<div class="form-group row align-items-center mb-0">
+                
+                <label class="col-md-3 text-right control-label col-form-label">Parámetro de consulta</label>
+                <div class="col-md-9 border-left pb-2 pt-2">
+                    
+                    <input type="radio" value="czpm" id="czpm" name="inputTipoConsulta" formControlName="inputTipoConsulta" (change)="cambiarTipoConsulta()" class="material-inputs radio-col-blue">
+                    <label for="czpm"> # CZPM-M </label>
+                    
+                    &nbsp; &nbsp; &nbsp;
+                    
+                    <input type="radio" value="idemi" id="idemi" name="inputTipoConsulta" formControlName="inputTipoConsulta" (change)="cambiarTipoConsulta()" class="material-inputs radio-col-blue">
+                    <label for="idemi"> Identificación productor </label>
+
+                    &nbsp; &nbsp; &nbsp;
+                    
+                    <input type="radio" value="idrep" id="idrep" name="inputTipoConsulta" formControlName="inputTipoConsulta" (change)="cambiarTipoConsulta()" class="material-inputs radio-col-blue">
+                    <label for="idrep"> Identificación receptor </label>
+
+                    &nbsp; &nbsp; &nbsp;
+                    
+                    <input type="radio" value="idcon" id="idcon" name="inputTipoConsulta" formControlName="inputTipoConsulta" (change)="cambiarTipoConsulta()" class="material-inputs radio-col-blue">
+                    <label for="idcon"> Identificación conductor </label>
+
+                    &nbsp; &nbsp; &nbsp;
+                    
+                    <input type="radio" value="placa" id="placa" name="inputTipoConsulta" formControlName="inputTipoConsulta" (change)="cambiarTipoConsulta()" class="material-inputs radio-col-blue">
+                    <label for="placa"> Placa vehículo </label>
+                    
+                    <div class="invalid-feedback d-block" *ngIf="formularioBusqueda.controls.inputTipoConsulta.errors?.required && formularioBusqueda.touched">
+                        Seleccione el tipo de consulta
+                    </div>
+                </div>
+            </div>-->
+            <div class="form-group row align-items-center mb-0">
+                <label class="col-md-4 text-right control-label col-form-label">Parámetro de consulta</label>
+                <div class="col-md-4 border-left pb-2 pt-2">
+                    <select formControlName="tipo_consulta" (change)="cambiarTipoParametro()" class="form-control border-secondary">
+                    <option [value]="czpm" selected enabled>Número de Certificado de Movilización (CZPM-M)</option>
+                    <option [value]="idemi" selected enabled>Identificación del productor (origen)</option>
+                    <option [value]="idrep" selected enabled>Identificación del receptor (destino)</option>
+                    <option [value]="idcon" selected enabled>Identificación del trasportista (conductor)</option>
+                    <option [value]="placa" selected enabled>Placa del vehículo (transporte)</option>
+                    <option [value]="prov" selected enabled>Provincias (origen - destino)</option>
+                    </select>
+                </div>
+            </div>
+            <div *ngIf="!tipoPROV" class="form-group row align-items-center mb-0">
+                <label class="col-md-4 text-right control-label col-form-label">Dato de búsqueda</label>
+                <div class="col-md-4 border-left pb-2 pt-2">
+                    <input type="text" class="form-control text-center border-secondary" autocomplete="on" (change)="limpiarContadores()" formControlName="dato" placeholder="Ingrese el dato según parámetro de consulta">
+                </div>
+            </div>
+
+            <div *ngIf="tipoPROV" class="form-group row align-items-center mb-0">
+                <label class="col-md-4 text-right control-label col-form-label">Provincia de origen</label>
+                <div class="col-md-4 border-left pb-2 pt-2">
+                    <select formControlName="prov_origen" (change)="limpiarContadores()" class="form-control border-secondary">
+                        <option [value]="-1" selected enabled>--- Todas las provincias ---</option>
+                        <option *ngFor="let prov_origen of listaProvincias" value="{{prov_origen.id_provincia}}">{{prov_origen.nombre.toUpperCase()}}</option>
+                    </select>
+                </div>
+            </div>
+            <div *ngIf="tipoPROV" class="form-group row align-items-center mb-0">
+                <label class="col-md-4 text-right control-label col-form-label">Provincia de destino</label>
+                <div class="col-md-4 border-left pb-2 pt-2">
+                    <select formControlName="prov_destino" (change)="limpiarContadores()" class="form-control border-secondary">
+                        <option [value]="-1" selected enabled>--- Todas las provincias ---</option>
+                        <option *ngFor="let prov_destino of listaProvincias" value="{{prov_destino.id_provincia}}">{{prov_destino.nombre.toUpperCase()}}</option>
+                    </select>
+                </div>
+            </div>
+            <div *ngIf="!tipoCZPM" class="form-group row align-items-center mb-0">
+                <label class="col-md-4 text-right control-label col-form-label">Estado del documento</label>
+                <div class="col-md-4 border-left pb-2 pt-2">
+                    <select formControlName="estado" (change)="limpiarContadores()" class="form-control border-secondary">
+                        <option [value]="-1" selected enabled>--- Todos ---</option>
+                        <option *ngFor="let estado of listaEstadoDocumentos" value="{{estado.idEstadoDocumento}}">{{estado.nombre.toUpperCase()}}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group row align-items-center mb-0">
+                
+                <label class="col-md-4 text-right control-label col-form-label">Tipo de consulta</label>
+                <div class="col-md-7 border-left pb-2 pt-2">
+                    
+                    <input type="radio" value="u100" id="u100" name="inputTipoConsulta" formControlName="inputTipoConsulta" (change)="cambiarTipoConsulta()" class="material-inputs radio-col-blue">
+                    <label for="u100">Últimos 100 CZPM-M</label>
+                    
+                    &nbsp; &nbsp; &nbsp;
+                    
+                    <input type="radio" value="rango" id="rango" name="inputTipoConsulta" formControlName="inputTipoConsulta" (change)="cambiarTipoConsulta()" class="material-inputs radio-col-blue">
+                    <label for="rango"> Consulta ampliada (reportes) </label>
+                </div>
+            </div>
+            <div *ngIf="!tipoCZPM && tipoConsulta" class="form-group row align-items-center mb-0">
+                <label class="col-md-4 text-right control-label col-form-label">Rango de consulta</label>
+                <div class="col-md-4 border-left pb-2 pt-2 input-group">
+                    <input formControlName="fecha_inicio" type="date" (change)="limpiarContadores()"  class="form-control text-center border-secondary" placeholder="Fecha de Inicio">
+                    <label class="col-md-3 text-center font-weight-bold control-label col-form-label">><</label>
+                    <input formControlName="fecha_fin" type="date" (change)="limpiarContadores()" [max]="fechaMaxima | date: 'yyyy-MM-dd'" class="form-control text-center border-secondary" placeholder="Fecha de Fin">
+                </div>
+            </div>
+            <div class="form-group row align-items-center mb-0">
+                <label class="col-md-4 text-right control-label col-form-label"></label>
+                <div class="col-md-4 text-right pb-2 pt-2">
+                    <button *ngIf="!tipoPROV" type="submit" (click)="buscarCertificado()" class="search-button">
+                        <span class="btn-label">
+                            <i class="fas fa-search"></i>
+                        </span>
+                        Buscar
+                    </button>
+                    <button *ngIf="tipoPROV" class="report-btn" (click)="generarReporte()">
+                            <i class="fas fa-file-alt"></i>&nbsp;Reporte Excel
+                    </button>
+                </div>
+            </div>
+            <div class="form-group row align-items-center mb-0">
+                <label class="col-md-4 text-right control-label col-form-label"></label>
+                <div class="col-md-4 text-right pb-2 pt-2">
+                    <button *ngIf="!tipoPROV && !tipoCZPM && listaCertificadosMovilizacionFechas.length > 0" class="report-btn" (click)="exportarExcel()">
+                        <i class="fas fa-file-alt"></i>&nbsp;Reporte Excel
+                    </button>
+                </div>
+            </div>
+            <!--<div class="form-group mb-0 text-right">
+                <button type="submit" (click)="buscarCertificado()" class="btn btn-info font-weight-bold waves-effect waves-light">
+                    <span class="btn-label">
+                        <i class="fas fa-search"></i>
+                    </span>
+                    Buscar
+                </button>
+            </div>-->
+            <!--<div class="form-group row align-items-center mb-0">
+                <label class="col-md-4 text-right control-label col-form-label">Ingrese número de CZPM-M: </label>
+                <div class="col-md-5 border-left pb-2 pt-2"><input type="text" formControlName="numero_certificado" class="form-control text-center" placeholder=""></div>
+                <div class="col-md-3 border-left pb-2 pt-2"><button type="submit" class="btn btn-info waves-effect waves-light">Buscar</button></div>         
+            </div>-->
+        </div>
+    </form>
+</div>
+</div>
+</div>
+<div class="row" *ngIf="listaCertificadosMovilizacion.length > 0">
+<div class="col">
+<div class="card border border-secondary rounded">
+    
+    <div class="card-header bg-secondary rounded-top font-weight-bold input-group">
+        <h6 class="mb-0 text-white">
+            CZPM-M
+        <!-- Cantidad mostrados -->
+            <span class="round rounded-circle text-white d-inline-block text-center bg-warning">{{ listaCertificadosMovilizacion.length }}</span>
+        </h6>
+        <h6>&nbsp; &nbsp;</h6>
+        <h6 class="mb-0 text-white">
+            Anulados
+        <!-- Cantidad mostrados -->
+            <span class="round rounded-circle text-white d-inline-block text-center bg-danger">{{this.totalAnulados}}</span>
+        </h6>
+        <h6>&nbsp; &nbsp;</h6>
+        <h6 class="mb-0 text-white">
+            Terneras
+        <!-- Cantidad mostrados -->
+            <span class="round rounded-circle text-white font-13 d-inline-block text-center bg-success">{{this.terneras}}</span>
+        </h6>
+        <h6>&nbsp;&nbsp;</h6>
+        <h6 class="mb-0 text-white">
+            Terneros
+        <!-- Cantidad mostrados -->
+            <span class="round rounded-circle text-white font-13 d-inline-block text-center bg-success">{{this.terneros}}</span>
+        </h6>
+        <h6>&nbsp;&nbsp;</h6>
+        <h6 class="mb-0 text-white">
+            Vaconas
+        <!-- Cantidad mostrados -->
+            <span class="round rounded-circle text-white font-13 d-inline-block text-center bg-success">{{this.vaconas}}</span>
+        </h6>
+        <h6>&nbsp;&nbsp;</h6>
+        <h6 class="mb-0 text-white">
+            Toretes
+        <!-- Cantidad mostrados -->
+            <span class="round rounded-circle text-white font-13 d-inline-block text-center bg-success">{{this.toretes}}</span>
+        </h6>
+        <h6>&nbsp;&nbsp;</h6>
+        <h6 class="mb-0 text-white">
+            Vacas
+        <!-- Cantidad mostrados -->
+            <span class="round rounded-circle text-white font-13 d-inline-block text-center bg-success">{{this.vacas}}</span>
+        </h6>
+        <h6>&nbsp;&nbsp;</h6>
+        <h6 class="mb-0 text-white">
+            Toros
+        <!-- Cantidad mostrados -->
+            <span class="round rounded-circle text-white font-13 d-inline-block text-center bg-success">{{this.toros}}</span>
+        </h6>
+        <h6>&nbsp;&nbsp;</h6>
+        <h6 class="mb-0 text-white">
+            Búfalo M
+        <!-- Cantidad mostrados -->
+            <span class="round rounded-circle text-white font-13 d-inline-block text-center bg-success">{{this.bufalosMachos}}</span>
+        </h6>
+        <h6>&nbsp;&nbsp;</h6>
+        <h6 class="mb-0 text-white">
+            Búfalo H
+        <!-- Cantidad mostrados -->
+            <span class="round rounded-circle text-white font-13 d-inline-block text-center bg-success">{{this.bufalosHembras}}</span>
+        </h6>
+        <h6>&nbsp;&nbsp;</h6>
+        <h6 class="mb-0 text-white">
+            Total 
+        <!-- Cantidad mostrados -->
+            <span class="round rounded-circle text-white font-13 d-inline-block text-center bg-info">{{this.totalAnimales}}</span>
+        </h6>
+        <!--<h4>&nbsp;&nbsp;</h4>-->
+        <!-- Navegación -->
+        <!--<div class="btn-group ml-2" role="group" aria-label="Navegar" >
+            <button (click)="anterior()" type="button" class="btn btn-success"  *ngIf="inicio > 0"><i class="fa fa-fast-backward" ></i></button>
+            <!--<button type="button" class="btn btn-success"><i class="fa fa-play"></i></button-->
+            <!--<button (click)="siguiente()" type="button" class="btn btn-success"  *ngIf="listaCertificadosMovilizacionFechas.length > 0"><i class="fa fa-fast-forward"></i></button>
+        </div>-->
+    </div>
+    <div class="card-body">
+        <div class="row p-3">
+            <div class="col table-wrapper-scroll-y custom-scrollbar">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th class="badge-light-info text-left font-18">Documento</th>
+                            <th class="badge-light-info text-left font-18">Fechas</th>
+                            <th class="badge-light-info text-left font-18">Origen</th>
+                            <th class="badge-light-info text-left font-18">Destino</th>
+                            <th class="badge-light-info text-left font-18" style="width: 150px;">Productos</th>
+                            <th class="badge-light-info text-center font-18">Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let certificado of listaCertificadosMovilizacion">
+                            <td>
+                                <p><span class="font-weight-bold">{{ certificado.codigo }} </span></p>
+                                <p><span class="badge rounded-pill font-weight-bold" [ngClass]="{'badge-warning': certificado.codigoTipoPeriodoValidez==='temporal', 'badge-info':certificado.codigoTipoPeriodoValidez==='definitivo'}">
+                                    {{ certificado.nombreTipoPeriodoValidez }}
+                                </span></p>
+                                <p><button class="btn btn-warning waves-effect waves-light" type="button" (click)="descargarCertificadoMovilizacion(certificado.idCertificadoMovilizacion)"> <span><i class="fas fa-download"></i></span> </button></p>
+                                <p *ngIf="certificado.placaVehiculo"><span class="font-weight-bold"> Conductor: </span></p>
+                                <p *ngIf="certificado.placaVehiculo"><span class="font-weight-bold"></span> [{{ certificado.cedulaTransportista }}] - {{ certificado.nombreCompletoTransportista }} </p>
+                                <p *ngIf="certificado.placaVehiculo"><span class="font-weight-bold">Vehículo: </span> [{{ certificado.placaVehiculo }}]  - {{ certificado.marcaVehiculo }} {{ certificado.modeloVehiculo }} </p>
+                            </td>
+                            <td>
+                                <p><span class="font-weight-bold">Emisión: </span> {{ certificado.fechaEmision }} </p>
+                                <p><span class="font-weight-bold">Movilización: </span> {{ certificado.fechaHoraMovilizacion }} </p>
+                                <p><span class="font-weight-bold">Válido hasta: </span> {{ certificado.fechaHoraFinMovilizacion }} </p>
+                                <p *ngIf="certificado.fechaHoraAutoriza"><span class="font-weight-bold">Autorización: </span> {{ certificado.fechaHoraAutoriza }} [{{ certificado.usuarioAutoriza }}] </p>
+                                <p *ngIf="certificado.fechaHoraConfirmacion"><span class="font-weight-bold">Confirmación: </span> {{ certificado.fechaHoraConfirmacion }} [{{ certificado.usuarioConfirma }}] </p>
+                                <p *ngIf="certificado.fechaHoraAnula"><span class="font-weight-bold">Anulación: </span> {{ certificado.fechaHoraAnula }} [{{ certificado.usuarioAnula }}] </p>
+                                
+                            </td>
+                            <td>
+                                <p><span class="font-weight-bold"> {{ certificado.nombreTiposAreasOrigen.toUpperCase() }} </span></p>
+                                <p><span class="font-weight-bold"></span> {{ certificado.nombreAreaOrigen.toUpperCase() }} [{{ certificado.codigoSitioOrigen }}] </p>
+                                <p><span class="font-weight-bold">Provincia: </span> {{ certificado.nombreProvinciaOrigen }}  </p>
+                                <p><span class="font-weight-bold">Cantón: </span> {{ certificado.nombreCantonOrigen }} </p>
+                                <p><span class="font-weight-bold">Parroquia: </span> {{ certificado.nombreParroquiaOrigen }} </p>
+                                <p><span class="font-weight-bold">Productor: </span> [{{ certificado.numeroIdentificacion }}] - {{ certificado.nombresProductor }}  </p>
+                            </td>
+                            <td>
+                                <p><span class="font-weight-bold"> {{ certificado.nombreTiposAreasDestino.toUpperCase() }} </span></p>
+                                <p><span class="font-weight-bold"></span> {{ certificado.nombreAreaDestino.toUpperCase() }} [{{ certificado.codigoSitioDestino }}] </p>
+                                <p><span class="font-weight-bold">Provincia: </span> {{ certificado.nombreProvinciaDestino }}  </p>
+                                <p><span class="font-weight-bold">Cantón: </span> {{ certificado.nombreCantonDestino }} </p>
+                                <p><span class="font-weight-bold">Parroquia: </span> {{ certificado.nombreParroquiaDestino }} </p>
+                                <p><span class="font-weight-bold">Receptor: </span> [{{ certificado.numeroIdentificacionPropietarioSitioDestino }}] - {{ certificado.nombresPropietarioSitioDestino }}  </p>
+                                
+                            </td>
+                            <td>
+                                <h5 class="mb-0 font-weight-medium">
+                                    <li class="text-muted font-16 ml-2" *ngFor="let categoria of obtenerCategoriasYValoresPorIdCertificado(certificado.idCertificadoMovilizacion)">
+                                        {{ categoria[0] }}: {{ categoria[1] }}
+                                    </li>
+                                </h5>
+                            </td>
+                            <td>
+                                <p><span class="badge rounded-pill" [ngClass]="{'badge-warning': certificado.codigoEstadoDocumento==='ET', 'badge-light-info':certificado.codigoEstadoDocumento==='G', 'badge-danger':certificado.codigoEstadoDocumento==='A', 'badge-info':certificado.codigoEstadoDocumento==='C', 'badge-success text-black':certificado.codigoEstadoDocumento==='ER'}">
+                                {{ certificado.nombreEstadoDocumento }}
+                                </span></p>
+                                    <div *ngIf="servicioUsuario?.usuarioInterno" class="btn-group mr-2" role="group" aria-label="Button group with nested dropdown">
+                                        <div class="btn-group" role="group" *ngIf="certificado.codigoEstadoDocumento !== 'A' && certificado.codigoEstadoDocumento !== 'C'">
+                                            <button id="btnGroupDrop1" type="button" class="btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="fas fa-edit font-18 "></i> </button>
+                                            <div class="dropdown-menu" aria-labelledby="btnGroupDrop1"> 
+                                                <a class="dropdown-item cursor-pointer badge-success font-weight-bold" *ngIf="certificado.codigoEstadoDocumento === 'ER'" (click)="actualizarEstado(certificado.idCertificadoMovilizacion,'Autorizar')">AUTORIZAR</a> 
+                                                <a class="dropdown-item cursor-pointer badge-danger font-weight-bold" *ngIf="certificado.codigoEstadoDocumento === 'G' || certificado.codigoEstadoDocumento === 'ET'" (click)="actualizarEstado(certificado.idCertificadoMovilizacion, 'Anular')">ANULAR</a> 
+                                            </div>
+                                        </div>
+                                    </div>
+                            </td>
+                            <!--td>
+                                <span class="badge badge-light-info rounded-pill" *ngIf="vehiculo.codigoEstadoVehiculo==='R'">{{ vehiculo.nombreEstadoVehiculo }}</span>
+                                <span class="badge  rounded-pill" *ngIf="vehiculo.codigoEstadoVehiculo==='H'">{{ vehiculo.nombreEstadoVehiculo }}</span>
+                                <span class="badge  rounded-pill" *ngIf="vehiculo.codigoEstadoVehiculo==='D'">{{ vehiculo.nombreEstadoVehiculo }}</span>
+                                <span class="badge badge-danger rounded-pill" *ngIf="vehiculo.codigoEstadoVehiculo==='ER'">{{ vehiculo.nombreEstadoVehiculo }}</span>
+                            </td-->
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+</div>
+
+<div class="row" *ngIf="listaCertificadosMovilizacionFechas.length > 0 && listaCertificadosMovilizacionFechas.length < 3000">
+    <div class="col">
+        <div class="card border border-secondary rounded">
+            <div class="card-header bg-secondary rounded-top font-weight-bold input-group">
+                <h6 class="mb-0 text-white">
+                    CZPM-M
+                <!-- Cantidad mostrados -->
+                    <span class="round rounded-circle text-white d-inline-block text-center bg-warning">{{ listaCertificadosMovilizacionFechas.length }}</span>
+                </h6>
+                <h6>&nbsp; &nbsp;</h6>
+                <h6 class="mb-0 text-white">
+                    Anulados
+                <!-- Cantidad mostrados -->
+                    <span class="round rounded-circle text-white d-inline-block text-center bg-danger">{{this.totalAnulados}}</span>
+                </h6>
+                <h6>&nbsp; &nbsp;</h6>
+                <h6 class="mb-0 text-white">
+                    Terneras
+                <!-- Cantidad mostrados -->
+                    <span class="round rounded-circle text-white font-13 d-inline-block text-center bg-success">{{this.terneras}}</span>
+                </h6>
+                <h6>&nbsp;&nbsp;</h6>
+                <h6 class="mb-0 text-white">
+                    Terneros
+                <!-- Cantidad mostrados -->
+                    <span class="round rounded-circle text-white font-13 d-inline-block text-center bg-success">{{this.terneros}}</span>
+                </h6>
+                <h6>&nbsp;&nbsp;</h6>
+                <h6 class="mb-0 text-white">
+                    Vaconas
+                <!-- Cantidad mostrados -->
+                    <span class="round rounded-circle text-white font-13 d-inline-block text-center bg-success">{{this.vaconas}}</span>
+                </h6>
+                <h6>&nbsp;&nbsp;</h6>
+                <h6 class="mb-0 text-white">
+                    Toretes
+                <!-- Cantidad mostrados -->
+                    <span class="round rounded-circle text-white font-13 d-inline-block text-center bg-success">{{this.toretes}}</span>
+                </h6>
+                <h6>&nbsp;&nbsp;</h6>
+                <h6 class="mb-0 text-white">
+                    Vacas
+                <!-- Cantidad mostrados -->
+                    <span class="round rounded-circle text-white font-13 d-inline-block text-center bg-success">{{this.vacas}}</span>
+                </h6>
+                <h6>&nbsp;&nbsp;</h6>
+                <h6 class="mb-0 text-white">
+                    Toros
+                <!-- Cantidad mostrados -->
+                    <span class="round rounded-circle text-white font-13 d-inline-block text-center bg-success">{{this.toros}}</span>
+                </h6>
+                <h6>&nbsp;&nbsp;</h6>
+                <h6 class="mb-0 text-white">
+                    Búfalo M
+                <!-- Cantidad mostrados -->
+                    <span class="round rounded-circle text-white font-13 d-inline-block text-center bg-success">{{this.bufalosMachos}}</span>
+                </h6>
+                <h6>&nbsp;&nbsp;</h6>
+                <h6 class="mb-0 text-white">
+                    Búfalo H
+                <!-- Cantidad mostrados -->
+                    <span class="round rounded-circle text-white font-13 d-inline-block text-center bg-success">{{this.bufalosHembras}}</span>
+                </h6>
+                <h6>&nbsp;&nbsp;</h6>
+                <h6 class="mb-0 text-white">
+                    Total 
+                <!-- Cantidad mostrados -->
+                    <span class="round rounded-circle text-white font-13 d-inline-block text-center bg-info">{{this.totalAnimales}}</span>
+                </h6>
+                <!--<h4>&nbsp;&nbsp;</h4>-->
+                <!-- Navegación -->
+                <!--<div class="btn-group ml-2" role="group" aria-label="Navegar" >
+                    <button (click)="anterior()" type="button" class="btn btn-success"  *ngIf="inicio > 0"><i class="fa fa-fast-backward" ></i></button>
+                    <!--<button type="button" class="btn btn-success"><i class="fa fa-play"></i></button-->
+                    <!--<button (click)="siguiente()" type="button" class="btn btn-success"  *ngIf="listaCertificadosMovilizacionFechas.length > 0"><i class="fa fa-fast-forward"></i></button>
+                </div>-->
+            </div>
+            <div class="card-body">
+                <div class="table-wrapper-scroll-y custom-scrollbar">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th class="badge-light-info text-left font-18">Documento</th>
+                                <th class="badge-light-info text-left font-18">Fechas</th>
+                                <th class="badge-light-info text-left font-18">Origen</th>
+                                <th class="badge-light-info text-left font-18">Destino</th>
+                                <th class="badge-light-info text-left font-18" style="width: 150px;">Productos</th>
+                                <th class="badge-light-info text-center font-18">Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let certificado of listaCertificadosMovilizacionFechas">
+                                <td>
+                                    <p><span class="font-weight-bold">{{ certificado.codigo }} </span></p>
+                                    <p><span class="badge rounded-pill font-weight-bold" [ngClass]="{'badge-warning': certificado.codigoTipoPeriodoValidez==='temporal', 'badge-info':certificado.codigoTipoPeriodoValidez==='definitivo'}">
+                                        {{ certificado.nombreTipoPeriodoValidez }}
+                                    </span></p>
+                                    <p><button class="btn btn-warning waves-effect waves-light" type="button" (click)="descargarCertificadoMovilizacion(certificado.idCertificadoMovilizacion)"> <span><i class="fas fa-download"></i></span> </button></p>
+                                    <p *ngIf="certificado.placaVehiculo"><span class="font-weight-bold"> Conductor: </span></p>
+                                    <p *ngIf="certificado.placaVehiculo"><span class="font-weight-bold"></span> [{{ certificado.cedulaTransportista }}] - {{ certificado.nombreTransportista }} </p>
+                                    <p *ngIf="certificado.placaVehiculo"><span class="font-weight-bold">Vehículo: </span> [{{ certificado.placaVehiculo }}]  | {{ certificado.tipoVehiculo }} - {{ certificado.marcaVehiculo }} {{ certificado.modeloVehiculo }} </p>
+                                </td>
+                                <td>
+                                    <p><span class="font-weight-bold">Emisión: </span> {{ certificado.fechaEmision }} </p>
+                                    <p><span class="font-weight-bold">Movilización: </span> {{ certificado.fechaMovilizacion }} </p>
+                                    <p><span class="font-weight-bold">Válido hasta: </span> {{ certificado.fechaFinMovilizacion }} </p>
+                                    <p *ngIf="certificado.fechaHoraAutoriza"><span class="font-weight-bold">Autorización: </span> {{ certificado.fechaAutoriza }} [{{ certificado.usuarioAutoriza }}] </p>
+                                    <p *ngIf="certificado.fechaHoraConfirmacion"><span class="font-weight-bold">Confirmación: </span> {{ certificado.fechaConfirmacion }} [{{ certificado.usuarioConfirma }}] </p>
+                                    <p *ngIf="certificado.fechaHoraAnula"><span class="font-weight-bold">Anulación: </span> {{ certificado.fechaAnula }} [{{ certificado.usuarioAnula }}] </p>
+                                    
+                                </td>
+                                <td>
+                                    <p><span class="font-weight-bold"> {{ certificado.nombreTiposAreasOrigen.toUpperCase() }} </span></p>
+                                    <p><span class="font-weight-bold"></span> {{ certificado.nombreSitioOrigen.toUpperCase() }} [{{ certificado.codigoSitioOrigen }}] </p>
+                                    <p><span class="font-weight-bold">Provincia: </span> {{ certificado.nombreProvinciaOrigen }}  </p>
+                                    <p><span class="font-weight-bold">Cantón: </span> {{ certificado.nombreCantonOrigen }} </p>
+                                    <p><span class="font-weight-bold">Parroquia: </span> {{ certificado.nombreParroquiaOrigen }} </p>
+                                    <p><span class="font-weight-bold">Productor: </span> [{{ certificado.numeroIdentificacion }}] - {{ certificado.nombresProductor.toUpperCase() }} </p>
+                                </td>
+                                <td>
+                                    <p><span class="font-weight-bold"> {{ certificado.nombreTiposAreasDestino.toUpperCase() }} </span></p>
+                                    <p><span class="font-weight-bold"></span> {{ certificado.nombreSitioDestino.toUpperCase() }} [{{ certificado.codigoSitioDestino }}] </p>
+                                    <p><span class="font-weight-bold">Provincia: </span> {{ certificado.nombreProvinciaDestino }}  </p>
+                                    <p><span class="font-weight-bold">Cantón: </span> {{ certificado.nombreCantonDestino }} </p>
+                                    <p><span class="font-weight-bold">Parroquia: </span> {{ certificado.nombreParroquiaDestino }} </p>
+                                    <p><span class="font-weight-bold">Receptor: </span> [{{ certificado.identificacionRecibe }}] - {{ certificado.nombreRecibe.toUpperCase() }} </p>
+                                    
+                                </td>
+                                <td>
+                                    <h5 *ngIf="certificado.terneras > 0" class="mb-0 font-weight-medium">Terneras: <span class="text-muted font-14 ml-2">{{ certificado.terneras }}</span></h5>
+                                    <h5 *ngIf="certificado.terneros > 0" class="mb-0 font-weight-medium">Terneros: <span class="text-muted font-14 ml-2">{{ certificado.terneros }}</span></h5>
+                                    <h5 *ngIf="certificado.vaconas > 0" class="mb-0 font-weight-medium">Vaconas: <span class="text-muted font-14 ml-2">{{ certificado.vaconas }}</span></h5>
+                                    <h5 *ngIf="certificado.toretes > 0" class="mb-0 font-weight-medium">Toretes: <span class="text-muted font-14 ml-2">{{ certificado.toretes }}</span></h5>
+                                    <h5 *ngIf="certificado.vacas > 0" class="mb-0 font-weight-medium">Vacas: <span class="text-muted font-14 ml-2">{{ certificado.vacas }}</span></h5>
+                                    <h5 *ngIf="certificado.toros > 0" class="mb-0 font-weight-medium">Toros: <span class="text-muted font-14 ml-2">{{ certificado.toros }}</span></h5>
+                                    <h5 *ngIf="certificado.bufalosMachos > 0" class="mb-0 font-weight-medium">Búfalo M: <span class="text-muted font-14 ml-2">{{ certificado.bufalosMachos }}</span></h5>
+                                    <h5 *ngIf="certificado.bufalosHembras > 0" class="mb-0 font-weight-medium">Búfalo H: <span class="text-muted font-14 ml-2">{{ certificado.bufalosHembras }}</span></h5>
+                                    <h5 class="mb-0 font-weight-medium"><span class="text-muted font-14 ml-2"></span></h5>
+                                    <h5 class="mb-0 font-weight-medium font-18">Total: <span class="text-muted font-18 ml-2">{{ certificado.total ? certificado.total : 0 }}</span></h5>
+                                </td>
+                                <td>
+                                    <p><span class="badge rounded-pill font-weight-bold" [ngClass]="{'badge-warning': certificado.codigoEstadoDocumento==='ET', 'badge-light-info':certificado.codigoEstadoDocumento==='G', 'badge-danger':certificado.codigoEstadoDocumento==='A', 'badge-info':certificado.codigoEstadoDocumento==='C', 'badge-success text-black':certificado.codigoEstadoDocumento==='ER'}">
+                                    {{ certificado.nombreEstadoDocumento }}
+                                    </span></p>
+                                        <div *ngIf="servicioUsuario?.usuarioInterno" class="btn-group mr-2" role="group" aria-label="Button group with nested dropdown">
+                                            <div class="btn-group" role="group" *ngIf="certificado.codigoEstadoDocumento !== 'A' && certificado.codigoEstadoDocumento !== 'C'">
+                                                <button id="btnGroupDrop1" type="button" class="btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="fas fa-edit font-18 "></i> </button>
+                                                <div class="dropdown-menu" aria-labelledby="btnGroupDrop1"> 
+                                                    <a class="dropdown-item cursor-pointer badge-success font-weight-bold" *ngIf="certificado.codigoEstadoDocumento === 'ER'" (click)="actualizarEstado(certificado.idCertificadoMovilizacion,'Autorizar')">AUTORIZAR</a> 
+                                                    <a class="dropdown-item cursor-pointer badge-danger font-weight-bold" *ngIf="certificado.codigoEstadoDocumento === 'ER' || certificado.codigoEstadoDocumento === 'G' || certificado.codigoEstadoDocumento === 'ET'" (click)="actualizarEstado(certificado.idCertificadoMovilizacion, 'Anular')">ANULAR</a> 
+                                                </div>
+                                            </div>
+                                        </div>
+                                </td>
+                                <!--td>
+                                    <span class="badge badge-light-info rounded-pill" *ngIf="vehiculo.codigoEstadoVehiculo==='R'">{{ vehiculo.nombreEstadoVehiculo }}</span>
+                                    <span class="badge  rounded-pill" *ngIf="vehiculo.codigoEstadoVehiculo==='H'">{{ vehiculo.nombreEstadoVehiculo }}</span>
+                                    <span class="badge  rounded-pill" *ngIf="vehiculo.codigoEstadoVehiculo==='D'">{{ vehiculo.nombreEstadoVehiculo }}</span>
+                                    <span class="badge badge-danger rounded-pill" *ngIf="vehiculo.codigoEstadoVehiculo==='ER'">{{ vehiculo.nombreEstadoVehiculo }}</span>
+                                </td-->
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+<!-- Visor PDF -->
+<app-visor-pdf>
+</app-visor-pdf>

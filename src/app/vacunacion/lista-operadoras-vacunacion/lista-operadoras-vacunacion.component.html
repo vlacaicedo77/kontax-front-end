@@ -1,0 +1,110 @@
+<!-- ============================================================== -->
+<!-- Preloader - style you can find in spinners.css -->
+<!-- ============================================================== -->
+<div class="preloader">
+    <div class="lds-ripple">
+        <div class="lds-pos"></div>
+        <div class="lds-pos"></div>
+    </div>
+</div>
+<hr class="mt-0">
+<div class="row">
+    <div class="col">
+        <div class="card border border-info rounded">
+            <div class="card-header bg-info text-white rounded-top">
+                Operadoras de Vacunación registradas
+            </div>
+            <div class="card-body">
+                <form ngNativeValidate [formGroup]="formularioBusqueda" class="form-horizontal r-separator">
+                    <div class="form-group row align-items-center mb-0">
+                        <label class="col-md-3 text-right control-label col-form-label">Fases de vacunación</label>
+                        <div class="col-md-9 border-left pb-2 pt-2">
+                            <select class="form-control" formControlName="fase_vacunacion" (change)="cambioFaseVacunacion()">
+                                <option [value]="null" selected disabled>Seleccione una Fase de Vacunación</option>
+                                <option *ngFor="let fase of listaFasesVacunacion" [value]="fase.idFaseVacunacion"> {{ fase.nombre }}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <label class="col-md-3 text-right control-label col-form-label">Oficina provincial asignada</label>
+                        <div class="col-md-9 border-left pb-2 pt-2">
+                            <select class="form-control" formControlName="provincia" (change)="cambioOficina()">
+                                <option [value]="null" selected disabled>Seleccione una oficina asignada</option>
+                                <option *ngFor="let oficina of listaOficinasAsignadas" [value]="oficina.idProvincia"> {{ oficina.nombre }}</option>
+                            </select>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <hr>
+            <div class="card-body">
+                <button type="button" class="btn btn-info btn-rounded m-t-10 float-right" routerLink="/operadora-vacunacion/nuevo" >
+                    Agregar Operadora de Vacunación 
+                    <span class="btn-label">
+                        <i class="fas fa-plus"></i>
+                    </span>
+                </button>
+            </div>
+            <div class="card-body">
+                <!-- Lista de resultados -->
+                <div class="row">
+                    <div class="col">
+                        <div class="table-wrapper-scroll-y custom-scrollbar">
+                            <table class="table table-bordered table-hover v-middle">
+                                <thead>
+                                    <tr>
+                                        <th class="badge-light-info text-center font-18">Fase</th>
+                                        <th class="badge-light-info text-center font-18">Operadora</th>
+                                        <th class="badge-light-info text-center font-18">Ubicación</th>
+                                        <th class="badge-light-info text-center font-18">Tipo</th>
+                                        <th class="badge-light-info text-center font-18">Estado</th>
+                                        <th class="badge-light-info text-center font-18">Opción</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let operadora of listaOperadorasVacunacion">
+                                        <td>{{ operadora.nombreFaseVacunacion }}</td>
+                                        <td>
+                                            <p> <span class="font-weight-bold"> 
+                                                {{ operadora.razonSocial }}</span>
+                                            </p>
+                                            <p>
+                                                <span class="font-weight-bold">Representante: </span>
+                                                {{ operadora.nombresRepresentanteLegalUsuarioExterno }}
+                                            </p>
+                                        </td>
+                                        <td>
+                                            <p> <span class="font-weight-bold">Provincia: </span> 
+                                                {{ operadora.nombreProvincia }}
+                                            </p>
+                                            <p>
+                                                <span class="font-weight-bold">Cantón: </span>
+                                                {{ operadora.nombreCanton }}
+                                            </p>
+                                            <p>
+                                                <span class="font-weight-bold">Parroquia: </span>
+                                                {{ operadora.nombreParroquia }}
+                                            </p>
+                                        </td>
+                                        <td>{{ operadora.nombreTipoOperadora }}</td>
+                                        <td>
+                                            <span class="badge rounded-pill" [ngClass]="{'badge-cyan': operadora.codigoEstadoRegistro==='REG', 'badge-info':operadora.codigoEstadoRegistro==='HAB', 'badge-danger':operadora.codigoEstadoRegistro==='DES'}">
+                                                {{ operadora.nombreEstadoRegistro }}
+                                            </span>
+                                        </td> 
+                                        <td>
+                                            <button type="button" class="btn waves-effect waves-light btn-info" routerLink="/operadora-vacunacion/{{ operadora.idOperadora }}">
+                                                <i class="fas fa-eye" [hidden]="operadora.codigoEstadoRegistro ==='REG'" ></i>
+                                                <i class="fas fa-edit" [hidden]="operadora.codigoEstadoRegistro !=='REG'"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

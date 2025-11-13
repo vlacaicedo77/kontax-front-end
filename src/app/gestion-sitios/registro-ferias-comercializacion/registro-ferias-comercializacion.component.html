@@ -1,0 +1,138 @@
+<hr class="mt-0">
+<div class='row'>
+    <div class='col-12'>
+        <div class='card'>
+            <div class="card-header bg-info text-white rounded-top">
+                Consultar predios por propietario - Registro de Ferias de Comercialización
+            </div>
+            <hr class="mt-0">
+            <div class="card-body">
+                <h4 class="card-title">Ingrese la información de búsqueda del predio</h4>
+                <div class="form-group row align-items-center mb-0">
+                    <label for="inputIdentificacionPropietario" class="col-md-3 text-right control-label col-form-label">Número de identificación del propietario</label>
+                    <div class="col-md-9 border-left pb-2 pt-2 input-group">
+                        <input type="text" class="form-control" (keyup)="mascara($event,'numerico')" #idPropietario name="inputIdentificacionPropietario" placeholder="Ingrese la identificación del propietario">
+                        <div class="input-group-append">
+                            <button class="btn btn-success" type="button" (click)="buscarFeriasComercializacion(idPropietario.value)"><i class="ti-search"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div *ngIf="this.feriasVisible">
+                <div class="card-header bg-info text-white rounded-top">
+                    Datos de la feria de comercialización
+                </div>
+                <hr class="mt-0">
+                <div class="card-body">
+                    <h4 class="card-title">Ferias de Comercialización Registradas en GUIA</h4>
+                    <div class="form-group row align-items-center mb-0">
+                        <table class="table">
+                            <thead>
+                            <tr >
+                                <th scope="col">Id GUIA</th>
+                                <th scope="col">Nombre</th>
+                                <th scope="col">Provincia</th>
+                                <th scope="col">Cantón</th>
+                                <th scope="col">Parroquia</th>
+                                <th scope="col">Dirección</th>
+                                <th scope="col">Tipo de Área</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr *ngFor="let feria of listaFerias">
+                                <td>{{feria.id_sitio}}</td>
+                                <td>{{feria.nombre_lugar}}</td>
+                                <td>{{feria.provincia}}</td>
+                                <td>{{feria.canton}}</td>
+                                <td>{{feria.parroquia}}</td>
+                                <td>{{feria.direccion}}</td>
+                                <td>{{feria.tipo_area}}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <form class="form-horizontal r-separator" ngNativeValidate [formGroup]="formulario" (ngSubmit)="registrarFeriaComercializacion()" class="form-horizontal r-separator" action="index.html">
+                    <div class="card-body">
+                        <h4 class="card-title">Predio donde desea crear la feria de comercialización</h4>
+                        <div class="form-group row align-items-center mb-0">
+                            <label for="inputSitio" class="col-md-3 text-right control-label col-form-label">Sitio</label>
+                            <div class="col-md-9 border-left pb-2 pt-2">
+                                <select class="form-control" formControlName="inputSitio" name="inputSitio">
+                                    <option value=null selected disabled>Seleccione una opción</option>
+                                    <option *ngFor="let sitio of listaSitios" value="{{sitio.idSitio}}">{{sitio.nombre}} - {{sitio.codigoSitio}}</option>
+                                </select>
+                                <div class="invalid-feedback d-block" *ngIf="formulario.controls.inputSitio.errors?.required && formulario.touched">
+                                    Seleccione un predio
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <h4 class="card-title">Información de la Feria de Comercialización</h4>
+                        <div class="form-group row align-items-center mb-0">
+                            <label for="inputNombre" class="col-md-3 text-right control-label col-form-label">Nombre de la feria</label>
+                            <div class="col-md-9 border-left pb-2 pt-2">
+                                <input type="text" class="form-control text-uppercase" (keyup)="mascara($event,'alfanumerico')" formControlName="inputNombre" name="inputNombre" placeholder="">
+                                <div class="invalid-feedback d-block" *ngIf="formulario.controls.inputNombre.errors?.required && formulario.touched">
+                                    Ingrese el nombre de la feria de comercialización
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row align-items-center mb-0">
+                            <label for="inputSuperficieHa" class="col-md-3 text-right control-label col-form-label">Superficie total (Ha)</label>
+                            <div class="col-md-9 border-left pb-2 pt-2">
+                                <input type="text" class="form-control" (keyup)="mascara($event,'decimal')"  formControlName="inputSuperficieHa" name="inputSuperficieHa" placeholder="Ingrese la superficie de la feria de comercialización">
+                                <div class="invalid-feedback d-block" *ngIf="formulario.controls.inputSuperficieHa.errors?.required && formulario.touched">
+                                    Ingrese la superficie de la feria de comercialización
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row align-items-center mb-0">
+                            <label for="inputCapacidad" class="col-md-3 text-right control-label col-form-label">Capacidad</label>
+                            <div class="col-md-9 border-left pb-2 pt-2">
+                                <input type="text" class="form-control" (keyup)="mascara($event,'numerico')" formControlName="inputCapacidad" name="inputCapacidad" placeholder="Ingrese la capacidad máxima de la feria de comercialización">
+                                <div class="invalid-feedback d-block" *ngIf="formulario.controls.inputCapacidad.errors?.required && formulario.touched">
+                                    Ingrese la capacidad de la feria de comercialización
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row align-items-center mb-0">
+                            <label for="inputTipoTelefono" class="col-md-3 text-right control-label col-form-label">Tipo de teléfono</label>
+                            <div class="col-md-9 border-left pb-2 pt-2">
+                                <input type="radio" value="fijo" name="inputTipoTelefono" formControlName="inputTipoTelefono" (change)="cambiarMascaraTelefono()" > Fijo
+                                <input type="radio" value="movil" name="inputTipoTelefono" formControlName="inputTipoTelefono" (change)="cambiarMascaraTelefono()" > Celular
+                            </div>
+                        </div>
+                        <div class="form-group row align-items-center mb-0">
+                            <label for="inputTelefono" class="col-md-3 text-right control-label col-form-label">Teléfono de contacto</label>
+                            <div class="col-md-9 border-left pb-2 pt-2">
+                                <input type="text" class="form-control" (keyup)="mascara($event,mascaraTelefono)" formControlName="inputTelefono" name="inputTelefono" placeholder="Ingrese el teléfono de contacto">
+                                <div class="invalid-feedback d-block" *ngIf="formulario.controls.inputTelefono.errors?.required && formulario.touched">
+                                    Ingrese el teléfono de la feria de comercialización
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row align-items-center mb-0">
+                            <label for="inputSitioGUIA" class="col-md-3 text-right control-label col-form-label">Sitio de referencia en el sistema GUIA</label>
+                            <div class="col-md-9 border-left pb-2 pt-2">
+                                <select class="form-control" formControlName="inputSitioGUIA" name="inputSitioGUIA">
+                                    <option value=null selected disabled>Seleccione una opción</option>
+                                    <option *ngFor="let feria of listaFerias" value="{{feria.id_sitio}}">{{feria.id_sitio}} - {{feria.nombre_lugar}}</option>
+                                </select>
+                                <div class="invalid-feedback d-block" *ngIf="formulario.controls.inputSitioGUIA.errors?.required && formulario.touched">
+                                    Seleccione un el sitio de referencia en el sistema GUIA
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group text-center mt-3">
+                        <div class="col-xs-12">
+                            <button class="btn btn-info btn-lg btn-block text-uppercase waves-effect waves-light" type="submit">Registrar</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

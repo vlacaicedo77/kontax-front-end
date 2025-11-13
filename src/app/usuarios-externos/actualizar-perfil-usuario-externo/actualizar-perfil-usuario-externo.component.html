@@ -1,0 +1,92 @@
+<hr class="mt-0">
+<div class='row container-fluid' style="width: 100%">
+    <div class="col">
+        <div class="card border border-light-info rounded">
+            <div class="card-header bg-info text-white rounded-top">
+                Cambio de contraseña
+            </div>
+            <div class='card-body'>
+                <div class="card-body">
+                    <h4 class="card-title">Perfil del Usuario</h4>
+                    <div class="form-group row align-items-center mb-0">
+                        <label class="col-md-3 text-right control-label col-form-label">Tipo de identificación</label>
+                        <div class="col-md-9 border-left pb-2 pt-2">
+                            <label class="col-md-7 text-left control-label col-form-label">{{this.tipoIdentificacion}}</label>
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <label class="col-md-3 text-right control-label col-form-label">Número de identificación</label>
+                        <div class="col-md-9 border-left pb-2 pt-2">
+                            <label class="col-md-7 text-left control-label col-form-label">{{usuario.numeroIdentificacion}}</label>
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <label class="col-md-3 text-right control-label col-form-label">Nombre Completo</label>
+                        <div class="col-md-9 border-left pb-2 pt-2">
+                            <label class="col-md-7 text-left control-label col-form-label">{{usuario.nombres}} {{usuario.apellidos}}</label>
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <label class="col-md-3 text-right control-label col-form-label">Email</label>
+                        <div class="col-md-9 border-left pb-2 pt-2">
+                            <label class="col-md-7 text-left control-label col-form-label">{{usuario.email}}</label>
+                        </div>
+                    </div>
+                    <form ngNativeValidate [formGroup]="formulario" (ngSubmit)="actualizarUsuario()" class="form-horizontal r-separator" action="index.html" *ngIf='this.formularioVisible && this.ruc'>
+                        <div class="form-group row align-items-center mb-0" *ngIf='this.ruc'>
+                            <label for="inputRazonSocial" class="col-md-3 text-right control-label col-form-label">Razón social</label>
+                            <div class="col-md-9 border-left pb-2 pt-2">
+                                <input type="text" class="form-control" (keyup)="mascara($event,'alfanumerico')" formControlName="inputRazonSocial" name="inputRazonSocial" placeholder="Ingrese su razón social">
+                                <div class="invalid-feedback d-block" *ngIf="formulario.controls.inputRazonSocial.errors?.required && formulario.touched">
+                                    Ingrese su razón social
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row align-items-center mb-0" *ngIf='this.ruc'>
+                            <label for="inputNombreComercial" class="col-md-3 text-right control-label col-form-label">Nombre Comercial</label>
+                            <div class="col-md-9 border-left pb-2 pt-2">
+                                <input type="text" class="form-control" (keyup)="mascara($event,'alfanumerico')" formControlName="inputNombreComercial" name="inputNombreComercial" placeholder="Ingrese su nombre comercial">
+                                <div class="invalid-feedback d-block" *ngIf="formulario.controls.inputNombreComercial.errors?.required && formulario.touched">
+                                    Ingrese su nombre comercial
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row align-items-center mb-0" *ngIf='this.ruc'>
+                            <label for="inputIdentificacionRepresentante" class="col-md-3 text-right control-label col-form-label">Identificación Representante Legal</label>
+                            <div class="col-md-9 border-left pb-2 pt-2">
+                                <input type="text" class="form-control" (keyup)="mascara($event,'numerico')" formControlName="inputIdentificacionRepresentante" name="inputIdentificacionRepresentante" placeholder="Ingrese la identificación de su representante legal">
+                                <div class="invalid-feedback d-block" *ngIf="formulario.controls.inputIdentificacionRepresentante.errors?.required && formulario.touched">
+                                    Ingrese la identificación de su representante legal
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row align-items-center mb-0"*ngIf='this.ruc'>
+                            <label for="inputNombresRepresentante" class="col-md-3 text-right control-label col-form-label">Nombres Representante Legal</label>
+                            <div class="col-md-9 border-left pb-2 pt-2">
+                                <input type="text" class="form-control" (keyup)="mascara($event,'alfanumerico')" formControlName="inputNombresRepresentante" name="inputNombresRepresentante" placeholder="Ingrese los nombres de su representante legal">
+                                <div class="invalid-feedback d-block" *ngIf="formulario.controls.inputNombresRepresentante.errors?.required && formulario.touched">
+                                    Ingrese los nombres de su representante legal
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row align-items-center mb-0" *ngIf='this.ruc'>
+                            <label for="inputApellidosRepresentante" class="col-md-3 text-right control-label col-form-label">Apellidos Representante Legal</label>
+                            <div class="col-md-9 border-left pb-2 pt-2">
+                                <input type="text" class="form-control" (keyup)="mascara($event,'alfanumerico')" formControlName="inputApellidosRepresentante" name="inputApellidosRepresentante" placeholder="Ingrese los apellidos de su representante legal">
+                                <div class="invalid-feedback d-block" *ngIf="formulario.controls.inputApellidosRepresentante.errors?.required && formulario.touched">
+                                    Ingrese los apellidos de su representante legal
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body ">
+                            <div class="form-group mb-0 text-right ">
+                                <button class="btn btn-info btn-lg btn-block text-uppercase waves-effect waves-light" type="submit">Guardar cambios
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

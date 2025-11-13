@@ -1,0 +1,235 @@
+<hr class="mt-0">
+<div class='row'>
+    <div class='col-12'>
+        <div class='card'>
+            <div class="card-header bg-info text-white font-weight-bold rounded-top">
+                Registrar sitio [Explotación Pecuaria Bovina] - Usuario Interno
+            </div>
+            <hr class="mt-0">
+            <form class="form-horizontal r-separator" ngNativeValidate [formGroup]="formulario" (ngSubmit)="registrarSitio()" class="form-horizontal r-separator" action="index.html">
+                <!-- Propietario de los animales -->
+                <div class="card-body">
+                    <h4 class="card-title">Propietario del sitio</h4>
+                    <div class="form-group row align-items-center mb-0">
+                        <label class="col-md-3 text-right control-label col-form-label">C.C/C.I/RUC/Pasaporte</label>
+                            <div class="col-md-3 border-left pb-2 pt-2 input-group">
+                                <input type="text" formControlName="inputIdUsuario" (change)="borraDatosUsuario()" class="form-control border-secondary" #ciPropietario placeholder="Ingrese # de identificación">
+                                <div class="input-group-append">
+                                    <button type="button" class="btn btn-success border-secondary" (click)="buscarUsuario(ciPropietario.value)"><i class="ti-search"></i></button>
+                                    <button type="button" class="btn btn-info border-secondary" (click)="agregarCiudadano()"><i class="ti-plus"></i></button>
+                                </div>
+                            </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <label for="inputNombres" class="col-md-3 text-right control-label col-form-label">Apellidos y nombres / Razón social</label>
+                            <div class="col-md-9 border-left pb-2 pt-2">
+                                <input type="text" class="form-control border-secondary" formControlName="inputNombres" name="inputNombres" placeholder="Ingrese Apellidos y Nombres" readonly>
+                            </div>
+                    </div>
+                    <!--<div class="form-group row align-items-center mb-0">
+                        <label class="col-md-3 text-right control-label col-form-label">Productor</label>
+                        <div class="col-md-9 border-left pb-2 pt-2 input-group">
+                            <select formControlName="propietario_animales" class="form-control" (change)="cambioPropietario()">
+                                <option [value]="null" selected disabled>Seleccione un productor</option>
+                                <option *ngFor="let usuario of listaUsuariosPropietariosAnimales" [value]="usuario.idUsuariosExternos" >{{ usuario.nombres }}</option>
+                            </select>
+                            <input type="text" class="form-control" #ciPropietario placeholder="CI/RUC">
+                            <div class="input-group-append">
+                                <button type="button" class="btn btn-success" (click)="buscarPropietario(ciPropietario.value)"><i class="ti-search"></i></button>
+                                <button type="button" class="btn btn-success" (click)="agregarCiudadano()"><i class="ti-plus"></i></button>
+                            </div>
+                            <div class="invalid-feedback d-block" *ngIf="formulario.controls.propietario_animales.errors?.required && formulario.touched">
+                                Seleccione un productor
+                            </div>
+                        </div>
+                    </div>-->
+                </div>
+                
+                <!------------------------------------------------------------------------------------------->
+                <!-- Predios existentes-->
+                <div class="card-body" *ngIf="!formulario.value.nuevo_predio">
+                    <hr class="mt-0">
+                    <h4 class="card-title">Sitios existentes</h4>
+                    <div class="form-group row align-items-center mb-0">
+                        <label class="col-md-3 text-right control-label col-form-label">Sitio</label>
+                        <div class="col-md-9 border-left pb-2 pt-2 input-group">
+                            <select formControlName="area" class="form-control border-secondary" (change)="cambioPredioProductor()">
+                                <option [value]="null" selected disabled>Seleccione un sitio</option>
+                                <option *ngFor="let predio of listaPredios" [value]="predio.idArea" >{{ predio.codigoSitio.toUpperCase() }} | {{ predio.nombreProvinciaSitio.toUpperCase() }} - {{ predio.nombreCantonSitio.toUpperCase() }} | {{ predio.nombre.toUpperCase() }} [{{ predio.nombreTipoActividad}}]</option>
+                            </select>
+                        </div>
+                    </div>
+                </div> 
+                <!-- Datos del predio -->
+                 <div class="card-body">
+                    <hr class="mt-0">
+                    <h4 class="card-title">Datos del sitio</h4>
+                    <div class="form-group row align-items-center mb-0">
+                        <label class="col-md-3 text-right control-label col-form-label">Marque la casilla</label>
+                        <div class="col-md-9 border-left pb-2 pt-2 input-group">
+                            <div class="col-md-3">
+                                <input type="checkbox" class="material-inputs border-secondary" id="predio_nuevo" formControlName="nuevo_predio" (change)="nuevoPredio()">
+                                <label for="predio_nuevo">Sitio nuevo</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <label class="col-md-3 text-right control-label col-form-label">Nombre del sitio</label>
+                        <div class="col-md-9 border-left pb-2 pt-2 input-group">
+                            <p class="form-control border-secondary" *ngIf="!formulario.value.nuevo_predio">
+                                {{ predioSeleccionado?.nombreSitio }}
+                            </p>
+                            <input formControlName="nombre_predio" type="text" class="form-control text-uppercase border-secondary" *ngIf="formulario.value.nuevo_predio">
+                            <div class="invalid-feedback d-block" *ngIf="formulario.errors?.requiereNombrePredio && formulario.touched">
+                                Ingrese el nombre del sitio
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group row align-items-center mb-0">
+                        <label for="inputTipoPropiedad" class="col-md-3 text-right control-label col-form-label border-secondary">Sitio propio o alquilado</label>
+                        <div class="col-md-9 border-left pb-2 pt-2">
+                            <p class="form-control border-secondary" *ngIf="!formulario.value.nuevo_predio">
+                                {{ predioSeleccionado?.nombreTipoPropiedadSitio}}
+                            </p>
+                            <select class="form-control border-secondary" formControlName="inputTipoPropiedad" name="inputTipoPropiedad" *ngIf="formulario.value.nuevo_predio">
+                                <option value=null selected disabled>Seleccione una opción</option>
+                                <option *ngFor="let tipoPropiedad of listaTiposPropiedad" value="{{tipoPropiedad.id_tipo_propiedad}}">{{tipoPropiedad.nombre}}</option>
+                            </select>
+                            <div class="invalid-feedback d-block" *ngIf="formulario.controls.inputTipoPropiedad.errors?.required && formulario.touched">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <label class="col-md-3 text-right control-label col-form-label">Tipo de explotación</label>
+                        <div class="col-md-9 border-left pb-2 pt-2 input-group">
+                            <p class="form-control border-secondary" *ngIf="!formulario.value.nuevo_predio">
+                                {{ predioSeleccionado?.nombreTipoActividad }}
+                            </p>
+                            <select formControlName="tipo" class="form-control border-secondary" *ngIf="formulario.value.nuevo_predio" >
+                                <option [value]="null" selected disabled>Seleccione el tipo de explotación</option>
+                                <option *ngFor="let tipo of listaTiposActividades" [value]="tipo.id_tipo_actividad" >{{ tipo.nombre }}</option>
+                            </select>
+                            <div class="invalid-feedback d-block" *ngIf="formulario.controls.tipo.errors?.required && formulario.touched">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <label class="col-md-3 text-right control-label col-form-label">Teléfono</label>
+                        <div class="col-md-9 border-left pb-2 pt-2 input-group">
+                            <p class="form-control border-secondary" *ngIf="!formulario.value.nuevo_predio">
+                                {{ predioSeleccionado?.telefono }}
+                            </p>
+                            <input formControlName="inputTelefono" type="text" class="form-control border-secondary" *ngIf="formulario.value.nuevo_predio">
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <label for="inputSuperficieHa" class="col-md-3 text-right control-label col-form-label">Superficie total (Ha)</label>
+                        <div class="col-md-9 border-left pb-2 pt-2">
+                            <p class="form-control border-secondary" *ngIf="!formulario.value.nuevo_predio">
+                                {{ predioSeleccionado?.superficieHa }}
+                            </p>
+                            <input type="text" class="form-control border-secondary" formControlName="inputSuperficieHa" (keyup)="mascara($event,'decimal')" name="inputSuperficieHa" *ngIf="formulario.value.nuevo_predio">
+                            <div class="invalid-feedback d-block" *ngIf="formulario.controls.inputSuperficieHa.errors?.required && formulario.touched">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <label class="col-md-3 text-right control-label col-form-label">Coordenadas geográficas</label>
+                        <div class="col-md-9 border-left pb-2 pt-2 input-group">
+                            <div class="row">
+                                <div class="col">
+                                    <h6 class="mb-0 font-weight-medium"> Latitud: </h6>
+                                    <p class="form-control border-secondary" *ngIf="!formulario.value.nuevo_predio">
+                                        {{ predioSeleccionado?.latitudSitio }}
+                                    </p>
+                                    <input formControlName="latitud" type="text" class="form-control border-secondary" *ngIf="formulario.value.nuevo_predio">
+                                </div>
+                                <div class="col">
+                                    <h6 class="mb-0 font-weight-medium"> Longitud: </h6>
+                                    <p class="form-control border-secondary" *ngIf="!formulario.value.nuevo_predio">
+                                        {{ predioSeleccionado?.longitudSitio }}
+                                    </p>
+                                    <input formControlName="longitud" type="text" class="form-control border-secondary" *ngIf="formulario.value.nuevo_predio">
+                                </div>
+                            </div>
+                            <div class="invalid-feedback d-block" *ngIf="formulario.controls.latitud.errors?.pattern && formulario.touched">
+                                El valor de la latitud es incorrecto
+                            </div>
+                            <div class="invalid-feedback d-block" *ngIf="formulario.controls.longitud.errors?.pattern && formulario.touched">
+                                El valor de la longitud es incorrecto
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <hr class="mt-0">
+                    <h4 class="card-title">Datos de ubicación</h4>
+                    <div class="form-group row align-items-center mb-0">
+                        <label for="inputProvincia" class="col-md-3 text-right control-label col-form-label">Provincia</label>
+                        <div class="col-md-9 border-left pb-2 pt-2">
+                            <p class="form-control border-secondary" *ngIf="!formulario.value.nuevo_predio">
+                                {{ predioSeleccionado?.nombreProvinciaSitio.toUpperCase() }}
+                            </p>
+                            <select class="form-control border-secondary" formControlName="inputProvincia" name="inputProvincia" #idProvincia (change)="cargarCantonesPorProvincia(idProvincia.value)" *ngIf="formulario.value.nuevo_predio">
+                                <option value=null selected disabled>Seleccione una opción</option>
+                                <option *ngFor="let provincia of listaProvincias" value="{{provincia.id_provincia}}">{{provincia.nombre.toUpperCase()}}</option>
+                            </select>
+                            <div class="invalid-feedback d-block" *ngIf="formulario.controls.inputProvincia.errors?.required && formulario.touched">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <label for="inputCanton" class="col-md-3 text-right control-label col-form-label">Cantón</label>
+                        <div class="col-md-9 border-left pb-2 pt-2">
+                            <p class="form-control border-secondary" *ngIf="!formulario.value.nuevo_predio">
+                                {{ predioSeleccionado?.nombreCantonSitio.toUpperCase() }}
+                            </p>
+                            <select class="form-control border-secondary" #idCanton (change)="cargarParroquiasPorCanton(idCanton.value)"  formControlName="inputCanton" name="inputCanton" *ngIf="formulario.value.nuevo_predio">
+                                <option value=null selected disabled>Seleccione una opción</option>
+                                <option *ngFor="let canton of listaCantones" value="{{canton.id_canton}}">{{canton.nombre.toUpperCase()}}</option>
+                            </select>
+                            <div class="invalid-feedback d-block" *ngIf="formulario.controls.inputCanton.errors?.required && formulario.touched">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <label for="inputParroquia" class="col-md-3 text-right control-label col-form-label">Parroquia</label>
+                        <div class="col-md-9 border-left pb-2 pt-2">
+                            <p class="form-control border-secondary" *ngIf="!formulario.value.nuevo_predio">
+                                {{ predioSeleccionado?.nombreParroquiaSitio.toUpperCase() }}
+                            </p>
+                            <select class="form-control border-secondary" formControlName="inputParroquia" name="inputParroquia" *ngIf="formulario.value.nuevo_predio">
+                                <option value=null selected disabled>Seleccione una opción</option>
+                                <option *ngFor="let parroquia of listaParroquias" value="{{parroquia.id_parroquia}}">{{parroquia.nombre.toUpperCase()}}</option>
+                            </select>
+                            <div class="invalid-feedback d-block" *ngIf="formulario.controls.inputParroquia.errors?.required && formulario.touched">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <label class="col-md-3 text-right control-label col-form-label">Calle principal</label>
+                        <div class="col-md-9 border-left pb-2 pt-2 input-group">
+                            <p class="form-control border-secondary" *ngIf="!formulario.value.nuevo_predio">
+                                {{ predioSeleccionado?.callePrincipalSitio }}
+                            </p>
+                            <input formControlName="sitio_via" type="text" class="form-control text-uppercase border-secondary" *ngIf="formulario.value.nuevo_predio">
+                            <div class="invalid-feedback d-block" *ngIf="formulario.errors?.requiereSitioVia && formulario.touched">
+                                Ingrese calle principal
+                            </div>
+                        </div>
+                    </div>    
+                </div>
+                <div class="form-group text-center mt-3">
+                    <div class="col-xs-12">
+                        <button class="btn btn-info btn-lg btn-block text-uppercase waves-effect waves-light font-weight-bold" type="submit">Registrar</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Componente para crear un nuevo usuario ciudadano -->
+<app-crear-usuario-externo [correo]="false">
+</app-crear-usuario-externo>

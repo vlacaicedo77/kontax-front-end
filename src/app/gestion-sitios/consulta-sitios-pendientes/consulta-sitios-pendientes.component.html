@@ -1,0 +1,76 @@
+<hr class="mt-0">
+<div class='row'>
+    <div class='col-12'>
+        <div class='card'>
+            <div class="card-header bg-info text-white rounded-top">
+                Consultar datos del predio
+            </div>
+            <hr class="mt-0">
+            <div class="card-body">
+                <h4 class="card-title">Listado de Predios por Aprobar</h4>
+                <div class="card-body pb-2 pt-2 pl-5 pr-4 col-12" >
+                    <div class="form-group row align-items-center mb-0" *ngIf="this.aprobadorNacional">
+                        <label class="col-md-3 text-right control-label col-form-label">Filtrar provincia</label>
+                        <div class="col-md-9 border-left pb-2 pt-2">
+                            <select class="form-control" name="filtro" #filtroProvincia (change)="filtrarSitiosProvincia(filtroProvincia.value)">
+                                <option value=null selected disabled>Seleccione una provincia</option>
+                                <option value=0 >Todas</option>
+                                <ng-container *ngFor="let provincia of listaProvincias">
+                                    <option  value="{{provincia.id_provincia}}">{{provincia.nombre}}</option>
+                                </ng-container>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0" >
+                        <label class="col-md-3 text-right control-label col-form-label">Filtrar por identificación ganadero</label>
+                        <div class="col-md-9 border-left pb-2 pt-2">
+                            <input class="form-control" type="text" (keyup)="filtrarSitiosSolicitante($event)" placeholder="Buscar..">
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <label class="col-md-3 text-right control-label col-form-label">Filtrar por estado</label>
+                        <div class="col-md-9 border-left pb-2 pt-2">
+                            <select class="form-control" name="filtro" #filtroEstado (change)="filtrarSitiosEstado(filtroEstado.value)">
+                                <option value=null selected disabled>Seleccione un estado</option>
+                                <option value=0 >Todos</option>
+                                <option value=1 >Pre-registro</option>
+                                <option value=2 >Visita física</option>
+                            </select>
+                        </div>
+                    </div>
+                    <table class="table contenedor-tabla-overflow ">
+                        <thead>
+                            <tr>
+                                <th scope="col" >Código Predio</th>
+                                <th scope="col" >Nombre Propietario</th>
+                                <th scope="col" >Tipo Identificación Propietario</th>
+                                <th scope="col" >Identificación Propietario</th>
+                                <th scope="col" >Nombre Predio</th>
+                                <th scope="col" >Provincia</th>
+                                <th scope="col" >Cantón</th>
+                                <th scope="col" >Fecha solicitud</th>
+                                <th scope="col" >Estado</th>
+                                <th scope="col" >Ver</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let predio of listaSitios">
+                                <td >{{predio.codigo_sitio}}</td>
+                                <td >{{predio.nombre_propietario}}</td>
+                                <td >{{predio.tipo_identificacion}}</td>
+                                <td >{{predio.numero_identificacion}}</td>
+                                <td >{{predio.nombre}}</td>
+                                <td >{{predio.provincia}}</td>
+                                <td >{{predio.canton}}</td>
+                                <td >{{predio.fecha_creacion}}</td>
+                                <td >{{predio.estado}}</td>
+                                <td class="col-sm-1 col-md-1 col-lg-1"><button type="button" class="btn btn-info" (click)='redireccionaAprobacion(predio.id_sitio)'><i class="fas fa-eye"></i></button>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

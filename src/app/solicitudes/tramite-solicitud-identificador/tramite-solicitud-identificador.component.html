@@ -1,0 +1,87 @@
+<hr class="mt-0">
+<div class='row'>
+    <div class='col-12'>
+        <div class='card'>
+            <div class="card-header bg-info text-white rounded-top">
+                Bandeja de Solicitudes de Identificación
+            </div>
+            <hr class="mt-0">
+            <div class="card-body contenedor-tabla-overflow">
+                <h4 class="card-title">Solicitudes activas en bandeja</h4>
+                <div class="form-group row align-items-center mb-0">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col" ></th>
+                                <th scope="col" ># Solicitud</th>
+                                <th scope="col" >Solicitante</th>
+                                <th scope="col" >Responsable</th>
+                                <th scope="col" >Paso Actual</th>
+                                <th scope="col" >Estado</th>
+                                <th scope="col" >Cantidad solicitada</th>
+                                <th scope="col" >Proveedor</th>
+                                <th scope="col" >Días en espera</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let solicitud of listaSolicitudes" >
+                                <td><input type="radio" *ngIf="solicitud.id_paso == 6" class="form-control-lg" id='inputIdSolicitud' (change)='seleccionaSolicitud(solicitud.id_solicitudes_identificadores)' name="inputIdSolicitud"></td>
+                                <td >{{solicitud.id_solicitudes_identificadores}}</td>
+                                <td >{{solicitud.solicitante}}</td>
+                                <td >{{solicitud.responsable}}</td>
+                                <td >{{solicitud.paso}}</td>
+                                <td >{{solicitud.estado}}</td>
+                                <td >{{solicitud.numero_identificadores}}</td>
+                                <td >{{solicitud.proveedor}}</td>
+                                <ng-template [ngIf]="solicitud.id_estados_solicitudes == 1" [ngIfElse]="noDiasPasados">
+                                    <td > {{solicitud.dias_espera}} </td>
+                                </ng-template>
+                                <ng-template #noDiasPasados>
+                                    <td > - </td>
+                                </ng-template>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class='card' *ngIf="this.tramiteVisible">
+            <div class="card-header bg-info text-white rounded-top">
+                Trámite de solicitud
+            </div>
+            <hr class="mt-0">
+            <form ngNativeValidate [formGroup]="formulario" class="form-horizontal r-separator" action="index.html">
+                <div class="card-body">
+                    <h4 class="card-title">Tramitar solicitud</h4>
+                    <div class="form-group row align-items-center mb-0">
+                        <label class="col-md-3 text-right control-label col-form-label">Código de la solicitud</label>
+                        <div class="col-md-9 border-left pb-2 pt-2">
+                            <label class="col-md-3 text-left control-label col-form-label">{{idSolicitud}}</label>
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <label for="inputListadoIdentificadores" class="col-md-3 text-right control-label col-form-label">Listado Identificadores</label>
+                        <div class="col-md-9 border-left pb-2 pt-2">
+                            <p id="inputListadoIdentificadores">
+                                <span *ngFor="let identificador of listaIdentificadores" class="badge badge-info">{{identificador.codigoOficial}}</span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <label for="inputObservaciones" class="col-md-3 text-right control-label col-form-label">Observaciones</label>
+                        <div class="col-md-9 border-left pb-2 pt-2">
+                            <input type="text" class="form-control" (keyup)="mascara($event,'alfanumerico')" formControlName="inputObservaciones" name="inputObservaciones" placeholder="Observaciones">
+                            <div class="invalid-feedback d-block" *ngIf="formulario.controls.inputObservaciones.errors?.required && formulario.touched">
+                                Ingrese un comentario como observación
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body ">
+                        <div class="form-group mb-0 text-center ">
+                            <button name="btnTramitar" id="btnTramitar" (click)='tramitarSolicitud("tramitar")' class="btn btn-success btn-lg  text-uppercase waves-effect waves-light" type="submit">Confirmar</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>

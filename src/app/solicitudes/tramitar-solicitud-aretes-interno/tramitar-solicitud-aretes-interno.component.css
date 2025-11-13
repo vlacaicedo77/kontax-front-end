@@ -1,0 +1,138 @@
+.btn-block-custom {
+    width: 200px;
+    /* Ajusta el ancho según tus necesidades */
+    display: inline-block;
+}
+
+.separar-botones {
+    margin-top: 2rem;
+    /* Ajusta según sea necesario */
+}
+
+.badge-amarillo {
+    background-color: yellow;
+    color: black;
+    font-weight: bold;
+    /*border: 2px solid black;*/
+    border-radius: 50px;
+    padding: 5px 7px;
+    display: inline-block;
+    /*width: 60px;
+    /* Ajusta este valor según el ancho deseado */
+    text-align: center;
+}
+
+.badge-blanco {
+    background-color: rgb(244, 241, 241);
+    color: black;
+    font-weight: bold;
+    /*border: 2px solid black;*/
+    border-radius: 50px;
+    padding: 5px 7px;
+    display: inline-block;
+    /*width: 60px;
+    /* Ajusta este valor según el ancho deseado */
+    text-align: center;
+}
+
+.badge-rojo {
+    background-color: red;
+    color: white;
+    font-weight: bold;
+    /*border: 2px solid black;*/
+    border-radius: 50px;
+    padding: 5px 7px;
+    display: inline-block;
+    /*width: 60px;
+    /* Ajusta este valor según el ancho deseado */
+    text-align: center;
+}
+
+.rounded-circle-amarillo {
+    background-color: yellow;
+    color: black;
+    font-weight: bold;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.rounded-circle-blanco {
+    background-color: rgb(244, 241, 241);
+    color: black;
+    font-weight: bold;
+    /*border: 0.1px solid black; /* Borde negro muy fino */
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.rounded-circle-rojo {
+    background-color: red;
+    color: white;
+    font-weight: bold;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.report-btn {
+    background-color: #2e9732;
+    /* Color de fondo verde */
+    color: white;
+    /* Texto en blanco */
+    border: none;
+    padding: 8px 15px;
+    /* Espaciado alrededor del texto e ícono */
+    /*font-size: 14px; /* Tamaño del texto */
+    cursor: pointer;
+    border-top-right-radius: 5px;
+    /* Borde redondeado en la esquina superior derecha */
+    border-bottom-right-radius: 5px;
+    /* Borde redondeado en la esquina inferior derecha */
+    align-items: center;
+    /* Centrar ícono y texto verticalmente */
+    float: right;
+    /* Alinear a la derecha */
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    /* Transiciones suaves */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    /* Sombra ligera */
+    /*width: 130px;*/
+    font-weight: bold;
+    margin-left: 10px;
+    /* Añadir margen a la izquierda para separar del botón de búsqueda */
+}
+
+.report-btn:hover {
+    background-color: #1e7a23;
+    ;
+    /* Cambiar color al pasar el cursor */
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
+    /* Sombra más profunda al hacer hover */
+}
+
+.report-btn:active {
+    background-color: #135303;
+    /* Color más oscuro al hacer clic */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    /* Sombra más ligera al hacer clic */
+}
+
+.text-black {
+    color: black;
+}
+
+.badge-entregado {
+    background-color: #3db541;
+    color: white;
+    font-weight: bold;
+    border-radius: 50px;
+    padding: 5px 7px;
+    display: inline-block;
+    text-align: center;
+}

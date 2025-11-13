@@ -1,0 +1,81 @@
+<hr class="mt-0">
+<div class='row'>
+    <div class='col-12'>
+        <div class='card'>
+            <div class="card-header bg-info text-white rounded-top">
+                Registrar certificación
+            </div>
+            <hr class="mt-0">
+            <form class="form-horizontal r-separator" ngNativeValidate [formGroup]="formulario" (ngSubmit)="registrarCertificacionSitio()" class="form-horizontal r-separator" action="index.html">
+            <div class="card-body">
+                    <h4 class="card-title">Buscar el predio a certificar</h4>
+                <div class="form-group row align-items-center mb-0">
+                    <label for="inputIdentificacionPropietario" class="col-md-3 text-right control-label col-form-label">Número de identificación del propietario</label>
+                    <div class="col-md-9 border-left pb-2 pt-2">
+                        <input type="text" class="form-control" (keyup)="mascara($event,'ruc')" #idPropietario name="inputIdentificacionPropietario" placeholder="Ingrese la identificación del propietario">
+                    </div>
+                </div>
+                <div class="card-body ">
+                    <div class="form-group mb-0 text-right ">
+                        <button type="button" (click)="buscarSitio(idPropietario.value)" class="btn btn-info waves-effect waves-light ">Buscar</button>
+                    </div>
+                </div>
+            </div>
+            <hr class="mt-0">
+                 <div class="card-body">
+                    <h4 class="card-title">Detalle de la certificación</h4>
+                    <div class="form-group row align-items-center mb-0">
+                        <label for="inputSitio" class="col-md-3 text-right control-label col-form-label">Predio a certificar</label>
+                        <div class="col-md-9 border-left pb-2 pt-2">
+                            <select class="form-control" formControlName="inputSitio" name="inputSitio">
+                                <option value=null selected disabled>Seleccione una opción</option>
+                                <option *ngFor="let sitio of listaSitios" value="{{sitio.idSitio}}">{{sitio.nombre}}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <label for="inputCertificacion" class="col-md-3 text-right control-label col-form-label">Certificación</label>
+                        <div class="col-md-9 border-left pb-2 pt-2">
+                            <select class="form-control" formControlName="inputCertificacion" name="inputCertificacion">
+                                <option value=null selected disabled>Seleccione una opción</option>
+                                <option *ngFor="let certificacion of listaCertificaciones" value="{{certificacion.id_tipos_certificaciones}}">{{certificacion.codigo}} - {{certificacion.nombre}}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <label for="inputEstadoCertificacion" class="col-md-3 text-right control-label col-form-label">Estado certificación</label>
+                        <div class="col-md-9 border-left pb-2 pt-2">
+                            <select class="form-control" formControlName="inputEstadoCertificacion" name="inputEstadoCertificacion">
+                                <option value=null selected disabled>Seleccione una opción</option>
+                                <option *ngFor="let estadoCertificacion of listaEstadosCertificaciones" value="{{estadoCertificacion.id_estados_certificaciones}}">{{estadoCertificacion.nombre}}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <label for="inputFechaInicio" class="col-md-3 text-right control-label col-form-label">Fecha de certificación</label>
+                        <div class="col-md-9 border-left pb-2 pt-2">
+                            <input formControlName="inputFechaInicio" type="date" class="form-control" name="inputFechaInicio" placeholder="Fecha de certificación">
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <label for="inputFechaFin" class="col-md-3 text-right control-label col-form-label">Fecha fin de certificación</label>
+                        <div class="col-md-9 border-left pb-2 pt-2">
+                            <input formControlName="inputFechaFin" type="date" class="form-control" name="inputFechaFin" placeholder="Fecha fin de certificación">
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <label for="inputObservaciones" class="col-md-3 text-right control-label col-form-label">Observaciones</label>
+                        <div class="col-md-9 border-left pb-2 pt-2">
+                            <textarea formControlName="inputObservaciones" class="form-control" rows="5"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group text-center mt-3">
+                    <div class="col-xs-12">
+                        <button class="btn btn-info btn-lg btn-block text-uppercase waves-effect waves-light" type="submit">Registrar</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

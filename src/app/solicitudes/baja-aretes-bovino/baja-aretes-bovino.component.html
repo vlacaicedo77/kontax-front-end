@@ -1,0 +1,253 @@
+<!-- Formulario para búsqueda de aretes no asignados -->
+<div *ngIf="!formularioVisible" id="formularioBusqueda" class='row container-fluid' style="width: 100%">
+    <div class="col">
+        <div class="card border border-info rounded">
+            <div class="card-header bg-info text-white rounded-top font-weight-bold">
+                Búsqueda de aretes oficiales (no asignados)
+            </div>
+            <form ngNativeValidate [formGroup]="formularioBusqueda" class="form-horizontal r-separator">
+                <div class="card-body">
+                    <div class="form-group row align-items-center mb-0">
+                        <label class="col-md-4 text-right control-label col-form-label font-weight-bold">Número de
+                            arete</label>
+                        <div class="col-md-5 border-left pb-2 pt-2 input-group">
+                            <input type="text" class="form-control border-secondary" autocomplete="on"
+                                formControlName="inputCodigoOficial" maxlength="11" placeholder="Ejemplo: EC006132716"
+                                (input)="limpiarLista()">
+                            <div class="input-group-append">
+                                <button type="button" class="btn btn-info border-secondary font-weight-bold"
+                                    (click)="buscarAretes()">
+                                    <i class="fas fa-search"></i> Buscar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Tabla con el resultado de la búsqueda -->
+<div class='row container-fluid' style="width: 100%" *ngIf="listaAretesAprobados.length > 0 && !formularioVisible">
+    <div class="col">
+        <div class="card border-info rounded">
+            <div class="card-header bg-secondary text-white" *ngIf="listaAretesAprobados.length > 0">
+                <span class="font-weight-bold">
+                    Listado de aretes oficiales (no asignados)
+                </span>
+                <span class="round rounded-circle text-white font-weight-bold d-inline-block text-center bg-info">{{
+                    listaAretesAprobados.length }}</span>
+            </div>
+            <div class="card-body">
+                <div class="table-wrapper-scroll-y custom-scrollbar">
+                    <table class="table table-bordered table-hover v-middle">
+                        <thead>
+                            <tr>
+                                <th class="badge-light-info font-16 text-center">ID</th>
+                                <th class="badge-light-info font-16 text-center">Fecha entrega</th>
+                                <th class="badge-light-info font-16">Solicitante</th>
+                                <th class="badge-light-info font-16">Proveedor</th>
+                                <th class="badge-light-info font-16 text-center">Estado</th>
+                                <th class="badge-light-info font-16 text-center">Operación</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let arete of listaAretesAprobados">
+                                <td class="text-center">
+                                    <span class="badge rounded-pill badge-amarillo">
+                                        {{ arete.codigoOficial }}
+                                    </span>
+                                </td>
+                                <td class="text-center">
+                                    <p style="font-size:smaller;"><span class="font-weight-bold">{{
+                                            arete.fechaEntregaFormateada }}</span></p>
+                                </td>
+                                <td>
+                                    <p><span class="badge rounded-pill font-weight-bold"
+                                            [ngClass]="{'badge-info':arete.origen==2, 'badge-secondary':arete.origen==1}">
+                                            {{ arete.origen == 1 ? 'extemporáneo' : 'automático' }}
+                                        </span>
+                                    </p>
+                                    <p class="font-weight-bold" style="font-size:small;">
+                                        [{{ arete.numeroIdentificacionSolicitante }}] {{
+                                        arete.nombresSolicitante.toUpperCase() }}
+                                    </p>
+                                </td>
+                                <td>
+                                    <p style="font-size:smaller"><span class="font-weight-bold">[{{
+                                            arete.numeroIdentificacionProveedor
+                                            }}] {{
+                                            arete.nombresProveedor.toUpperCase() }}</span>
+                                    </p>
+                                </td>
+                                <td class="text-center">
+                                    <span class="badge rounded-pill badge-secondary">
+                                        no asignado
+                                    </span>
+                                </td>
+                                <td class="text-center">
+                                    <button type="button" class="btn waves-effect waves-light"
+                                        style="background-color: #FF0000; color: white; border: none; border-radius: 25px; padding: 10px 20px; font-size: 14px; font-weight: bold; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); transition: all 0.3s ease; width: 180px;"
+                                        [title]="generarTitulo(arete)"
+                                        (click)="asignarDatosRevision(arete?.idAretesBovinos)"
+                                        onmouseover="this.style.backgroundColor='#CC0000'; this.style.boxShadow='0 6px 8px rgba(0, 0, 0, 0.3)';"
+                                        onmouseout="this.style.backgroundColor='#FF0000'; this.style.boxShadow='0 4px 6px rgba(0, 0, 0, 0.2)';">
+                                        <i class="fas fa-tag"
+                                            style="color: white; font-size: 18px; margin-right: 8px;"></i>
+                                        Dar de baja
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Sección con los datos de la solicitud -->
+<div *ngIf="formularioVisible" class='row container-fluid' style="width: 100%">
+    <div class="col">
+        <div class="card border border-info rounded">
+            <div class="card-header bg-info text-white rounded-top font-weight-bold">
+                Datos del arete oficial
+            </div>
+            <div class="card-body">
+                <div class="form-group row align-items-center mb-0">
+                    <label class="col-md-3 text-right control-label col-form-label font-weight-bold">Número de
+                        arete</label>
+                    <div class="col-md-9 border-left pb-2 pt-2">
+                        <label class="badge rounded-pill badge-amarillo" style="font-size: 14px;">
+                            {{ areteSeleccionado?.codigoOficial }}
+                        </label>
+                    </div>
+                    <label class="col-md-3 text-right control-label col-form-label font-weight-bold">
+                        Solicitante</label>
+                    <div class="col-md-9 border-left pb-2 pt-2">
+                        <label class="col-md-8 text-left control-label col-form-label">
+                            [{{ areteSeleccionado?.numeroIdentificacionSolicitante }}]
+                            {{ areteSeleccionado?.nombresSolicitante.toLocaleUpperCase() }}
+                        </label>
+                    </div>
+                    <label class="col-md-3 text-right control-label col-form-label font-weight-bold">
+                        Proveedor</label>
+                    <div class="col-md-9 border-left pb-2 pt-2">
+                        <label class="col-md-8 text-left control-label col-form-label">
+                            [{{ areteSeleccionado?.numeroIdentificacionProveedor }}]
+                            {{ areteSeleccionado?.nombresProveedor.toLocaleUpperCase() }}
+                        </label>
+                    </div>
+                    <label class="col-md-3 text-right control-label col-form-label font-weight-bold">Fecha de
+                        entrega</label>
+                    <div class="col-md-9 border-left pb-2 pt-2">
+                        <label class="col-md-8 text-left control-label col-form-label">
+                            {{ areteSeleccionado?.fechaEntregaFormateada }}
+                        </label>
+                    </div>
+                    <label class="col-md-3 text-right control-label col-form-label font-weight-bold">Estado</label>
+                    <div class="col-md-9 border-left pb-2 pt-2">
+                        <label class="text-center badge rounded-pill font-weight-bold badge-secondary">
+                            no asignado
+                        </label>
+                    </div>
+                    <label class="col-md-3 text-right control-label col-form-label font-weight-bold">Origen</label>
+                    <div class="col-md-9 border-left pb-2 pt-2">
+                        <label class="text-center badge rounded-pill font-weight-bold"
+                            [ngClass]="{'badge-info': areteSeleccionado?.origen == 2, 'badge-secondary': areteSeleccionado?.origen == 1}">
+                            {{ areteSeleccionado?.origen == 1 ? 'extemporáneo' : (areteSeleccionado?.origen == 2 ? 'automático' : 'no asignado')
+                            }}
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Formulario para generar la solicitud de aretes oficiales -->
+<div *ngIf="formularioVisible" class='row container-fluid' style="width: 100%">
+    <div class='col'>
+        <div class='card border border-info rounded'>
+            <div class="card-header bg-info text-white rounded-top font-weight-bold">
+                Baja de aretes oficiales
+            </div>
+            <div class='card-body'>
+                <!--Información del animal-->
+                <form ngNativeValidate [formGroup]="formulario" class="form-horizontal r-separator">
+                    <div class="card-body p-2">
+                        <div class="row">
+                            <div class="col">
+                                <div class="form-group row align-items-center">
+                                    <label class="control-label col-md-3 text-right px-2 font-weight-bold"
+                                        style="font-size: 14px;">
+                                        Fecha de suceso<span class="text-danger font-weight-bold"> *</span>
+                                    </label>
+                                    <div class="col">
+                                        <input formControlName="inputFechaSuceso" type="date"
+                                            class="border px-2 py-1 rounded bg-white m-0 w-100"
+                                            style="font-size: 14px; height: 40px; border: 1px solid black !important;">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-group row align-items-center">
+                                    <label class="control-label col-md-3 text-right px-2 font-weight-bold"
+                                        style="font-size: 14px;">
+                                        Suceso<span class="text-danger font-weight-bold"> *</span>
+                                    </label>
+                                    <div class="col">
+                                        <select formControlName="inputIdSuceso"
+                                            class="border px-2 py-1 rounded bg-white m-0 w-100"
+                                            style="font-size: 14px; height: 40px; border: 1px solid black !important;">
+                                            <option [value]="null" selected disabled>--- Seleccione una opción ---
+                                            </option>
+                                            <option [value]="tipobaja.idTipoBaja" *ngFor="let tipobaja of tiposBajas">{{
+                                                tipobaja.nombre }}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <div class="form-group row align-items-center">
+                                    <label class="control-label col-md-3 text-right px-2 font-weight-bold"
+                                        style="font-size: 14px;">
+                                        Detalle
+                                    </label>
+                                    <div class="col">
+                                        <input type="text"
+                                            class="border px-2 py-1 rounded bg-white m-0 w-100 text-lowercase"
+                                            style="font-size: 14px; height: 40px; border: 1px solid black !important;"
+                                            formControlName="inputDetalle" maxlength="50"
+                                            placeholder="ingrese detalle del suceso de baja (máximo 50 caracteres)">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <div class="col-md-9 pb-2 pt-2">
+                            <p class="text-muted mb-3 font-weight-bold" style="font-size: 0.9rem; padding-left: 4%;">
+                                <em>Los campos marcados con <span class="text-danger font-weight-bold">*</span> son
+                                    obligatorios.</em>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group mb-0 text-center">
+                            <button class="btn btn-info btn-lg font-weight-bold font-16 text-uppercase mx-2"
+                                style="width: 48%;" type="button"
+                                (click)="registrarBaja(areteSeleccionado?.idAretesBovinos)">Dar
+                                de baja</button>
+                            <button class="btn btn-danger btn-lg font-weight-bold font-16 text-uppercase mx-2"
+                                style="width: 48%;" type="button" (click)="botonCancelar()">Cancelar</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

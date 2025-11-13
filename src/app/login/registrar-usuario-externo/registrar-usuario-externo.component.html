@@ -1,0 +1,161 @@
+<div class="main-wrapper">
+    <!-- ============================================================== -->
+    <!-- Preloader - style you can find in spinners.css -->
+    <!-- ============================================================== -->
+    <!-- <div class="preloader">
+        <div class="lds-ripple">
+            <div class="lds-pos"></div>
+            <div class="lds-pos"></div>
+        </div>
+    </div> -->
+    <!-- ============================================================== -->
+    <!-- Preloader - style you can find in spinners.css -->
+    <!-- ============================================================== -->
+    <!-- ============================================================== -->
+    <!-- Login box.scss -->
+    <!-- ============================================================== -->
+    <div class="auth-wrapper d-flex no-block justify-content-center align-items-center" style="background:url(assets/images/background/{{this.randomBackground}}) no-repeat center center; background-size: cover;">
+        <div class="auth-box on-sidebar p-4 bg-white m-0 rounded overflow-auto">
+            <div>
+                <div class="logo text-center">
+                    <span class="db">
+                        <img src="assets/images/background/logo_in.jpg" style="width: 350px;" alt="logo" />
+                        <!--<img src="assets/images/logo-Agrocalidad.png" style="width: 175px;" alt="logo" />
+                        <img src="assets/images/logo-MAG.png" style="width: 175px;" alt="Home" />-->
+                    </span>
+                </div>
+                <h3 class="box-title mt-5 mb-0">Registrarse como usuario externo</h3>
+                <!--small>Create your account and enjoy</small-->
+                <!-- Form -->
+                <div class="row">
+                    <div class="col-12">
+                        <form ngNativeValidate [formGroup]="formulario" (ngSubmit)="registrarUsuario()" class="form-horizontal mt-3 form-material" action="index.html">
+                            <div class="form-group mt-3">
+                                <input type="radio" value="cedula" name="inputTipoIdentificacion" formControlName="inputTipoIdentificacion" (change)="cambiarTipoIdentificacion()"> Cédula  &nbsp;
+                                <input type="radio" value="ruc" name="inputTipoIdentificacion" formControlName="inputTipoIdentificacion" (change)="cambiarTipoIdentificacion()"> RUC
+                                <div class="invalid-feedback d-block" *ngIf="formulario.controls.inputTipoIdentificacion.errors?.required && formulario.touched">
+                                    Seleccione el tipo de identificación
+                                </div>
+                            </div>
+                            <div *ngIf="tipoIdentificacionSeleccionado">
+                                <div class="form-group mt-3 input-group" *ngIf="tipoRUC">
+                                    <input class="form-control col-xs-12" type="text" (keyup)="mascara($event,'ruc')" (focusout)="buscarRUC(identificacionRUC.value)" #identificacionRUC formControlName="numero_identificacion_RUC" placeholder="Ingrese # de RUC">
+                                    <div class="input-group-append">
+                                        <button class="btn btn-success" type="button" (click)="buscarRUC(identificacionRUC.value)"><i class="ti-search"></i></button>
+                                    </div>
+                                    <div class="invalid-feedback d-block" *ngIf="formulario.controls.numero_identificacion_RUC.errors?.required && formulario.touched">
+                                        
+                                    </div>
+                                </div>
+                                <div class="form-group mt-3 input-group" *ngIf="!tipoRUC">
+                                    <input class="form-control col-xs-12" type="text" (keyup)="mascara($event,'cedula')" (focusout)="buscarCedula(identificacionCedula.value)" #identificacionCedula formControlName="numero_identificacion_cedula" placeholder="Ingrese # de cédula">
+                                    <div class="input-group-append">
+                                        <button class="btn btn-success" type="button" (click)="buscarCedula(identificacionCedula.value)"><i class="ti-search"></i></button>
+                                    </div>
+                                    <div class="invalid-feedback d-block" *ngIf="formulario.controls.numero_identificacion_cedula.errors?.required && formulario.touched">
+                                    </div>
+                                </div>
+                                <!--18Apr2021 Los datos de nombres y apellidos pasan a ser solo de lectura-->
+                                <div class="form-group mt-3">
+                                    <label class="col-xs-12 text-left control-label col-form-label">{{this.nombresUsuario}}</label>
+                                    <div class="invalid-feedback d-block" *ngIf="nombresUsuario == '' && formulario.touched">
+                                        
+                                    </div>
+                                </div>
+                                <div class="form-group mt-3"  style="display:none;">
+                                    <label class="col-xs-12 text-left control-label col-form-label">{{this.apellidosUsuario}}</label>
+                                    <div class="invalid-feedback d-block" *ngIf="apellidosUsuario == '' && formulario.touched">
+                                        No se han podido obtener sus apellidos
+                                    </div>
+                                </div>
+                                <div class="form-group mt-3">
+                                    <input class="form-control col-xs-12 text-lowercase" type="email" formControlName="email" placeholder="Ingrese su correo electrónico">
+                                    <div class="invalid-feedback d-block " *ngIf="formulario.controls.email.errors?.required && formulario.touched">
+                                        
+                                    </div>
+                                </div>
+                                <div class="form-group mt-3" *ngIf="tipoRUC" style="display:none;">
+                                    <input class="form-control col-xs-12" type="text" formControlName="razon_social" placeholder="Razón social" readonly>
+                                    <div class="invalid-feedback d-block" *ngIf="formulario.controls.razon_social.errors?.required && formulario.touched">
+                                        Ingrese su razón social
+                                    </div>
+                                </div>
+                                <div class="form-group mt-3" *ngIf="tipoRUC">
+                                    <input class="form-control col-xs-12" type="text" formControlName="nombre_comercial" placeholder="" readonly>
+                                </div>
+                                <div class="form-group mt-3" *ngIf="tipoRUC">
+                                    <input class="form-control col-xs-12" type="text" formControlName="identificacion_representante" placeholder="" readonly>
+                                </div>
+                                <div class="form-group mt-3" *ngIf="tipoRUC"> 
+                                    <input class="form-control col-xs-12" type="text" formControlName="nombre_representante" placeholder="" readonly>
+                                </div>
+                                <div class="form-group mt-3" *ngIf="tipoRUC" style="display:none;">
+                                    <input class="form-control col-xs-12" type="text" formControlName="apellido_representante" placeholder="" readonly>
+                                </div>
+                                <!-- 07APR2021 DSRE Activación de Usuarios Externos desde Agrocalidad
+                                <div class="form-group mt-3">
+                                    <input class="form-control col-xs-12" type="password" formControlName="password" placeholder="Contraseña">
+                                    <div class="invalid-feedback d-block" *ngIf="formulario.controls.password.errors?.required && formulario.touched">
+                                        Ingrese una contraseña
+                                    </div>
+                                </div>
+                                <div class="form-group mt-3">
+                                    <input class="form-control col-xs-12" type="password" formControlName="confirmar_password" placeholder="Confirmar contraseña">
+                                    <div class="invalid-feedback d-block" *ngIf="formulario.controls.confirmar_password.errors?.required && formulario.touched">
+                                        Ingrese nuevamente la contraseña
+                                    </div>
+                                    <div class="invalid-feedback d-block" *ngIf="formulario.errors?.passwordIguales && formulario.touched">
+                                        Las contraseñas no coinciden
+                                    </div>
+                                </div>
+                                -->
+                                <div class="col-sm-12">
+                                    <input type="checkbox" id="terminos_condiciones" formControlName="terminos_condiciones" class="material-inputs chk-col-indigo" checked />
+                                    <label for="terminos_condiciones">He leído y acepto los términos y condiciones de uso.</label>
+                                </div>
+                                <div class="form-group text-center mt-3">
+                                    <div class="col-sm-12 text-center">
+                                        <p><a href="{{this.rutaTerminos}}" target="_blank">Leer los términos y condiciones de uso.</a></p>
+                                    </div>
+                                </div>
+                                <div class="form-group text-center mt-3">
+                                    <div class="col-xl-12">
+                                        <button class="btn btn-info btn-lg btn-block text-uppercase waves-effect waves-light" type="submit">Registrar</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group text-center mt-3">
+                                <div class="col-xs-12">
+                                    <button class="btn-secondary btn-sm btn-block text-uppercase waves-effect waves-light" routerLink="/login-externo" type="button">Regresar</button>
+                                </div>
+                            </div>
+                            <div class="form-group mb-0">
+                                <div class="col-sm-12 text-center">
+                                    <p>¿Ya dispone de una cuenta? <a routerLink="/login" class="text-info ml-1">Iniciar sesión</a></p>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--<div class="intro-header">
+        </div>-->
+        <div class="intro-footer">
+    </div>
+    <!-- ============================================================== -->
+    <!-- Login box.scss -->
+    <!-- ============================================================== -->
+    <!-- ============================================================== -->
+    <!-- Page wrapper scss in scafholding.scss -->
+    <!-- ============================================================== -->
+    <!-- ============================================================== -->
+    <!-- Page wrapper scss in scafholding.scss -->
+    <!-- ============================================================== -->
+    <!-- ============================================================== -->
+    <!-- Right Sidebar -->
+    <!-- ============================================================== -->
+    <!-- ============================================================== -->
+    <!-- Right Sidebar -->
+    <!-- ============================================================== -->
+</div>

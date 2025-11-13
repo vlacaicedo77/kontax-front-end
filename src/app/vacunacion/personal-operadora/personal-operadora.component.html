@@ -1,0 +1,170 @@
+<!-- ============================================================== -->
+<!-- Preloader - style you can find in spinners.css -->
+<!-- ============================================================== -->
+<div class="preloader">
+    <div class="lds-ripple">
+        <div class="lds-pos"></div>
+        <div class="lds-pos"></div>
+    </div>
+</div>
+<!-- Página para listar al personal de la operadora -->
+<hr class="mt-0">
+<div class="row">
+    <div class="col">
+        <div class="card border border-info rounded">
+            <div class="card-header bg-info text-white rounded-top">
+                Personal de la operadora
+            </div>
+            <div class="card-body">
+                <form [formGroup]="formularioFaseVacunacion" (ngSubmit)="agregarPersonal()" class="form-horizontal r-separator">
+                    <div class="row badge-light-info p-3">
+                        <!--div class="toolbar"-->
+                        <div class="row w-100">
+                            <div class="border-left pb-2 pt-2 col-lg pull-left">
+                                <select class="form-control" formControlName="fase_vacunacion" (change)="cambioFaseVacunacion()">
+                                    <option [value]="null" selected disabled>Fase de Vacunación</option>
+                                    <option *ngFor="let fase of listaFasesVacunaciones" [value]="fase.idFaseVacunacion">{{ fase.nombre }}</option>
+                                </select>
+                            </div>
+                            <div class="col-sm border-left pb-2 pt-2 pull-right text-right">
+                                <button class="btn btn-success waves-effect waves-light" type="submit">
+                                    Personal
+                                    <span class="btn-label">
+                                        <i class="fas fa-plus"></i>
+                                    </span>
+                                </button>
+                            </div>
+                        </div>
+                        <!--/div-->
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <!-- Digitadoras -->
+    <div class="col">
+        <div class="card border border-info rounded">
+            <div class="card-header bg-info text-white rounded-top">
+                Digitadoras
+             </div>
+             <div class="card-body">
+                <div class="table-wrapper-scroll-y custom-scrollbar">
+                    <table class="table table-bordered table-hover v-middle">
+                        <thead>
+                            <tr>
+                                <th>Identificación</th>
+                                <th>Apellidos y Nombres</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let digitador of listaDigitadores">
+                                <td>{{ digitador.numeroIdentificacionPersonal }}</td>
+                                <td>{{ digitador.nombresPersonal }}</td>
+                                <td>
+                                    <div class="btn-group mr-2" role="group" aria-label="Button group with nested dropdown">
+                                        <button type="button" class="btn btn-outline-secondary font-18" (click)="eliminarDigitador(digitador.idPersonaOperadora)"><i class="mdi mdi-delete"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+             </div>
+        </div>
+    </div>
+    <!-- Brigadistas -->
+    <div class="col">
+        <div class="card border border-info rounded">
+            <div class="card-header bg-info text-white rounded-top">
+                Brigadistas
+             </div>
+             <div class="card-body">
+                <div class="table-wrapper-scroll-y custom-scrollbar">
+                    <table class="table table-bordered table-hover v-middle">
+                        <thead>
+                            <tr>
+                                <th>Identificación</th>
+                                <th>Apellidos y Nombres</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let brigadista of listaBrigadistas">
+                                <td>{{ brigadista.numeroIdentificacionPersonal }}</td>
+                                <td>{{ brigadista.nombresPersonal }}</td>
+                                <td>
+                                    <div class="btn-group mr-2" role="group" aria-label="Button group with nested dropdown">
+                                        <button type="button" class="btn btn-outline-secondary font-18" (click)="eliminarBrigadista(brigadista.idPersonaOperadora)"><i class="mdi mdi-delete"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+             </div>
+        </div>
+    </div>
+</div>
+<!-- Modal para agregar un nuevo personal a la operadora. -->
+
+<div [ngClass]="{'ocultar-modal':!panelPersonal}">
+    <div class="modal fade show" tabindex="-1" role="dialog" aria-labelledby="scrollableModalTitle" style="display: block;" aria-modal="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header modal-colored-header bg-success">
+                    <h5 class="modal-title text-white">Nuevo personal</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="cerrarPanel()">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <form ngNativeValidate [formGroup]="formularioPersonal" (ngSubmit)="registrarPersonal()" class="form-horizontal r-separator" class="pl-3 pr-3">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="username">CI</label>
+                            <div class="input-group mb-3">
+                                <input class="form-control" formControlName="ci" type="text" placeholder="" #ci>
+                                <div class="input-group-append">
+                                    <button class="btn btn-success" type="button" (click)="buscarUsuarioExterno(ci.value)" ><i class="ti-search" ></i></button>
+                                    <button class="btn btn-success" type="button" (click)="agregarCiudadano()"><i class="ti-plus" ></i></button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="username">Ciudadano</label>
+                            <select class="form-control" formControlName="id_usuario_externo">
+                                <option [value]="null" selected disabled>Seleccione un ciudadano de la lista</option>
+                                <option *ngFor="let usuario of listaUsuariosExternos" [value]="usuario.idUsuariosExternos">{{ usuario.nombres }}</option>
+                            </select>
+                            <div class="invalid-feedback d-block" *ngIf="formularioPersonal.controls.id_usuario_externo.errors?.required && formularioPersonal.touched">
+                                Seleccione un ciudadano
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="username">Tipo personal</label>
+                            <select class="form-control" formControlName="id_tipo_persona">
+                                <option [value]="null" selected disabled>Tipos del personal</option>
+                                <option *ngFor="let itemTipo of listaTipoPersonas" [value]="itemTipo.idTipoPersona">{{ itemTipo.nombre }}</option>
+                            </select>
+                            <div class="invalid-feedback d-block" *ngIf="formularioPersonal.controls.id_tipo_persona.errors?.required && formularioPersonal.touched">
+                                Seleccione el tipo de personal
+                            </div>
+                        </div>
+                        
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-light" data-dismiss="modal" (click)="cerrarPanel()">Cerrar</button>
+                        <button type="submit" class="btn btn-success">Registrar</button>
+                    </div>
+                </form>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+    <!-- Fondo negro -->
+    <div class="modal-backdrop fade show">
+    </div>
+</div>
+
+<!-- Componente para crear un nuevo usuario -->
+<app-crear-usuario-externo [correo]="mostrarCorreo">
+</app-crear-usuario-externo>

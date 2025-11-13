@@ -1,0 +1,180 @@
+<!-- ============================================================== -->
+<!-- Preloader - style you can find in spinners.css -->
+<!-- ============================================================== -->
+<div class="preloader">
+    <div class="lds-ripple">
+        <div class="lds-pos"></div>
+        <div class="lds-pos"></div>
+    </div>
+</div>
+<hr class="mt-0">
+<div class="row">
+    <div class="col">
+        <div class="card border border-info rounded">
+            <div class="card-header bg-info text-white rounded-top">
+                Oficinas de operadoras
+            </div>
+            <div class="card-body">
+                
+                <form [formGroup]="formularioFaseVacunacion" (ngSubmit)="agregarOficina()" class="form-horizontal r-separator">
+                <div class="row badge-light-info p-3">
+                    <!--div class="toolbar"-->
+                    <div class="row w-100">
+                        <div class="border-left pb-2 pt-2 col-lg pull-left">
+                            <select class="form-control" formControlName="fase_vacunacion" (change)="cambioFaseVacunacion()">
+                                <option [value]="null" selected disabled>Fase de Vacunación</option>
+                                <option *ngFor="let fase of fasesVacunaciones" [value]="fase.idFaseVacunacion">{{ fase.nombre }}</option>
+                            </select>
+                        </div>
+                        <div class="col-sm border-left pb-2 pt-2 pull-right text-right">
+                            <button class="btn btn-success waves-effect waves-light" type="submit">
+                                Oficina
+                                <span class="btn-label">
+                                    <i class="fas fa-plus"></i>
+                                </span>
+                            </button>
+                        </div>
+                    </div>
+                    <!--/div-->
+                </div>
+            </form>
+            <!-- Lista de resultados -->
+            <div class="row p-3">
+                <div class="col">
+                    <div class="table-wrapper-scroll-y custom-scrollbar">
+                        <table class="table table-bordered table-hover v-middle">
+                            <thead>
+                                <tr>
+                                    <th>Oficina</th>
+                                    <th>Fase de Vacunación</th>
+                                    <th>Datos de ubicación</th>
+                                    <th>Estado</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let oficina of listasOficinas">
+                                    <td>
+                                        <h6 class="mb-0 font-weight-medium">{{ oficina?.nombre }}</h6>
+                                        <small class="text-muted">{{ oficina?.descripcion }}</small>
+                                    </td>
+                                    <td>{{ oficina?.nombreFaseVacunacion}}</td>
+                                    <td>
+                                        <span class="usr-location"> {{ oficina?.nombreCanton }}, {{ oficina?.nombreParroquia}}, {{ oficina?.nombreProvincia }}</span>
+                                    </td>
+                                    <td>
+                                        <span class="badge " [ngClass]="{'badge-success': oficina.codigoEstadoRegistro==='HAB', 'badge-danger': oficina.codigoEstadoRegistro==='DES', 'badge-warning': oficina.codigoEstadoRegistro==='REG' }">
+                                            {{ oficina?.nombreEstadoRegistro}}
+                                        </span>
+                                    </td>
+                                    
+                                    <!--td>
+                                        <button type="button" routerLink="/zona-cobertura/" class="btn btn-success waves-effect waves-light"><span class="btn-label">
+                                            <i class="fas fa-edit"></i></span>
+                                        </button>
+                                    </td-->
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            </div>
+        </div>
+    </div>
+
+</div>
+<div class="panel-flotante" *ngIf="panelOficinaNueva">
+    <div class="row m-5">
+        <div class="col">
+            <div class="card border border-success rounded">
+                <div class="card-header bg-success text-white rounded-top">
+                    Nueva oficina
+                </div>
+                <div class="card-body">
+                    <form ngNativeValidate [formGroup]="formularioOficina" (ngSubmit)="registrarNuevaOficina()" class="form-horizontal r-separator">
+                        <div class="card-body">
+                            <div class="card-body">
+                                <div class="form-group row align-items-center mb-0">
+                                    <label class="col-md-3 text-right control-label col-form-label">Nombre</label>
+                                    <div class="col-md-9 border-left pb-2 pt-2">
+                                        <input type="text" formControlName="nombre" class="form-control" placeholder="Nombre de la oficina">
+                                        <div class="invalid-feedback d-block" *ngIf="formularioOficina.controls.nombre.errors?.required && formularioOficina.touched">
+                                            Ingrese el nombre para la oficina
+                                        </div>
+                                    </div>
+                                    <label class="col-md-3 text-right control-label col-form-label">Descripción</label>
+                                    <div class="col-md-9 border-left pb-2 pt-2">
+                                        <input type="text" formControlName="descripcion" class="form-control" placeholder="Descripción ">
+                                        <div class="invalid-feedback d-block" *ngIf="formularioOficina.controls.descripcion.errors?.required && formularioOficina.touched">
+                                            Ingrese la descripción
+                                        </div>
+                                    </div>
+                                    <label class="col-md-3 text-right control-label col-form-label">Cantones</label>
+                                    <div class="col-md-9 border-left pb-2 pt-2" >
+                                        <select formControlName="canton" class="form-control" (change)="cambioCanton()">
+                                            <option [value]="null" selected disabled>Seleccione un cantón</option>
+                                            <option *ngFor="let canton of listaCantones" [value]="canton?.id_canton">{{ canton?.nombre }}</option>
+                                        </select>
+                                        <div class="invalid-feedback d-block" *ngIf="formularioOficina.controls.canton.errors?.required && formularioOficina.touched">
+                                            Seleccione un cantón
+                                        </div>
+                                    </div>
+                                    <label class="col-md-3 text-right control-label col-form-label">Parroquias</label>
+                                    <div class="col-md-9 border-left pb-2 pt-2" >
+                                        <select formControlName="parroquia" class="form-control">
+                                            <option [value]="null" selected disabled>Seleccione una parroquia</option>
+                                            <option *ngFor="let parroquia of listaParroquias" [value]="parroquia?.id_parroquia">{{ parroquia?.nombre }}</option>
+                                        </select>
+                                        <div class="invalid-feedback d-block" *ngIf="formularioOficina.controls.parroquia.errors?.required && formularioOficina.touched">
+                                            Seleccione una parroquia
+                                        </div>
+                                    </div>
+                                    <label class="col-md-3 text-right control-label col-form-label">Calle principal</label>
+                                    <div class="col-md-9 border-left pb-2 pt-2">
+                                        <input type="text" formControlName="calle_principal" class="form-control" placeholder="Calle principal">
+                                        <div class="invalid-feedback d-block" *ngIf="formularioOficina.controls.calle_principal.errors?.required && formularioOficina.touched">
+                                            Ingrese la calle principal
+                                        </div>
+                                    </div>
+                                    <label class="col-md-3 text-right control-label col-form-label">Intersección</label>
+                                    <div class="col-md-9 border-left pb-2 pt-2">
+                                        <input type="text" formControlName="interseccion" class="form-control" placeholder="Calle secundaria">
+                                        <div class="invalid-feedback d-block" *ngIf="formularioOficina.controls.interseccion.errors?.required && formularioOficina.touched">
+                                            Calle secundaria
+                                        </div>
+                                    </div>
+                                    <label class="col-md-3 text-right control-label col-form-label">Referencia</label>
+                                    <div class="col-md-9 border-left pb-2 pt-2">
+                                        <input type="text" formControlName="referencia" class="form-control" placeholder="Referencia">
+                                        <div class="invalid-feedback d-block" *ngIf="formularioOficina.controls.referencia.errors?.required && formularioOficina.touched">
+                                            Referencia
+                                        </div>
+                                    </div>
+                                    <label class="col-md-3 text-right control-label col-form-label">Teléfono</label>
+                                    <div class="col-md-9 border-left pb-2 pt-2">
+                                        <input type="text" formControlName="telefono" class="form-control" placeholder="Teléfono">
+                                        <div class="invalid-feedback d-block" *ngIf="formularioOficina.controls.telefono.errors?.required && formularioOficina.touched">
+                                            Teléfono de la oficina
+                                        </div>
+                                    </div>
+                                    <label class="col-md-3 text-right control-label col-form-label">Correo electrónico</label>
+                                    <div class="col-md-9 border-left pb-2 pt-2">
+                                        <input type="text" formControlName="email" class="form-control" placeholder="email">
+                                        <div class="invalid-feedback d-block" *ngIf="formularioOficina.controls.email.errors?.required && formularioOficina.touched">
+                                            Correo electrónico de la oficina
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group mb-0">
+                                <button type="submit" class="btn btn-success waves-effect waves-light">Agregar oficina</button>
+                                <button type="button" class="btn btn-youtube waves-effect waves-light" (click)="cerrarPanel()">Cancelar</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

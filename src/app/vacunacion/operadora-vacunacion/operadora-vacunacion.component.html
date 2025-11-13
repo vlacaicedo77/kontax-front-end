@@ -1,0 +1,290 @@
+<!-- ============================================================== -->
+<!-- Preloader - style you can find in spinners.css -->
+<!-- ============================================================== -->
+<div class="preloader">
+    <div class="lds-ripple">
+        <div class="lds-pos"></div>
+        <div class="lds-pos"></div>
+    </div>
+</div>
+<hr class="mt-0">
+<div class="row">
+    <div class="col">
+        <div class="card border border-info rounded font-weight-bold">
+            <div class="card-header bg-info text-white rounded-top">
+                Registrar operadora de vacunación
+            </div>
+            <div class="card-body">
+                <form ngNativeValidate [formGroup]="formulario" (ngSubmit)="registrarOperadora()" class="form-horizontal r-separator">
+                    <div class="card-body">
+                        <h4 class="card-title">Datos de la Operadora de Vacunación</h4>
+
+                        <div class="form-group row align-items-center mb-0">
+                            <label class="col-md-3 text-right control-label col-form-label">RUC</label>
+                                <div class="col-md-6 border-left pb-2 pt-2 input-group" *ngIf="modo==='nuevo'">
+                                    <input type="text" formControlName="ruc" minlength="13" maxlength="13" (change)="borraDatosUsuario()" class="form-control border-secondary" #ciPropietario placeholder="Ingrese número de RUC">
+                                    <div class="input-group-append">
+                                        <button type="button" class="btn btn-success border-secondary" (click)="buscarUsuario(ciPropietario.value)"><i class="ti-search"></i></button>
+                                        <button type="button" class="btn btn-info border-secondary" (click)="agregarCiudadano()"><i class="ti-plus"></i></button>
+                                    </div>
+                                </div>
+                                <div class="col-md-9 border-left pb-2 pt-2" *ngIf="modo==='consulta'">
+                                    <span class="form-control">
+                                        {{ operadoraVacunacion?.numeroIdentificacionUsuarioExterno }}
+                                    </span>
+                                </div>
+                        </div>
+
+
+                        <!--<div class="form-group row align-items-center mb-0">
+                            <label class="col-md-3 text-right control-label col-form-label">RUC</label>
+                            <div class="col-md-9 border-left pb-2 pt-2" *ngIf="modo==='nuevo'">
+                                <div class="input-group">
+                                    <input formControlName="ruc2" type="text" class="form-control" #ruc placeholder="RUC" minlength="13" maxlength="13">
+                                    <div class="input-group-append">
+                                        <button class="btn btn-info" type="button" (click)="validarRuc(ruc.value)">Validar</button>
+                                    </div>
+                                </div>
+                                <div class="invalid-feedback d-block" *ngIf="formulario.controls.ruc.errors?.required && formulario.touched">
+                                    Ingrese el RUC de la Operadora de Vacunación
+                                </div>
+                            </div>
+                            <div class="col-md-9 border-left pb-2 pt-2" *ngIf="modo==='consulta'">
+                                <span class="form-control">
+                                    {{ operadoraVacunacion?.numeroIdentificacionUsuarioExterno }}
+                                </span>
+                            </div>
+                        </div>-->
+                        <div class="form-group row align-items-center mb-0">
+                            <label class="col-md-3 text-right control-label col-form-label">Razón Social</label>
+                            <div class="col-md-9 border-left pb-2 pt-2" *ngIf="modo === 'nuevo'">
+                                <input formControlName="razon_social" type="text" class="form-control border-secondary" placeholder="Nombre de la Operadora de Vacunación" readonly>
+                                <div class="invalid-feedback d-block" *ngIf="formulario.controls.razon_social.errors?.required && formulario.touched">
+                                    Ingrese el nombre de la Operadora de Vacunación
+                                </div>
+                            </div>
+                            <div class="col-md-9 border-left pb-2 pt-2" *ngIf="modo==='consulta'">
+                                <span class="form-control">
+                                    {{ operadoraVacunacion?.razonSocial }}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="form-group row align-items-center mb-0">
+                            <label class="col-md-3 text-right control-label col-form-label">Representante Legal</label>
+                            <div class="col-md-9 border-left pb-2 pt-2" *ngIf="modo === 'nuevo'">
+                                <input formControlName="nombres_representante" type="text" class="form-control border-secondary" placeholder="" readonly>
+                                <div class="invalid-feedback d-block" *ngIf="formulario.controls.nombres_representante.errors?.required && formulario.touched">
+                                    Ingrese representante legal
+                                </div>
+                            </div>
+                            <div class="col-md-9 border-left pb-2 pt-2" *ngIf="modo==='consulta'">
+                                <span class="form-control">
+                                    {{ operadoraVacunacion?.nombresRepresentanteLegalUsuarioExterno }}
+                                </span>
+                            </div>
+                        </div>
+                        <!--<div class="form-group row align-items-center mb-0">
+                            <label class="col-md-3 text-right control-label col-form-label">Apellidos del Representate Legal</label>
+                            <div class="col-md-9 border-left pb-2 pt-2" *ngIf="modo === 'nuevo'">
+                                <input formControlName="apellidos_representante" type="text" class="form-control" placeholder="Apellidos">
+                                <div class="invalid-feedback d-block" *ngIf="formulario.controls.apellidos_representante.errors?.required && formulario.touched">
+                                    Ingrese los apellidos del representante legal
+                                </div>
+                            </div>
+                            <div class="col-md-9 border-left pb-2 pt-2" *ngIf="modo==='consulta'">
+                                <span class="form-control">
+                                    {{ operadoraVacunacion?.apellidosRepresentanteLegalUsuarioExterno }}
+                                </span>
+                            </div>
+                        </div>-->
+                        <div class="form-group row align-items-center mb-0">
+                            <label class="col-md-3 text-right control-label col-form-label">Tipo</label>
+                            <div class="col-md-9 border-left pb-2 pt-2" *ngIf="modo === 'nuevo'">
+                                <select formControlName="tipo" class="form-control border-secondary">
+                                    <option [value]="null" selected disabled>Seleccione el tipo de operadora</option>
+                                    <option [value]="tipo.idTipoOperadora" *ngFor="let tipo of listaTiposOperadoras">{{ tipo.nombre}}</option>
+                                </select>
+                                <div class="invalid-feedback d-block" *ngIf="formulario.controls.tipo.errors?.required && formulario.touched">
+                                    Seleccione el tipo de Operadora de Vacunación
+                                </div>
+                            </div>
+                            <div class="col-md-9 border-left pb-2 pt-2" *ngIf="modo==='consulta'">
+                                <span class="form-control">
+                                    {{ operadoraVacunacion?.nombreTipoOperadora}}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="form-group row align-items-center mb-0">
+                            <label class="col-md-3 text-right control-label col-form-label">Fase de vacunación</label>
+                            <div class="col-md-9 border-left pb-2 pt-2" *ngIf="modo === 'nuevo'">
+                                <select formControlName="fase_vacunacion" class="form-control border-secondary" (change)="cambioFaseVacunacion()">
+                                    <option [value]="null" selected disabled>Seleccione fase de vacunación</option>
+                                    <option *ngFor="let fase of listaFasesVacunaciones" [value]="fase.idFaseVacunacion">{{ fase.nombre.toUpperCase() }}</option>
+                                </select>
+                                <div class="invalid-feedback d-block" *ngIf="formulario.controls.fase_vacunacion.errors?.required && formulario.touched">
+                                    Seleccione fase de vacunación asociada
+                                </div>
+                            </div>
+                            <div class="col-md-9 border-left pb-2 pt-2" *ngIf="modo==='consulta'">
+                                <span class="form-control">
+                                    {{ operadoraVacunacion?.nombreFaseVacunacion.toUpperCase() }}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="form-group row align-items-center mb-0">
+                            <label class="col-md-3 text-right control-label col-form-label">Provincia</label>
+                            <div class="col-md-9 border-left pb-2 pt-2" *ngIf="modo === 'nuevo'">
+                                <select formControlName="provincia" class="form-control border-secondary" (change)="cambioProvincia()">
+                                    <option [value]="null" selected disabled>Seleccione una provincia</option>
+                                    <option *ngFor="let oficina of listaOficinas" [value]="oficina.idProvincia">{{ oficina.nombreProvincia.toUpperCase() }}</option>
+                                </select>
+                                <div class="invalid-feedback d-block" *ngIf="formulario.controls.provincia.errors?.required && formulario.touched">
+                                    Seleccione una provincia
+                                </div>
+                            </div>
+                            <div class="col-md-9 border-left pb-2 pt-2" *ngIf="modo==='consulta'">
+                                <span class="form-control">
+                                    {{ operadoraVacunacion?.nombreProvincia }}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="form-group row align-items-center mb-0">
+                            <label class="col-md-3 text-right control-label col-form-label">Cantón</label>
+                            <div class="col-md-9 border-left pb-2 pt-2" *ngIf="modo === 'nuevo'">
+                                <select formControlName="canton" class="form-control border-secondary" (change)="cambioCanton()">
+                                    <option [value]="null" selected disabled>Seleccione un cantón</option>
+                                    <option [value]="canton.id_canton" *ngFor="let canton of listaCantones">{{ canton.nombre.toUpperCase()}}</option>
+                                </select>
+                                <div class="invalid-feedback d-block" *ngIf="formulario.controls.canton.errors?.required && formulario.touched">
+                                    Seleccione un cantón
+                                </div>
+                            </div>
+                            <div class="col-md-9 border-left pb-2 pt-2" *ngIf="modo==='consulta'">
+                                <span class="form-control">
+                                    {{ operadoraVacunacion?.nombreCanton }}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="form-group row align-items-center mb-0">
+                            <label class="col-md-3 text-right control-label col-form-label">Parroquia</label>
+                            <div class="col-md-9 border-left pb-2 pt-2" *ngIf="modo === 'nuevo'">
+                                <select formControlName="parroquia" class="form-control border-secondary">
+                                    <option [value]="null" selected disabled>Seleccione una parroquia</option>
+                                    <option [value]="parroquia.id_parroquia" *ngFor="let parroquia of listaParroquias" >{{ parroquia.nombre.toUpperCase() }}</option>
+                                </select>
+                                <div class="invalid-feedback d-block" *ngIf="formulario.controls.parroquia.errors?.required && formulario.touched">
+                                    Seleccione una parroquia
+                                </div>
+                            </div>
+                            <div class="col-md-9 border-left pb-2 pt-2" *ngIf="modo==='consulta'">
+                                <span class="form-control">
+                                    {{ operadoraVacunacion?.nombreParroquia }}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="form-group row align-items-center mb-0" *ngIf="modo === 'nuevo'">
+                            <label class="col-md-3 text-right control-label col-form-label">Localidad/Sitio/Vía/Km</label>
+                            <div class="col-md-9 border-left pb-2 pt-2" >
+                                <input formControlName="calle_principal" type="text" class="form-control text-uppercase border-secondary" placeholder="">
+                                <div class="invalid-feedback d-block" *ngIf="formulario.controls.calle_principal.errors?.required && formulario.touched">
+                                    Ingrese la Localidad/Sitio/Vía/Km
+                                </div>
+                            </div>
+                        </div>
+                        <!--<div class="form-group row align-items-center mb-0" *ngIf="modo === 'nuevo'">
+                            <label class="col-md-3 text-right control-label col-form-label">Intersección</label>
+                            <div class="col-md-9 border-left pb-2 pt-2" >
+                                <input formControlName="interseccion" type="text" class="form-control" placeholder="Intersección">
+                                <div class="invalid-feedback d-block" *ngIf="formulario.controls.interseccion.errors?.required && formulario.touched">
+                                    Ingrese la calle secundaria de la operadora de vacunación
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row align-items-center mb-0" *ngIf="modo === 'nuevo'">
+                            <label class="col-md-3 text-right control-label col-form-label">Teléfono</label>
+                            <div class="col-md-9 border-left pb-2 pt-2" >
+                                <input formControlName="telefono" type="text" class="form-control border-secondary" placeholder="02 823 456">
+                                <div class="invalid-feedback d-block" *ngIf="formulario.controls.telefono.errors?.required && formulario.touched">
+                                    Ingrese el teléfono de la Operadora de Vacunación
+                                </div>
+                            </div>
+                        </div>-->
+                        <div class="form-group row align-items-center mb-0" *ngIf="modo === 'nuevo'">
+                            <label class="col-md-3 text-right control-label col-form-label">Correo electrónico</label>
+                            <div class="col-md-9 border-left pb-2 pt-2">
+                                <input formControlName="e_mail" type="email" class="form-control text-lowercase border-secondary" placeholder="Ingrese correo electrónico">
+                                
+                            </div>
+                        </div>
+                        <div class="form-group row align-items-center mb-0" *ngIf="modo === 'nuevo'">
+                            <label class="col-md-3 text-right control-label col-form-label">Latitud</label>
+                            <div class="col-md-9 border-left pb-2 pt-2" >
+                                <input formControlName="latitud" type="text" class="form-control border-secondary" placeholder="Latitud">
+                            </div>
+                        </div>
+                        <div class="form-group row align-items-center mb-0" *ngIf="modo === 'nuevo'">
+                            <label class="col-md-3 text-right control-label col-form-label">Longitud</label>
+                            <div class="col-md-9 border-left pb-2 pt-2" >
+                                <input formControlName="longitud" type="text" class="form-control border-secondary" placeholder="Longitud">
+                            </div>
+                        </div>
+                    </div>
+                    <!--hr class="mt-0">
+                    <div class="card-body">
+                        <h4 class="card-title">Documentación de respaldo</h4>
+                        <div class="form-group row align-items-center mb-0">
+                            <label class="col-md-3 text-right control-label col-form-label">Tipo de documento</label>
+                            <div class="col-md-9 border-left pb-2 pt-2 input-group">
+                                <select class="form-control">
+                                    <option value="null" selected disabled>Seleccione el tipo de documento</option>
+                                </select>
+                                <div class="input-group-append">
+                                    <input type="file" class="form-control">
+                                    <button data-toggle="tooltip" title="" type="button" class="btn btn-success btn-circle waves-effect waves-light" data-original-title="Agregar documento"><span class="btn-label"><i class="fas fa-plus"></i></span></button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row align-items-center mb-0">
+                            <div class="col">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>Tipo de documento</th>
+                                            <td>
+                                            </td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <th>RUC</th>
+                                            <td>
+                                                <button type="button" class="btn waves-effect waves-light btn-info">
+                                                    <i class="fas fa-download"></i>
+                                                    Descargar documento
+                                                </button>
+                                                <button type="button " class="btn waves-effect waves-light btn-danger ">
+                                                    <i class="fas fa-eraser"></i>
+                                                    Eliminar
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div-->
+                    <div class="card-body ">
+                        <div class="form-group mb-0 text-left ">
+                            <button type="submit" class="btn btn-info waves-effect waves-light font-weight-bold" *ngIf="modo === 'nuevo'">Registrar Operadora de Vacunación</button>
+                            <button type="button" class="btn btn-success waves-effect waves-light ml-2" *ngIf="modo === 'consulta' && operadoraVacunacion?.codigoEstadoRegistro==='REG'" (click)="habilitarOperadoraVacunacion()">Habilitar Operadora de Vacunación</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Componente para crear un nuevo usuario ciudadano -->
+<app-crear-usuario-externo [correo]="false">
+</app-crear-usuario-externo>

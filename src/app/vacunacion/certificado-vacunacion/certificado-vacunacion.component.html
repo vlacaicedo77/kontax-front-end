@@ -1,0 +1,653 @@
+<!-- ============================================================== -->
+<!-- Preloader - style you can find in spinners.css -->
+<!-- ============================================================== -->
+<div class="preloader">
+    <div class="lds-ripple">
+        <div class="lds-pos"></div>
+        <div class="lds-pos"></div>
+    </div>
+</div>
+<hr class="mt-0">
+<div class="row">
+    <div class="col">
+        <div class="card border border-info rounded">
+            <div class="card-header bg-info text-white rounded-top">
+                Registrar Certificado Único de Vacunación
+            </div>
+            <div class="card-body">
+                <form ngNativeValidate [formGroup]="formulario" (ngSubmit)="confirmar()" class="form-horizontal r-separator">
+                    <!-- Fase de vacunación y oficina -->
+                    <div class="card-body">
+                        <h4 class="card-title">Fase de Vacunación</h4>
+                        <div class="form-group row align-items-center mb-0">
+                            <label class="col-md-3 text-right control-label col-form-label">Fase de Vacunación</label>
+                            <div class="col-md-9 border-left pb-2 pt-2 input-group">
+                                <select formControlName="fase_vacunacion" class="form-control" (change)="cambioFaseVacunacion()">
+                                    <option [value]="null" selected disabled>Seleccione un fase de vacunación</option>
+                                    <option *ngFor="let fase of listaFasesVacunaciones" [value]="fase.idFaseVacunacion" >{{ fase.nombre}}</option>
+                                </select>
+                                <div class="invalid-feedback d-block" *ngIf="formulario.controls.fase_vacunacion.errors?.required && formulario.touched">
+                                    Seleccione una fase de vacunación
+                                </div>
+                            </div>
+                            <label class="col-md-3 text-right control-label col-form-label">Oficina de vacunación</label>
+                            <div class="col-md-9 border-left pb-2 pt-2 input-group">
+                                <select formControlName="oficina_vacunacion" class="form-control" (change)="cambioOficinaVacunacion()">
+                                    <option [value]="null" selected disabled>Seleccione una oficina de vacunación</option>
+                                    <option *ngFor="let digitadora of listaDigitadorasOficinas" [value]="digitadora.idOficina" >{{ digitadora.nombreOficina}}</option>
+                                </select>
+                                <div class="invalid-feedback d-block" *ngIf="formulario.controls.oficina_vacunacion.errors?.required && formulario.touched">
+                                    Seleccione una oficina de vacunación
+                                </div>
+                            </div>
+                            <label class="col-md-3 text-right control-label col-form-label">Zona de cobertura</label>
+                            <div class="col-md-9 border-left pb-2 pt-2 input-group">
+                                <select formControlName="cobertura" class="form-control" (change)="cambioZonaCobertura()">
+                                    <option [value]="null" selected disabled>Seleccione la zona de cobertura</option>
+                                    <option *ngFor="let cobertura of listacoberturasOficinas" [value]="cobertura.idCobertura" >
+                                        Zona: {{ cobertura.nombreZona }}
+                                        | Cantón: {{ cobertura.nombreCantonCobertura }}
+                                        <p *ngIf="cobertura.nombreParroquiaCobertura">
+                                            | Parroquia: {{ cobertura.nombreParroquiaCobertura }}
+                                        </p>
+                                            
+                                    </option>
+                                </select>
+                                <div class="invalid-feedback d-block" *ngIf="formulario.controls.cobertura.errors?.required && formulario.touched">
+                                    Seleccione la zona de cobertura
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr class="mt-0">
+                    <!-- Datos del certificado -->
+                    <div class="card-body">
+                        <h4 class="card-title">Datos del Certificado de Vacunación</h4>
+                        <div class="form-group row align-items-center mb-0">
+                            <label class="col-md-3 text-right control-label col-form-label">Número de Certificado de Vacunación</label>
+                            <div class="col-md-9 border-left pb-2 pt-2 input-group">
+                                <select formControlName="numero_certificado" class="form-control">
+                                    <option [value]="null" selected disabled>Seleccione un número de certificado</option>
+                                    <option *ngFor="let secuencia of listaSecuenciasCertificadosFiltrados" [value]="secuencia.idSecuencia" >{{ secuencia.secuencia }}</option>
+                                </select>
+                                <!--div class="input-group-append">
+                                    <span class="input-group-text"><i class="fas fa-search"></i></span>
+                                </div-->
+                                <input type="text" class="form-control" placeholder="Búsqueda rápida" #filtroNumero [readonly]="formulario.value.oficina_vacunacion ? false:true" (keydown.backspace)="filtroNumero.value=''" (keyup)="cambioFiltroNumeroCertificado(filtroNumero.value)">
+                                <div class="input-group-append">
+                                    <div class="btn-group" role="group" aria-label="Basic example">
+                                        <button type="button" class="btn btn-success cursor-pointer" [disabled]="formulario.value.oficina_vacunacion ? false:true" (click)="buscarCertificado(filtroNumero.value)" data-toggle="tooltip" data-original-title="Búsqueda completa"><i class="fas fa-search" ></i></button>
+                                        <!--button type="button" class="btn btn-success"><i class="fa fa-fast-backward"></i></button-->
+                                        <!--button type="button" class="btn btn-success"><i class="fa fa-play"></i></button-->
+                                        <!--button type="button" class="btn btn-success"><i class="fa fa-fast-forward"></i></button-->
+                                    </div>
+                                </div>
+                                <div class="invalid-feedback d-block" *ngIf="formulario.controls.numero_certificado.errors?.required && formulario.touched">
+                                    Seleccione el número de Certificado de Vacunación
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row align-items-center mb-0">
+                            <label class="col-md-3 text-right control-label col-form-label">Fecha de vacunación</label>
+                            <div class="col-md-9 border-left pb-2 pt-2">
+                                <input formControlName="fecha_vacunacion" type="date" class="form-control" placeholder="Fecha de vacunación">
+                                <div class="invalid-feedback d-block" *ngIf="formulario.controls.fecha_vacunacion.errors?.required && formulario.touched">
+                                    Ingrese la fecha de vacunación
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr class="mt-0">
+                    <!-- Técnico vacunador -->
+                    <div class="card-body">
+                        <h4 class="card-title">Datos del Técnico Vacunador</h4>
+                        <!--Técnico de Agrocalidad-->
+                        <div class="form-group row align-items-center mb-0" *ngIf="formulario.value.oficina_vacunacion">
+                            <label class="col-md-3 text-right control-label col-form-label">Vacunado por técnico de Agrocalidad</label>
+                            <div class="col-md-9 border-left pb-2 pt-2">
+                                <input type="checkbox" id="md_checkbox_8" class="material-inputs chk-col-blue" #tecnicoAgrocalidad [checked]="tecnicoVacunador" (change)="cambioTecnicoVacunador(tecnicoAgrocalidad.checked)">
+                                <label for="md_checkbox_8">Técnico de Agrocalidad</label>
+                            </div>
+                        </div>
+                        <div class="form-group row align-items-center mb-0" *ngIf="tecnicoVacunador">
+                            <label class="col-md-3 text-right control-label col-form-label">Técnico de Agrocalidad</label>
+                            <div class="col-md-9 border-left pb-2 pt-2 input-group">
+                                <select formControlName="tecnico_agrocalidad" class="form-control" (change)="cambioTecnicoAgrocalidad()">
+                                    <option [value]="null" selected disabled>Seleccione un técnico de Agrocalidad</option>
+                                    <option *ngFor="let usuario of listaUsuariosInternos" [value]="usuario.idUsuariosInternos" >{{ usuario.numeroIdentificacion }} | {{ usuario.apellidos.toUpperCase() }} {{ usuario.nombres.toUpperCase() }}</option>
+                                </select>
+                                <div class="invalid-feedback d-block" *ngIf="formulario.touched && formulario.errors?.tecnicoAgrocalidadObligatorio">
+                                    Seleccione un técnico de Agrocalidad
+                                </div>
+                            </div>
+                        </div>
+                        <!--Brigistas-->
+                        <div class="form-group row align-items-center mb-0" *ngIf="tecnicoVacunador===false">
+                            <label class="col-md-3 text-right control-label col-form-label">Brigadista</label>
+                            <div class="col-md-9 border-left pb-2 pt-2 input-group">
+                                <select formControlName="tecnico_vacunador" class="form-control" (change)="cambioBrigadista()">
+                                    <option [value]="null" selected disabled>Seleccione un brigadista</option>
+                                    <option *ngFor="let brigadista of listaBrigadistasOficinas" [value]="brigadista.idUsuarioExternoPersona" >{{brigadista.numeroIdentificacionPersona}} | {{ brigadista.apellidosPersona }}</option>
+                                </select>
+                                <div class="invalid-feedback d-block" *ngIf="formulario.touched && formulario.errors?.brigadistaObligatorio">
+                                    Seleccione un brigadista
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row align-items-center mb-0">
+                            <label class="col-md-3 text-right control-label col-form-label">CI</label>
+                            <div class="col-md-9 border-left pb-2 pt-2 input-group">
+                                <p>
+                                    {{ brigadistaSeleccionado?.numeroIdentificacionPersona }}
+                                    {{ tecnicoAgrocalidadSeleccionado?.numeroIdentificacion }}
+                                </p>
+                            </div>
+                        </div>
+                        <div class="form-group row align-items-center mb-0">
+                            <label class="col-md-3 text-right control-label col-form-label">Apellidos y nombres</label>
+                            <div class="col-md-9 border-left pb-2 pt-2 input-group">
+                                <p>
+                                    {{ brigadistaSeleccionado?.nombresPersona.toUpperCase() }}
+                                    {{ tecnicoAgrocalidadSeleccionado?.apellidos.toUpperCase() }} {{ tecnicoAgrocalidadSeleccionado?.nombres.toUpperCase() }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <hr class="mt-0">
+                    <!-- Propietario de los animales -->
+                    <div class="card-body">
+                        <h4 class="card-title">Propietario de los animales</h4>
+                        <div class="form-group row align-items-center mb-0">
+                            <label class="col-md-3 text-right control-label col-form-label">CI/RUC</label>
+                            <div class="col-md-9 border-left pb-2 pt-2 input-group">
+                                <select formControlName="propietario_animales" class="form-control" (change)="cambioPropietario()">
+                                    <option [value]="null" selected disabled>Seleccione un productor</option>
+                                    <option *ngFor="let usuario of listaUsuariosPropietariosAnimales" [value]="usuario.idUsuariosExternos" >{{ usuario.nombres }}</option>
+                                </select>
+                                <input type="text" class="form-control" #ciPropietario placeholder="CI/RUC">
+                                <div class="input-group-append">
+                                    <button type="button" class="btn btn-success" (click)="buscarPropietario(ciPropietario.value)"><i class="ti-search"></i></button>
+                                    <button type="button" class="btn btn-success" (click)="agregarCiudadano()"><i class="ti-plus"></i></button>
+                                </div>
+                                <div class="invalid-feedback d-block" *ngIf="formulario.controls.propietario_animales.errors?.required && formulario.touched">
+                                    Seleccione un productor
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row align-items-center mb-0">
+                            <label class="col-md-3 text-right control-label col-form-label">Productor</label>
+                            <div class="col-md-9 border-left pb-2 pt-2 input-group">
+                                <p>
+                                    {{ usuarioPropietarioSeleccionado?.numeroIdentificacion }}
+                                </p>
+                            </div>
+                        </div>
+                        <div class="form-group row align-items-center mb-0">
+                            <label class="col-md-3 text-right control-label col-form-label">Apellidos y nombres / Razón social</label>
+                            <div class="col-md-9 border-left pb-2 pt-2 input-group">
+                                <p *ngIf="usuarioPropietarioSeleccionado?.numeroIdentificacion?.length > 10">
+                                    {{ usuarioPropietarioSeleccionado?.razonSocial }}
+                                </p>
+                                <p *ngIf="usuarioPropietarioSeleccionado?.numeroIdentificacion?.length <= 10">
+                                    {{ usuarioPropietarioSeleccionado?.nombres }}
+                                </p>
+                                <!--p *ngIf="usuarioPropietarioSeleccionado?.numeroIdentificacion?.length <= 10 && usuarioPropietarioSeleccionado?.nombres === usuarioPropietarioSeleccionado?.apellidos">
+                                    {{ usuarioPropietarioSeleccionado?.nombres }} {{ usuarioPropietarioSeleccionado?.apellidos }}
+                                </p-->
+                                <!--p *ngIf="usuarioPropietarioSeleccionado?.numeroIdentificacion?.length <= 10">
+                                    {{ usuarioPropietarioSeleccionado?.nombres }}
+                                </p-->
+                            </div>
+                        </div>
+                    </div>
+                    <hr class="mt-0">
+                    <!-- Datos del predio -->
+                    <div class="card-body">
+                        <h4 class="card-title">Datos del predio</h4>
+                        <hr class="mt-0">
+                        <div class="form-group row align-items-center mb-0">
+                            <label class="col-md-3 text-right control-label col-form-label">Cantón</label>
+                            <div class="col-md-9 border-left pb-2 pt-2 input-group">
+                                <p class="form-control">
+                                    {{ coberturaSeleccionada?.nombreCantonCobertura }}
+                                </p>
+                            </div>
+                        </div>
+                        <div class="form-group row align-items-center mb-0">
+                            <label class="col-md-3 text-right control-label col-form-label">Parroquia</label>
+                            <div class="col-md-9 border-left pb-2 pt-2 input-group">
+                                <p class="form-control" *ngIf="coberturaSeleccionada?.nombreParroquiaCobertura">
+                                    {{ coberturaSeleccionada?.nombreParroquiaCobertura }}
+                                </p>
+                                <select formControlName="parroquia" class="form-control" *ngIf="!coberturaSeleccionada?.idParroquiaCobetura" (change)="buscarAreasProductor()">
+                                    <option [value]="null" selected disabled>Seleccione una parroquia</option>
+                                    <option *ngFor="let parroquia of listaParroquias" [value]="parroquia.id_parroquia" >{{ parroquia.nombre }}</option>
+                                </select>
+                                <div class="invalid-feedback d-block" *ngIf="formulario.controls.parroquia.errors?.required && formulario.touched">
+                                    Seleccione una parroquia
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Predio -->
+                        <div class="form-group row align-items-center mb-0" *ngIf="!formulario.value.nuevo_predio">
+                            <label class="col-md-3 text-right control-label col-form-label">Predio</label>
+                            <div class="col-md-9 border-left pb-2 pt-2 input-group">
+                                <select formControlName="area" class="form-control" (change)="cambioPredioProductor()">
+                                    <option [value]="null" selected disabled>Seleccione un predio</option>
+                                    <option *ngFor="let predio of listaPredios" [value]="predio.idArea" >{{ predio.codigoSitio }} | {{ predio.nombre }} ({{ predio.nombreTipoActividad}})</option>
+                                </select>
+                                <div class="invalid-feedback d-block" *ngIf="formulario.errors?.areaObligatoria && formulario.touched">
+                                    Seleccione un predio
+                                </div>
+                                
+                            </div>
+                        </div>
+                        <div class="form-group row align-items-center mb-0" *ngIf="isVisible">
+                            <label class="col-md-3 text-right control-label col-form-label"></label>
+                            <div class="col-md-9 border-left pb-2 pt-2 input-group">
+                                <div class="col-md-3">
+                                    <input type="checkbox" class="material-inputs" id="predio_nuevo" ng-model="unchecked" formControlName="nuevo_predio" (change)="nuevoPredio()">
+                                    <label for="predio_nuevo">Predio nuevo</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row align-items-center mb-0">
+                            <label class="col-md-3 text-right control-label col-form-label">Tipo de explotación</label>
+                            <div class="col-md-9 border-left pb-2 pt-2 input-group">
+                                <!--p class="form-control" *ngIf="!formulario.value.nuevo_predio && predioSeleccionado?.idTipoActividad !== null">
+                                    {{ predioSeleccionado?.nombreTipoActividad }}
+                                </p-->
+                                <select formControlName="tipo" class="form-control">
+                                    <option [value]="null" selected disabled>Seleccione el tipo de explotación</option>
+                                    <option *ngFor="let tipo of listaTiposActividades" [value]="tipo.id_tipo_actividad" >{{ tipo.nombre }}</option>
+                                </select>
+                                <div class="invalid-feedback d-block" *ngIf="formulario.controls.tipo.errors?.required && formulario.touched">
+                                    Seleccione el tipo de explotación
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row align-items-center mb-0">
+                            <label class="col-md-3 text-right control-label col-form-label">Nombre del predio</label>
+                            <div class="col-md-9 border-left pb-2 pt-2 input-group">
+                                
+                                <input formControlName="nombre_predio_ac" type="text" class="form-control text-uppercase" *ngIf="!formulario.value.nuevo_predio">
+                                <input formControlName="nombre_predio" type="text" class="form-control text-uppercase" *ngIf="formulario.value.nuevo_predio">
+                                <div class="invalid-feedback d-block" *ngIf="formulario.errors?.requiereNombrePredio && formulario.touched">
+                                    Ingrese el nombre del predio
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row align-items-center mb-0">
+                            <label class="col-md-3 text-right control-label col-form-label">Sitio/Vía</label>
+                            <div class="col-md-9 border-left pb-2 pt-2 input-group">
+                                <input formControlName="sitio_via_ac" type="text" class="form-control text-uppercase" *ngIf="!formulario.value.nuevo_predio">
+                                <input formControlName="sitio_via" type="text" class="form-control text-uppercase" *ngIf="formulario.value.nuevo_predio">
+                                <div class="invalid-feedback d-block" *ngIf="formulario.errors?.requiereSitioVia && formulario.touched">
+                                    Ingrese el sitio o vía
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row align-items-center mb-0">
+                            <label class="col-md-3 text-right control-label col-form-label">Teléfono</label>
+                            <div class="col-md-9 border-left pb-2 pt-2 input-group">
+                                <input formControlName="telefono_ac" type="text" class="form-control" *ngIf="!formulario.value.nuevo_predio">
+                                <input formControlName="telefono" type="text" class="form-control" *ngIf="formulario.value.nuevo_predio">
+                            </div>
+                        </div>
+                        <div class="form-group row align-items-center mb-0">
+                            <label class="col-md-3 text-right control-label col-form-label">Coordenadas geográficas</label>
+                            <div class="col-md-9 border-left pb-2 pt-2 input-group">
+                                <div class="row">
+                                    <div class="col">
+                                        <h6 class="mb-0 font-weight-medium"> Latitud: </h6>
+                                        <input formControlName="latitud_ac" type="text" class="form-control" *ngIf="!formulario.value.nuevo_predio">
+                                        <input formControlName="latitud" type="text" class="form-control" *ngIf="formulario.value.nuevo_predio">
+                                    </div>
+                                    <div class="col">
+                                        <h6 class="mb-0 font-weight-medium"> Longitud: </h6>
+                                        <input formControlName="longitud_ac" type="text" class="form-control" *ngIf="!formulario.value.nuevo_predio">
+                                        <input formControlName="longitud" type="text" class="form-control" *ngIf="formulario.value.nuevo_predio">
+                                    </div>
+                                </div>
+                                <div class="invalid-feedback d-block" *ngIf="formulario.controls.latitud.errors?.pattern && formulario.touched">
+                                    El valor de la latitud es incorrecto
+                                </div>
+                                <div class="invalid-feedback d-block" *ngIf="formulario.controls.longitud.errors?.pattern && formulario.touched">
+                                    El valor de la longitud es incorrecto
+                                </div>
+                            </div>
+                        </div>
+                        <!--div class="form-group row align-items-center mb-0">
+                            <label class="col-md-3 text-right control-label col-form-label">Zona</label>
+                            <div class="col-md-9 border-left pb-2 pt-2 input-group">
+                                <input formControlName="zona" type="text" class="form-control" >
+                            </div>
+                        </div-->
+                        <div class="form-group row align-items-center mb-0">
+                            <label class="col-md-3 text-right control-label col-form-label">Marca</label>
+                            <div class="col-md-9 border-left pb-2 pt-2 input-group">
+                                <input formControlName="marca" type="text" class="form-control" >
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Censo animal -->
+                    <hr class="mt-0">
+                    <div class="card">
+                        <div class="card-header bg-info">
+                            <h4 class="card-title text-white">Censo animal - total</h4>
+                            <!--span class="round rounded-circle text-white d-inline-block text-center bg-info"> {{ listaAnimales.length }} </span-->
+                        </div>
+                        <!-------- Bovinos del predio ------>
+                        <div class="card-body">
+                            <h4 class="card-title">Catastro bovino</h4>
+                            <hr class="mt-0">
+                            <div class="row">
+                                <div class="col">
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th></th>
+                                                <th>Categoría</th>
+                                                <th>Vacunados</th>
+                                                <th>No vacunados</th>
+                                                <!--th></th-->
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td rowspan="2" class="text-center align-middle"> &#60; 1 año </td><td>Terneras</td>
+                                                <td>
+                                                    <input [(ngModel)]="terneras.vacunado"  [ngModelOptions]="{standalone: true}" type="number" min="0" class="form-control" >
+                                                </td>
+                                                <td>
+                                                    <input [(ngModel)]="terneras.noVacunado"  [ngModelOptions]="{standalone: true}" type="number" min="0" class="form-control" >
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Terneros</td>
+                                                <td>
+                                                    <input [(ngModel)]="terneros.vacunado"  [ngModelOptions]="{standalone: true}" type="number" min="0" class="form-control" >
+                                                </td>
+                                                <td>
+                                                    <input [(ngModel)]="terneros.noVacunado"  [ngModelOptions]="{standalone: true}" type="number" min="0" class="form-control" >
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td rowspan="4" class="text-center align-middle"> &#62; 1 año </td><td>Vacas</td>
+                                                <td>
+                                                    <input [(ngModel)]="vacas.vacunado"  [ngModelOptions]="{standalone: true}" type="number" min="0" class="form-control" >
+                                                </td>
+                                                <td>
+                                                    <input [(ngModel)]="vacas.noVacunado"  [ngModelOptions]="{standalone: true}" type="number" min="0" class="form-control" >
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Vaconas</td>
+                                                <td>
+                                                    <input [(ngModel)]="vaconas.vacunado"  [ngModelOptions]="{standalone: true}" type="number" min="0" class="form-control" >
+                                                </td>
+                                                <td>
+                                                    <input [(ngModel)]="vaconas.noVacunado"  [ngModelOptions]="{standalone: true}" type="number" min="0" class="form-control" >
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Toretes</td>
+                                                <td>
+                                                    <input [(ngModel)]="toretes.vacunado"  [ngModelOptions]="{standalone: true}" type="number" min="0" class="form-control" >
+                                                </td>
+                                                <td>
+                                                    <input [(ngModel)]="toretes.noVacunado"  [ngModelOptions]="{standalone: true}" type="number" min="0" class="form-control" >
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Toros</td>
+                                                <td>
+                                                    <input [(ngModel)]="toros.vacunado"  [ngModelOptions]="{standalone: true}" type="number" min="0" class="form-control" >
+                                                </td>
+                                                <td>
+                                                    <input [(ngModel)]="toros.noVacunado"  [ngModelOptions]="{standalone: true}" type="number" min="0" class="form-control" >
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td></td><td>Búfalo macho</td>
+                                                <td>
+                                                    <input [(ngModel)]="bufalosMachos.vacunado"  [ngModelOptions]="{standalone: true}" type="number" min="0" class="form-control" >
+                                                </td>
+                                                <td>
+                                                    <input [(ngModel)]="bufalosMachos.noVacunado"  [ngModelOptions]="{standalone: true}" type="number" min="0" class="form-control" >
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td></td><td>Búfalo hembra</td>
+                                                <td>
+                                                    <input [(ngModel)]="bufalosHembras.vacunado"  [ngModelOptions]="{standalone: true}" type="number" min="0" class="form-control" >
+                                                </td>
+                                                <td>
+                                                    <input [(ngModel)]="bufalosHembras.noVacunado"  [ngModelOptions]="{standalone: true}" type="number" min="0" class="form-control" >
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <td colspan="2">Total</td>
+                                                <td>{{ terneras.vacunado + terneros.vacunado + vacas.vacunado +vaconas.vacunado + toretes.vacunado + 
+                                                    toros.vacunado + bufalosMachos.vacunado + bufalosHembras.vacunado }}</td>
+                                                <td>{{ terneras.noVacunado + terneros.noVacunado + vacas.noVacunado +vaconas.noVacunado + toretes.noVacunado + 
+                                                    toros.noVacunado + bufalosMachos.noVacunado + bufalosHembras.noVacunado }}</td>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="form-group row align-items-center mb-0">
+                                <label class="col-md-1 text-right control-label col-form-label">USD.($)</label>
+                                <div class="col-md-2 border-left pb-2 pt-2">
+                                    <p style="background-color:chartreuse; color:black; font-weight:bold; text-align: center; padding: 5px; border-radius: 5px;" class="form-control text-center" >
+                                        {{ (terneras.vacunado + terneros.vacunado + vacas.vacunado +vaconas.vacunado + toretes.vacunado + 
+                                            toros.vacunado + bufalosMachos.vacunado + bufalosHembras.vacunado) * 0.60 | number : '1.2-2' }}
+                                    </p>
+                                    <!--input formControlName="valor_vacunas" type="number" step=".01" min="0" value="0" class="form-control" -->
+                                </div>
+                            </div>
+                            <div>
+                                <label class="col-md-1 text-right control-label col-form-label"></label>
+                            </div>
+                            <!-------- Otras especies -------->
+                            <h4 class="card-title">Otras especies del predio</h4>
+                            <hr class="mt-0">
+                            <div class="row">
+                                <div class="col">
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th rowspan="2" class="text-center align-middle">Especie</th>
+                                                <th colspan="2" class="text-center align-middle">Número</th>
+                                            </tr>
+                                            <tr>
+                                                <th class="text-center">Machos</th>
+                                                <th class="text-center">Hembras</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>Ovinos</td>
+                                                <td>
+                                                    <input [(ngModel)]="ovinosMachos.cantidadAnimal"  [ngModelOptions]="{standalone: true}" type="number" min="0" class="form-control" >
+                                                </td>
+                                                <td>
+                                                    <input [(ngModel)]="ovinosHembras.cantidadAnimal"  [ngModelOptions]="{standalone: true}" type="number" min="0" class="form-control" >
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Caprinos</td>
+                                                <td>
+                                                    <input [(ngModel)]="caprinosMachos.cantidadAnimal"  [ngModelOptions]="{standalone: true}" type="number" min="0" class="form-control" >
+                                                </td>
+                                                <td>
+                                                    <input [(ngModel)]="caprinosHembras.cantidadAnimal"  [ngModelOptions]="{standalone: true}" type="number" min="0" class="form-control" >
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Camélidos</td>
+                                                <td>
+                                                    <input [(ngModel)]="camelidosMachos.cantidadAnimal"  [ngModelOptions]="{standalone: true}" type="number" min="0" class="form-control" >
+                                                </td>
+                                                <td>
+                                                    <input [(ngModel)]="camelidosHembras.cantidadAnimal"  [ngModelOptions]="{standalone: true}" type="number" min="0" class="form-control" >
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Equinos</td>
+                                                <td>
+                                                    <input [(ngModel)]="equinosMachos.cantidadAnimal"  [ngModelOptions]="{standalone: true}" type="number" min="0" class="form-control" >
+                                                </td>
+                                                <td>
+                                                    <input [(ngModel)]="equinosHembras.cantidadAnimal"  [ngModelOptions]="{standalone: true}" type="number" min="0" class="form-control" >
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Porcinos</td>
+                                                <td>
+                                                    <input [(ngModel)]="porcinosMachos.cantidadAnimal"  [ngModelOptions]="{standalone: true}" type="number" min="0" class="form-control" >
+                                                </td>
+                                                <td>
+                                                    <input [(ngModel)]="porcinosHembras.cantidadAnimal"  [ngModelOptions]="{standalone: true}" type="number" min="0" class="form-control" >
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Datos de vacuna -->
+                    <hr class="mt-0">
+                    <div class="card-body">
+                        <h4 class="card-title">Datos de vacuna</h4>
+                        <div class="form-group row align-items-center mb-0">
+                            <label class="col-md-3 text-right control-label col-form-label">Laboratorio</label>
+                            <div class="col-md-9 border-left pb-2 pt-2">
+                                <!--input formControlName="laboratorio" type="text" class="form-control" -->
+                                <select formControlName="laboratorio" class="form-control" (change)="cambioLaboratorio()">
+                                    <option [value]="null" selected disabled>Seleccione un laboratorio</option>
+                                    <option *ngFor="let laboratorio of listaLaboratorios" [value]="laboratorio.idLaboratorio" >{{ laboratorio.nombre }}</option>
+                                </select>
+                                <div class="invalid-feedback d-block" *ngIf="formulario.controls.laboratorio.errors?.required && formulario.touched">
+                                    Seleccione un laboratorio
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row align-items-center mb-0">
+                            <label class="col-md-3 text-right control-label col-form-label">Lote</label>
+                            <div class="col-md-9 border-left pb-2 pt-2">
+                                <!--input formControlName="lote" type="text" class="form-control" -->
+                                <select formControlName="lote" class="form-control">
+                                    <option [value]="null" selected disabled>Seleccione un lote</option>
+                                    <option *ngFor="let lote of listaLotes" [value]="lote.idLote" >{{ lote.nombre }}</option>
+                                </select>
+                                <div class="invalid-feedback d-block" *ngIf="formulario.controls.lote.errors?.required && formulario.touched">
+                                    Seleccione un lote
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Observaciones y detalles -->
+                    <hr class="mt-0">
+                    <div class="card-body">
+                        <h4 class="card-title">Observaciones</h4>
+                        <div class="form-group row align-items-center mb-0">
+                            <label class="col-md-3 text-right control-label col-form-label">Observaciones</label>
+                            <div class="col-md-9 border-left pb-2 pt-2">
+                                <input type="text" formControlName="observacion" class="form-control text-uppercase" />
+                            </div>
+                        </div>
+                        <!-- Preguntas -->
+                        <div class="form-group row align-items-center mb-0" *ngFor="let pregunta of listaInterrogantesCertificadosVacunacion">
+                            <label class="col-md-3 text-right control-label col-form-label"></label>
+                            <div class="col-md-9 border-left pb-2 pt-2">
+                                <input type="checkbox" id="{{ pregunta.idInterrogante }}" [checked]="pregunta.seleccionada" (change)="pregunta.seleccionada=!pregunta.seleccionada" class="material-inputs chk-col-blue">
+                                <label for="{{ pregunta.idInterrogante }}">{{ obtenerNombrePregunta(pregunta.idInterrogante) }}</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <h4 class="card-title">Persona receptor del certificado</h4>
+                        <div class="form-group row">
+                            <label class="col-sm-3 text-right control-label col-form-label">Tipo de receptor: </label>
+                            <div class="col-sm-9">
+                                <select formControlName="figura" class="form-control" (change)="cambiarTipoReceptor()">
+                                    <option [value]="null" selected disabled>Seleccione el tipo de receptor</option>
+                                    <option *ngFor="let figura of listaFigurasPersonas" [value]="figura.idFiguraPersona" >{{ figura.nombre }}</option>
+                                </select>
+                                <div class="invalid-feedback d-block" *ngIf="formulario.controls.figura.errors?.required && formulario.touched">
+                                    Seleccione el tipo de receptor
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row align-items-center mb-0">
+                            <label class="col-md-3 text-right control-label col-form-label">Receptor</label>
+                            <div class="col-md-9 border-left pb-2 pt-2 input-group">
+                                <select formControlName="receptor_certificado" class="form-control" (change)="cambioReceptor()">
+                                    <option [value]="null" selected disabled>Seleccione la persona que recibe el certificado</option>
+                                    <option *ngFor="let usuario of listaPersonasReceptoras" [value]="usuario.idUsuariosExternos" >{{ usuario.nombres }}</option>
+                                </select>
+                                <input type="text" class="form-control" #ciUsuarioReceptor placeholder="CI/RUC">
+                                <div class="input-group-append">
+                                    <button type="button" class="btn btn-success" (click)="buscarReceptor(ciUsuarioReceptor.value)"><i class="ti-search"></i></button>
+                                    <button type="button" class="btn btn-success" (click)="agregarCiudadano()"><i class="ti-plus"></i></button>
+                                </div>
+                                <div class="invalid-feedback d-block" *ngIf="formulario.controls.receptor_certificado.errors?.required && formulario.touched">
+                                    Seleccione la persona que recibe el certificado
+                                </div>
+                            </div>
+                        </div><div class="form-group row align-items-center mb-0">
+                            <label class="col-md-3 text-right control-label col-form-label">CI/RUC</label>
+                            <div class="col-md-9 border-left pb-2 pt-2 input-group">
+                                <p>
+                                    {{ usuarioReceptorSeleccionado?.numeroIdentificacion }}
+                                </p>
+                            </div>
+                        </div>
+                        <div class="form-group row align-items-center mb-0">
+                            <label class="col-md-3 text-right control-label col-form-label">Apellidos y nombres / Razón social</label>
+                            <div class="col-md-9 border-left pb-2 pt-2 input-group">
+                                <p *ngIf="usuarioReceptorSeleccionado?.numeroIdentificacion?.length > 10">
+                                    {{ usuarioReceptorSeleccionado?.razonSocial }}
+                                </p>
+                                <p *ngIf="usuarioReceptorSeleccionado?.numeroIdentificacion?.length <= 10">
+                                    {{ usuarioReceptorSeleccionado?.nombres }}
+                                </p>
+                                <!--p *ngIf="usuarioReceptorSeleccionado?.numeroIdentificacion?.length <= 10 && usuarioReceptorSeleccionado?.nombres !== usuarioReceptorSeleccionado?.apellidos">
+                                    {{ usuarioReceptorSeleccionado?.nombres }} {{ usuarioReceptorSeleccionado?.apellidos }}
+                                </p-->
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Botón del formulario de certificado de vacunación-->
+                    <div class="card-body">
+                        <div class="form-group mb-0">
+                            <button type="submit" class="btn btn-info waves-effect waves-light">Registrar Certificado de Vacunación</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<!-- Componente para crear un nuevo usuario ciudadano -->
+<app-crear-usuario-externo [correo]="false">
+</app-crear-usuario-externo>
+
+<!-- Componente para crear sitios -->
+<app-registro-sitio-modal>
+</app-registro-sitio-modal>
+
+<!-- Componente para agregar una nueva área -->
+<app-registro-area-modal>
+</app-registro-area-modal>
+<!-- Visor del nuevo certificado de vacunación -->
+<app-visor-pdf [nombreArchivoDescarga]="nombrePDF">
+</app-visor-pdf>

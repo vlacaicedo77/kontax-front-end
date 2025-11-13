@@ -1,0 +1,50 @@
+<div class="main-wrapper">
+    <div class="auth-wrapper d-flex no-block justify-content-center align-items-center" style="background:url(assets/images/background/{{this.randomBackground}}) no-repeat center center; background-size: cover;">
+        <div class="auth-box on-sidebar p-4 bg-white m-0">
+            <div id="loginform">
+                <div class="logo text-center">
+                    <span class="db">
+                        <img src="assets/images/background/logo_in.jpg" style="width: 350px;" alt="logo" />
+                        <!--<img src="assets/images/logo-Agrocalidad.png" style="width: 175px;" alt="logo" />
+                        <img src="assets/images/logo-MAG.png" style="width: 175px;" alt="Home" />-->
+                    </span>
+                    <h3>Recuperación de Contraseña Usuario Externo</h3>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <form ngNativeValidate [formGroup]="formulario" (ngSubmit)="recuperarContrasena()" class="form-horizontal r-separator" action="index.html">
+                            <div class="form-group row align-items-center mb-0">
+                                <label for="identificacion" class="col-md-3 text-right control-label col-form-label">Número Id</label>
+                                <div class="col-md-9 border-left pb-2 pt-2 input-group">
+                                    <!--19Apr2021 DSRE Ingreso de varios tipos de identificación para usuarios externos-->
+                                    <input formControlName="identificacion" name="identificacion" class="form-control" type="text" (keyup)="mascara($event,'alfanumerico')" required="required" placeholder="Número identificación"> 
+                                </div>
+                            </div>
+                            <div class="form-group row align-items-center mb-0">
+                                <label for="email" class="col-md-3 text-right control-label col-form-label">Email registrado</label>
+                                <div class="col-md-9 border-left pb-2 pt-2 input-group">
+                                    <input formControlName="email" name="email" class="form-control" type="email" required="required" placeholder="Email registrado"> 
+                                </div>
+                            </div>
+                            <div class="card-body ">
+                                <div class="form-group mb-0 text-right ">
+                                    <button class="btn btn-info btn-lg btn-block text-uppercase waves-effect waves-light" type="submit">Recuperar contraseña
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="form-group text-center mt-3">
+                                <div class="col-xs-12">
+                                    <button class="btn-secondary btn-sm btn-block text-uppercase waves-effect waves-light" routerLink="/login-externo" type="button">Regresar</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--<div class="intro-header">
+        </div>-->
+        <div class="intro-footer">
+    </div>
+</div>
+

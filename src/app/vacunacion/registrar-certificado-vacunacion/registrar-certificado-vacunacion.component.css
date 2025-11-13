@@ -1,0 +1,6 @@
+.table.sin-bordes,
+.table.sin-bordes th,
+.table.sin-bordes td,
+.table.sin-bordes tr {
+    border: none !important;
+}

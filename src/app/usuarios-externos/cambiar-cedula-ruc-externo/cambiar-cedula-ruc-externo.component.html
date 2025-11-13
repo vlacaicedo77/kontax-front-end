@@ -1,0 +1,54 @@
+<hr class="mt-0">
+<div class='row container-fluid' style="width: 100%">
+    <div class="col">
+        <div class="card border border-light-info rounded">
+            <div class="card-header bg-info text-white rounded-top">
+                Cambio de contraseña
+            </div>
+            <div class='card-body'>
+                <div class="card-body">
+                    <form ngNativeValidate [formGroup]="formulario" (ngSubmit)="actualizarUsuario()" class="form-horizontal r-separator" action="index.html">
+                        <h4 class="card-title">Cambiar identificación a RUC</h4>
+                        <div class="form-group mt-3">
+                            <input class="form-control col-xs-12" type="text" formControlName="razon_social" (keyup)="mascara($event,'alfanumerico')" placeholder="Razón social">
+                            <div class="invalid-feedback d-block" *ngIf="formulario.controls.razon_social.errors?.required && formulario.touched">
+                                Ingrese su razón social
+                            </div>
+                        </div>
+                        <div class="form-group mt-3">
+                            <input class="form-control col-xs-12" type="text" formControlName="nombre_comercial" (keyup)="mascara($event,'alfanumerico')"  placeholder="Nombre comercial">
+                            <div class="invalid-feedback d-block" *ngIf="formulario.controls.nombre_comercial.errors?.required && formulario.touched">
+                                Ingrese su nombre comercial
+                            </div>
+                        </div>
+                        <div class="form-group mt-3">
+                            <input class="form-control col-xs-12" type="text" formControlName="identificacion_representante" (keyup)="mascara($event,'numerico')" placeholder="Identificación representante legal">
+                            <div class="invalid-feedback d-block" *ngIf="formulario.controls.identificacion_representante.errors?.required && formulario.touched">
+                                Ingrese el número de identificación del representante legal
+                            </div>
+                        </div>
+                        <div class="form-group mt-3">
+                            <input class="form-control col-xs-12" type="text" formControlName="nombre_representante" (keyup)="mascara($event,'alfanumerico')" placeholder="Nombres representante legal">
+                            <div class="invalid-feedback d-block" *ngIf="formulario.controls.nombre_representante.errors?.required && formulario.touched">
+                                Ingrese los nombres del representante legal
+                            </div>
+                        </div>
+                        <div class="form-group mt-3">
+                            <input class="form-control col-xs-12" type="text" formControlName="apellido_representante" (keyup)="mascara($event,'alfanumerico')" placeholder="Apellidos representante legal">
+                            <div class="invalid-feedback d-block" *ngIf="formulario.controls.apellido_representante.errors?.required && formulario.touched">
+                                Ingrese  los apellidos del representante legal
+                            </div>
+                        </div>
+                        <div class="card-body ">
+                            <div class="form-group mb-0 text-right ">
+                                <button class="btn btn-info btn-lg btn-block text-uppercase waves-effect waves-light" type="submit">Guardar cambios
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

@@ -1,0 +1,81 @@
+<div [ngClass]="{'ocultar':servicioCrearUsuario.visibilidad}">
+    <div class="modal fade show" tabindex="-1" role="dialog" aria-labelledby="scrollableModalTitle" aria-modal="true" style="display: block; padding-left: 0px;">
+        <div class="modal-dialog modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header modal-colored-header bg-info text-weight-bold">
+                    <h4 class="modal-title text-white">Registrar Usuario Externo</h4>
+                    <button type="button" class="close" (click)="cerrarPanel()" aria-hidden="true">×</button>
+                </div>
+                <div class="modal-body">
+                    <form ngNativeValidate [formGroup]="formularioUsuario" (ngSubmit)="registrarUsuario()" class="form-horizontal r-separator">
+                        <div class="form-group">
+                            <label>C.C./C.I./RUC</label>
+                            <div class="input-group mb-3">
+                                <input class="form-control" formControlName="ci" type="text" placeholder="Ingrese número de cédula o RUC" (keydown.backspace)="borrar()">
+                                <div class="input-group-append">
+                                    <button class="btn btn-success" type="button" (click)="buscar()" ><i class="ti-search"></i></button>
+                                </div>
+                            </div>
+                            <div class="invalid-feedback d-block" *ngIf="formularioUsuario.controls.ci.errors?.required && formularioUsuario.touched">
+                                Ingrese el número de cédula o RUC
+                            </div>
+                        </div>
+                        <div class="form-group" *ngIf="formularioUsuario.value.ci?.length > 10 && formularioUsuario.value.razon_social?.length > 0">
+                            <label>Razón social</label>
+                            <input class="form-control" type="text" formControlName="razon_social" placeholder="Razón social" readonly>
+                        </div>
+                        <div class="form-group" *ngIf="formularioUsuario.value.ci?.length < 11">
+                            <label>Apellidos y nombres</label>
+                            <input class="form-control" type="text" formControlName="nombres" placeholder="Apellidos y nombres" readonly>
+                        </div>
+                        <div class="form-group" *ngIf="formularioUsuario.value.ci?.length > 0 && formularioUsuario.value.email?.length > 0">
+                            <label >Correo electrónico</label>
+                            <input class="form-control" type="email" formControlName="email" placeholder="usuario@empresa.com" readonly>
+                        </div>
+                        <div class="form-group" *ngIf="correo">
+                            <label >Correo electrónico</label>
+                            <input class="form-control" type="email" formControlName="email" placeholder="usuario@empresa.com">
+                        </div>
+                        <div class="form-group" *ngIf="formularioUsuario.value.nombre_comercial?.length > 10">
+                            <label >Nombre comercial</label>
+                            <input class="form-control" type="text" formControlName="nombre_comercial" placeholder="Nombre comercial" readonly>
+                        </div>
+                        <div class="form-group" *ngIf="formularioUsuario.value.identificacion_representante?.length > 10">
+                            <label >Identificación representante legal</label>
+                            <input class="form-control" type="text" formControlName="identificacion_representante" placeholder="Identificación representante legal" readonly>
+                        </div>
+                        <div class="form-group" *ngIf="formularioUsuario.value.nombre_representante_legal?.length > 10">
+                            <label >Apellidos y nombres representante legal</label>
+                            <input class="form-control" type="text" formControlName="nombre_representante_legal" placeholder="Nombre comercial" readonly>
+                        </div>
+                        <!--div class="form-group">
+                            <label >Contraseña</label>
+                            <input class="form-control" type="password" formControlName="password">
+                            <div class="invalid-feedback d-block" *ngIf="formularioUsuario.controls.password.errors?.required && formularioUsuario.touched">
+                                Ingrese una contraseña
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label >Confirmar contraseña</label>
+                            <input class="form-control" type="password" formControlName="confirmar_password">
+                            <div class="invalid-feedback d-block" *ngIf="formularioUsuario.controls.confirmar_password.errors?.required && formularioUsuario.touched">
+                                Ingrese nuevamente la contraseña
+                            </div>
+                            <div class="invalid-feedback d-block" *ngIf="formularioUsuario.errors?.passwordIguales && formularioUsuario.touched">
+                                Las contraseñas no coinciden
+                            </div>
+                        </div-->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-light" (click)="cerrarPanel()">Cerrar</button>
+                            <button type="submit" class="btn btn-primary">Crear usuario</button>
+                        </div>
+                    </form>
+                </div>
+                
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+    <!-- Fondo negro -->
+    <div class="modal-backdrop fade show">
+    </div>
+</div>

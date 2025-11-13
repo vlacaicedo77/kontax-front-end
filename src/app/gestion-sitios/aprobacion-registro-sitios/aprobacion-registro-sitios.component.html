@@ -1,0 +1,240 @@
+<hr class="mt-0">
+<div class='row'>
+    <div class='col-12'>
+        <div class='card'>
+            <div class="card-header bg-info text-white rounded-top">
+                Consultar datos del predio
+            </div>
+            <hr class="mt-0">
+            <div class="card-body" *ngIf="!this.busquedaDirecta">
+                <h4 class="card-title">Ingrese la información de búsqueda del predio <b>(predios activos)</b></h4>
+                <div class="form-group row align-items-center mb-0">
+                    <label for="inputIdentificacionPropietario" class="col-md-3 text-right control-label col-form-label">Número de identificación del propietario</label>
+                    <div class="col-md-9 border-left pb-2 pt-2 input-group">
+                        <input type="text" class="form-control" (keyup)="mascara($event,'alfanumerico')" #idPropietario name="inputIdentificacionPropietario" placeholder="Ingrese la identificación del propietario">
+                        <div class="input-group-append">
+                            <button class="btn btn-success" type="button" (click)="buscarSitios(idPropietario.value)"><i class="ti-search"></i></button>
+                        </div>
+                    </div>
+                </div>
+                <!--div class="card-body ">
+                    <div class="form-group mb-0 text-right ">
+                        <button type="button" (click)="buscarSitios(idPropietario.value)" class="btn btn-info waves-effect waves-light ">Buscar</button>
+                    </div>
+                </div-->
+                <form ngNativeValidate [formGroup]="formularioPredio" class="form-horizontal r-separator" (ngSubmit)="buscarDetallesSitio()" action="index.html">
+                    <div class="form-group row align-items-center mb-0" *ngIf="this.prediosVisible">
+                        <label for="inputSitio" class="col-md-3 text-right control-label col-form-label">Predio</label>
+                        <div class="col-md-9 border-left pb-2 pt-2 input-group">
+                            <select class="form-control" formControlName="inputSitio">
+                                <option value=null selected disabled>Seleccione una opción</option>
+                                <ng-container *ngFor="let sitio of listaSitios">
+                                    <option  value="{{sitio.idSitio}}">{{sitio.nombre}} ({{sitio.codigoSitio}})</option>
+                                </ng-container>
+                            </select>
+                            <div class="input-group-append">
+                                <button class="btn btn-success" type="submit"><i class="ti-search"></i></button>
+                            </div>
+                            <div class="invalid-feedback d-block" *ngIf="formularioPredio.controls.inputSitio.errors?.required && formularioPredio.touched">
+                                Seleccione un predio
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <hr class="mt-0">
+                 <div class="card-body" *ngIf="this.detalleVisible">
+                    <h4 class="card-title">Datos del sitio</h4>
+                    <div class="form-group row align-items-center mb-0">
+                        <label class="col-md-3 text-right control-label col-form-label">Estado del predio</label>
+                        <div class="col-md-9 border-left pb-2 pt-2">
+                            <label class="col-md-3 text-left control-label col-form-label">{{sitio.estado}}</label>
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <label class="col-md-3 text-right control-label col-form-label">Nombre propietario</label>
+                        <div class="col-md-9 border-left pb-2 pt-2">
+                            <label class="col-md-5 text-left control-label col-form-label">{{sitio.nombre_propietario}}</label>
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <label class="col-md-3 text-right control-label col-form-label">Identificación propietario</label>
+                        <div class="col-md-9 border-left pb-2 pt-2">
+                            <label class="col-md-5 text-left control-label col-form-label">{{sitio.tipo_identificacion}} {{sitio.numero_identificacion}}</label>
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <label class="col-md-3 text-right control-label col-form-label">Códgio del predio</label>
+                        <div class="col-md-9 border-left pb-2 pt-2">
+                            <label class="col-md-5 text-left control-label col-form-label">{{sitio.codigo_sitio}}</label>
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <label class="col-md-3 text-right control-label col-form-label">Nombre</label>
+                        <div class="col-md-9 border-left pb-2 pt-2">
+                            <label class="col-md-5 text-left control-label col-form-label">{{sitio.nombre}}</label>
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <label class="col-md-3 text-right control-label col-form-label">Superficie (Ha)</label>
+                        <div class="col-md-9 border-left pb-2 pt-2">
+                            <label class="col-md-5 text-left control-label col-form-label">{{sitio.superficie_ha}}</label>
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <label class="col-md-3 text-right control-label col-form-label">Tipo de propiedad</label>
+                        <div class="col-md-9 border-left pb-2 pt-2">
+                            <label class="col-md-5 text-left control-label col-form-label">{{sitio.tipo_propiedad}}</label>
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <label class="col-md-3 text-right control-label col-form-label">Documento de propiedad o arriendo</label>
+                        <div class="form-group mb-0 text-left col-md-9">
+                            <button type="button" (click)="descargarDocumentoSitio(sitio.url_documento_propiedad, sitio.codigo_sitio)" class="btn btn-info waves-effect waves-light col-md-3">Descargar</button>
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <label class="col-md-3 text-right control-label col-form-label">Código predial</label>
+                        <div class="col-md-9 border-left pb-2 pt-2">
+                            <label class="col-md-5 text-left control-label col-form-label">{{sitio.codigo_predial}}</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body" *ngIf="this.detalleVisible">
+                    <h4 class="card-title">Ubicación del predio</h4>
+                    <div class="form-group row align-items-center mb-0">
+                        <label class="col-md-3 text-left control-label col-form-label">País</label>
+                        <div class="col-md-9 border-left pb-2 pt-2">
+                            <label class="col-md-5 text-left control-label col-form-label">{{sitio.pais}}</label>
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <label class="col-md-3 text-left control-label col-form-label">Provincia</label>
+                        <div class="col-md-9 border-left pb-2 pt-2">
+                            <label class="col-md-5 text-left control-label col-form-label">{{sitio.provincia}}</label>
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <label class="col-md-3 text-left control-label col-form-label">Cantón</label>
+                        <div class="col-md-9 border-left pb-2 pt-2">
+                            <label class="col-md-5 text-left control-label col-form-label">{{sitio.canton}}</label>
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <label class="col-md-3 text-left control-label col-form-label">Parroquia</label>
+                        <div class="col-md-9 border-left pb-2 pt-2">
+                            <label class="col-md-5 text-left control-label col-form-label">{{sitio.parroquia}}</label>
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <label class="col-md-3 text-left control-label col-form-label">Calle principal</label>
+                        <div class="col-md-9 border-left pb-2 pt-2">
+                            <label class="col-md-5 text-left control-label col-form-label">{{sitio.calle_principal}}</label>
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <label class="col-md-3 text-left control-label col-form-label">Intersección</label>
+                        <div class="col-md-9 border-left pb-2 pt-2">
+                            <label class="col-md-5 text-left control-label col-form-label">{{sitio.interseccion}}</label>
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <label class="col-md-3 text-left control-label col-form-label">Numeración</label>
+                        <div class="col-md-9 border-left pb-2 pt-2">
+                            <label class="col-md-5 text-left control-label col-form-label">{{sitio.numeracion}}</label>
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <label class="col-md-3 text-left control-label col-form-label">Referencia</label>
+                        <div class="col-md-9 border-left pb-2 pt-2">
+                            <label class="col-md-5 text-left control-label col-form-label">{{sitio.referencia}}</label>
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <label class="col-md-3 text-left control-label col-form-label">Teléfono</label>
+                        <div class="col-md-9 border-left pb-2 pt-2">
+                            <label class="col-md-5 text-left control-label col-form-label">{{sitio.telefono}}</label>
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <label class="col-md-3 text-left control-label col-form-label">Latitud</label>
+                        <div class="col-md-9 border-left pb-2 pt-2">
+                            <label class="col-md-5 text-left control-label col-form-label">{{sitio.latitud}}</label>
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <label class="col-md-3 text-left control-label col-form-label">Longitud</label>
+                        <div class="col-md-9 border-left pb-2 pt-2">
+                            <label class="col-md-5 text-left control-label col-form-label">{{sitio.longitud}}</label>
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0" *ngIf="this.mapaVisible">
+                        <label for="inputMapa" class="col-md-3 text-right control-label col-form-label">Mapa</label>
+                        <div class="col-md-9 border-left pb-2 pt-2">
+                        <google-map 
+                            height="300px"    
+                            widht="50px"    
+                            [zoom]="zoom"
+                            [center]="centroMapa"
+                            [options]="opcionesMapa"
+                            >
+                            <map-marker
+                                [position]="posicionMarcador"
+                                [label]="etiquetaMarcador"
+                                [options]="opcionesMarcador"
+                            >
+                            </map-marker>
+                        </google-map>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body" *ngIf="this.detalleVisible">
+                    <h4 class="card-title">Histórico de cambios</h4>
+                    <div class="form-group row align-items-center mb-0">
+                        <table class="table">
+                            <thead>
+                            <tr class="d-flex">
+                                <th scope="col">Fecha</th>
+                                <th scope="col">Estado</th>
+                                <th scope="col">Observaciones</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr *ngFor="let historico of historial" class="d-flex">
+                                <td>{{historico.fecha_modificacion}}</td>
+                                <td>{{historico.estado}}</td>
+                                <td>{{historico.observaciones}}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class='card' *ngIf="this.detalleVisible">
+                <div class="card-header bg-info text-white rounded-top">
+                    Trámite Registro de Predio
+                </div>
+                <hr class="mt-0">
+                <form ngNativeValidate [formGroup]="formulario" class="form-horizontal r-separator" action="index.html">
+                    <div class="card-body">
+                        <h4 class="card-title">Tramitar Registro de Predio</h4>
+                        <div class="form-group row align-items-center mb-0">
+                            <label for="inputObservaciones" class="col-md-3 text-right control-label col-form-label">Observaciones</label>
+                            <div class="col-md-9 border-left pb-2 pt-2">
+                                <input type="text" class="form-control" (keyup)="mascara($event,'alfanumerico')" formControlName="inputObservaciones" name="inputObservaciones" placeholder="Observaciones">
+                                <div class="invalid-feedback d-block" *ngIf="formulario.controls.inputObservaciones.errors?.required && formulario.touched">
+                                    Ingrese un comentario como observación.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body ">
+                            <div class="form-group mb-0 text-center ">
+                                <button name="btnAprobar" id="btnAprobar" (click)='tramitarSolicitud("aprobar")' class="btn btn-success  text-uppercase waves-effect waves-light col-md-3 m-2" type="submit">Aprobar</button>
+                                <button name="btnVisitaFisica" id="btnVisitaFisica" (click)='tramitarSolicitud("visitar")' class="btn btn-warning  text-uppercase waves-effect waves-light col-md-3 m-2" type="submit">Realizar Visita Física</button>
+                                <button name="btnRechazar" id="btnRechazar" (click)='tramitarSolicitud("rechazar")' class="btn btn-danger  text-uppercase waves-effect waves-light col-md-3 m-2" type="submit">Rechazar</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+</div>

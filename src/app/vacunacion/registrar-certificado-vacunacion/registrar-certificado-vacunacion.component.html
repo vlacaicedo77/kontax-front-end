@@ -1,0 +1,1098 @@
+<!-- ============================================================== -->
+<!-- Preloader - style you can find in spinners.css -->
+<!-- ============================================================== -->
+<div class="preloader">
+    <div class="lds-ripple">
+        <div class="lds-pos"></div>
+        <div class="lds-pos"></div>
+    </div>
+</div>
+<hr class="mt-0">
+<div class="row">
+    <div class="col">
+        <div class="card border border-info rounded">
+            <div class="card-header rounded-top bg-info text-white font-weight-bold">
+                Certificado Único de Vacunación contra la Fiebre Aftosa - CUVFA
+            </div>
+            <div class="card-body">
+                <form ngNativeValidate [formGroup]="formulario" (keydown.enter)="$event.preventDefault()"
+                    class="form-horizontal r-separator">
+                    <!-- Datos logísticos -->
+                    <div class="card-body">
+                        <h4 class="card-title">Datos logísticos</h4>
+                        <div class="form-group row align-items-center mb-0">
+                            <label class="col-md-3 text-right control-label col-form-label font-weight-bold">
+                                Fase / Campaña</label>
+                            <div class="col-md-9 border-left pb-2 pt-2 input-group">
+                                <select formControlName="inputIdFaseVacunacion" class="form-control border-secondary"
+                                    (change)="cargarOficinasEInterrogantes()">
+                                    <option [value]="null" selected disabled>--- Seleccione una opción ---</option>
+                                    <option *ngFor="let fase of listaFasesVacunaciones" [value]="fase.idFaseVacunacion">
+                                        {{ fase.nombre.toUpperCase()}}</option>
+                                </select>
+                                <div class="invalid-feedback d-block"
+                                    *ngIf="formulario.controls.inputIdFaseVacunacion.errors?.required && formulario.touched">
+                                    Seleccione fase / campaña
+                                </div>
+                            </div>
+                            <label class="col-md-3 text-right control-label col-form-label font-weight-bold">
+                                Oficina operativa</label>
+                            <div class="col-md-9 border-left pb-2 pt-2 input-group">
+                                <select formControlName="inputIdOficinaVacunacion" class="form-control border-secondary"
+                                    (change)="cargarSecuenciasBrigadistasCobertura()">
+                                    <option [value]="null" selected disabled>--- Seleccione una opción ---</option>
+                                    <option *ngFor="let digitadora of listaDigitadorasOficinas"
+                                        [value]="digitadora.idOficina">{{ digitadora.nombreOficina.toUpperCase() }}
+                                    </option>
+                                </select>
+                                <div class="invalid-feedback d-block"
+                                    *ngIf="formulario.controls.inputIdOficinaVacunacion.errors?.required && formulario.touched">
+                                    Seleccione oficina operativa
+                                </div>
+                            </div>
+                            <label class="col-md-3 text-right control-label col-form-label font-weight-bold">
+                                Zona de influencia</label>
+                            <div class="col-md-9 border-left pb-2 pt-2 input-group">
+                                <select formControlName="inputIdZonaCobertura" class="form-control border-secondary"
+                                    (change)="buscarZonaCobertura()">
+                                    <option [value]="null" selected disabled>--- Seleccione una opción ---</option>
+                                    <option *ngFor="let cobertura of listaCoberturasOficinas"
+                                        [value]="cobertura.idCobertura">
+                                        {{ cobertura.nombreZona.toUpperCase() }}
+                                        | {{ cobertura.nombreCantonCobertura.toUpperCase() }}
+                                        <p *ngIf="cobertura.nombreParroquiaCobertura">
+                                            - {{ cobertura.nombreParroquiaCobertura.toUpperCase() }}
+                                        </p>
+                                    </option>
+                                </select>
+                                <div class="invalid-feedback d-block"
+                                    *ngIf="formulario.controls.inputIdZonaCobertura.errors?.required && formulario.touched">
+                                    Seleccione zona de influencia
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Datos generales -->
+                    <hr class="mt-0">
+                    <div class="card-body">
+                        <h4 class="card-title">Datos generales</h4>
+                        <div class="form-group row align-items-center mb-0">
+                            <label class="col-md-3 text-right control-label col-form-label font-weight-bold">
+                                Número de certificado</label>
+                            <div class="col-md-6 border-left pb-2 pt-2 input-group">
+                                <select formControlName="inputIdNumeroCertificado"
+                                    class="form-control border-secondary mr-2">
+                                    <option [value]="null" selected disabled>--- Seleccione una opción ---</option>
+                                    <option *ngFor="let secuencia of listaSecuenciasCertificados"
+                                        [value]="secuencia.idSecuencia">{{ secuencia.secuencia }}</option>
+                                </select>
+                                <input type="text" formControlName="inputBuscarCertificado"
+                                    style="width: 35%; min-width: 0; flex: 0 0 35%;"
+                                    class="form-control text-center border-secondary"
+                                    (input)="limpiarListaCertificados()"
+                                    [readonly]="formulario.value.inputIdOficinaVacunacion ? false:true"
+                                    (keydown.enter)="buscarSecuencias(true)" maxlength="25"
+                                    placeholder="ingrese # de certificado">
+                                <div class="input-group-append">
+                                    <button type="button" class="btn btn-info border-secondary font-weight-bold"
+                                        (click)="buscarSecuencias(true)">
+                                        <i class="fas fa-search"></i> Buscar
+                                    </button>
+                                </div>
+                                <div class="invalid-feedback d-block"
+                                    *ngIf="formulario.controls.inputIdNumeroCertificado.errors?.required && formulario.touched">
+                                    Seleccione número de certificado
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row align-items-center mb-0">
+                            <label class="col-md-3 text-right control-label col-form-label font-weight-bold">Fecha de
+                                vacunación</label>
+                            <div class="col-md-9 border-left pb-2 pt-2">
+                                <input style="width: 32%;" formControlName="inputFechaVacunacion" type="date"
+                                    class="form-control border-secondary">
+                                <div class="invalid-feedback d-block"
+                                    *ngIf="formulario.controls.inputFechaVacunacion.errors?.required && formulario.touched">
+                                    Ingrese la fecha de vacunación
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Datos del vacunador -->
+                    <hr class="mt-0">
+                    <div class="card-body">
+                        <h4 class="card-title">Datos del vacunador</h4>
+                        <!--Técnico de Agrocalidad-->
+                        <div class="form-group row align-items-center"
+                            *ngIf="formulario.value.inputIdOficinaVacunacion">
+                            <label class="col-md-3 text-right control-label col-form-label font-weight-bold">
+                                ¿Vacuna Agrocalidad?</label>
+                            <div class="col-md-9 border-left pb-2 pt-2">
+                                <input type="checkbox" id="md_checkbox_8"
+                                    class="material-inputs chk-col-blue border-secondary font-weight-bold"
+                                    #tecnicoAgrocalidad [checked]="tecnicoVacunador"
+                                    (change)="cambiarTipoVacunador(tecnicoAgrocalidad.checked)">
+                                <label for="md_checkbox_8">Sí</label>
+                            </div>
+                        </div>
+                        <div class="form-group row align-items-center mb-0" *ngIf="tecnicoVacunador">
+                            <label class="col-md-3 text-right control-label col-form-label font-weight-bold">
+                                Técnico de Agrocalidad</label>
+                            <div class="col-md-9 border-left pb-2 pt-2 input-group">
+                                <select formControlName="inputIdUsuarioInterno" class="form-control border-secondary">
+                                    <option [value]="null" selected disabled>--- Seleccione una opción ---</option>
+                                    <option *ngFor="let usuario of listaUsuariosInternos"
+                                        [value]="usuario.idUsuariosInternos">{{ usuario.numeroIdentificacion }} | {{
+                                        usuario.apellidos.toUpperCase() }} {{ usuario.nombres.toUpperCase() }}</option>
+                                </select>
+                                <div class="invalid-feedback d-block"
+                                    *ngIf="formulario.touched && formulario.errors?.tecnicoAgrocalidadObligatorio">
+                                    Seleccione Técnico de Agrocalidad
+                                </div>
+                            </div>
+                        </div>
+                        <!--Brigistas-->
+                        <div class="form-group row align-items-center mb-0" *ngIf="tecnicoVacunador===false">
+                            <label
+                                class="col-md-3 text-right control-label col-form-label font-weight-bold">Brigadista</label>
+                            <div class="col-md-9 border-left pb-2 pt-2 input-group">
+                                <select formControlName="inputIdBrigadista" class="form-control border-secondary">
+                                    <option [value]="null" selected disabled>--- Seleccione una opción ---</option>
+                                    <option *ngFor="let brigadista of listaBrigadistasOficinas"
+                                        [value]="brigadista.idUsuarioExternoPersona">
+                                        {{brigadista.numeroIdentificacionPersona}} | {{ brigadista.apellidosPersona }}
+                                    </option>
+                                </select>
+                                <div class="invalid-feedback d-block"
+                                    *ngIf="formulario.touched && formulario.errors?.brigadistaObligatorio">
+                                    Seleccione brigadista
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Cobertura territorial -->
+                    <hr *ngIf="formulario.value.inputIdZonaCobertura" class="mt-0">
+                    <div *ngIf="formulario.value.inputIdZonaCobertura" class="card-body">
+                        <h4 class="card-title">Cobertura territorial</h4>
+                        <div class="form-group row align-items-center mb-0">
+                            <label class="col-md-3 text-right control-label col-form-label font-weight-bold">Zona
+                                seleccionada</label>
+                            <div class="col-md-9 border-left pb-2 pt-2 input-group">
+                                <p class="form-control border-secondary">
+                                    {{ coberturaSeleccionada?.nombreZona.toUpperCase() }} &rarr; {{
+                                    coberturaSeleccionada?.nombreCantonCobertura.toUpperCase() }}
+                                </p>
+                            </div>
+                        </div>
+                        <div class="form-group row align-items-center mb-0">
+                            <label
+                                class="col-md-3 text-right control-label col-form-label font-weight-bold">Parroquia</label>
+                            <div class="col-md-9 border-left pb-2 pt-2 input-group">
+                                <p class="form-control border-secondary"
+                                    *ngIf="coberturaSeleccionada?.nombreParroquiaCobertura">
+                                    {{ coberturaSeleccionada?.nombreParroquiaCobertura.toUpperCase() }}
+                                </p>
+                                <select formControlName="inputIdParroquia" class="form-control border-secondary"
+                                    *ngIf="!coberturaSeleccionada?.idParroquiaCobetura"
+                                    (change)="buscarAreasProductor()">
+                                    <option [value]="null" selected disabled>--- Seleccione una opción ---</option>
+                                    <option *ngFor="let parroquia of listaParroquias" [value]="parroquia.id_parroquia">
+                                        {{ parroquia.nombre.toUpperCase() }}</option>
+                                </select>
+                                <div class="invalid-feedback d-block"
+                                    *ngIf="formulario.controls.inputIdParroquia.errors?.required && formulario.touched">
+                                    Seleccione parroquia
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Datos del productor -->
+                    <hr class="mt-0">
+                    <div class="card-body">
+                        <h4 class="card-title">Datos del productor</h4>
+                        <div class="form-group row align-items-center">
+                            <label class="col-md-3 text-right control-label col-form-label font-weight-bold">
+                                Número de identificación
+                            </label>
+                            <div class="col-md-9 border-left pb-2 pt-2 input-group">
+                                <input type="text" class="form-control border-secondary"
+                                    style="width: 25%; min-width: 0; flex: 0 0 25%;"
+                                    (keydown.enter)="buscarUsuarioExterno(true)" (input)="limpiarNombresProductor()"
+                                    [readonly]="formulario.value.inputIdParroquia ? false:true"
+                                    formControlName="inputIdentificacionProductor" maxlength="25"
+                                    placeholder="Ingrese # de identificación">
+                                <div class="input-group-append">
+                                    <button type="button" class="btn btn-info border-secondary font-weight-bold"
+                                        (click)="buscarUsuarioExterno(true)"
+                                        aria-label="Buscar por número de identificación">
+                                        <i class="fas fa-search"></i> Buscar
+                                    </button>
+                                </div>
+                            </div>
+                            <label class="col-md-3 text-right control-label col-form-label font-weight-bold">
+                                Apellidos y nombres / Razón social
+                            </label>
+                            <div class="col-md-9 border-left pb-2 pt-2 input-group">
+                                <input type="text" class="form-control border-secondary"
+                                    formControlName="inputNombreProductor"
+                                    placeholder="Ingrese Apellidos y nombres / Razón social" readonly
+                                    aria-readonly="true">
+                            </div>
+                            <div class="invalid-feedback d-block"
+                                *ngIf="formulario.controls.inputNombreProductor.errors?.required && formulario.touched">
+                                Ingrese datos del productor
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Datos del sitio -->
+                    <hr class="mt-0">
+                    <div class="card-body">
+                        <h4 class="card-title">Datos del sitio</h4>
+                        <div class="form-group row align-items-center" *ngIf="activarSitioNuevo && idUsuarioProductor">
+                            <label class="col-md-3 text-right control-label col-form-label font-weight-bold">
+                                ¿Es un sitio nuevo?
+                            </label>
+                            <div class="col-md-9 border-left pb-2 pt-2 input-group">
+                                <div class="col-md-3">
+                                    <input type="checkbox" class="material-inputs" id="sitioNuevo" ng-model="unchecked"
+                                        formControlName="checkNuevoSitio" (change)="nuevoSitio()">
+                                    <label for="sitioNuevo">Sí</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row align-items-center mb-0" *ngIf="!formulario.value.checkNuevoSitio">
+                            <label class="col-md-3 text-right control-label col-form-label font-weight-bold">Sitio(s)
+                                activo(s)</label>
+                            <div class="col-md-9 border-left pb-2 pt-2 input-group">
+                                <select formControlName="inputIdArea" class="form-control border-secondary"
+                                    (change)="cambioSitioProductor()">
+                                    <option [value]="null" selected disabled>--- Seleccione una opción ---</option>
+                                    <option *ngFor="let predio of listaSitios" [value]="predio.idArea">{{
+                                        predio.codigoSitio }} | {{ predio.nombre.toUpperCase() }} ({{
+                                        predio.nombreTipoActividad.toUpperCase() }})
+                                    </option>
+                                </select>
+                                <div class="invalid-feedback d-block"
+                                    *ngIf="formulario.errors?.areaObligatoria && formulario.touched">
+                                    Seleccione sitio
+                                </div>
+                            </div>
+                        </div>
+                        <ng-container *ngIf="mostrarDatosSitio">
+                            <div class="form-group row align-items-center mb-0">
+                                <label class="col-md-3 text-right control-label col-form-label font-weight-bold">Tipo de
+                                    explotación</label>
+                                <div class="col-md-9 border-left pb-2 pt-2 input-group">
+                                    <select formControlName="inputIdTipoActividad"
+                                        class="form-control border-secondary">
+                                        <option [value]="null" selected disabled>--- Seleccione una opción ---</option>
+                                        <option *ngFor="let tipo of listaTiposActividades"
+                                            [value]="tipo.id_tipo_actividad">
+                                            {{ tipo.nombre.toUpperCase() }}</option>
+                                    </select>
+                                    <div class="invalid-feedback d-block"
+                                        *ngIf="formulario.controls.inputIdTipoActividad.errors?.required && formulario.touched">
+                                        Seleccione tipo de explotación
+                                    </div>
+                                </div>
+                            </div>
+                            <div *ngIf="!formulario.value.checkNuevoSitio"
+                                class="form-group row align-items-center mb-0">
+                                <label
+                                    class="col-md-3 text-right control-label col-form-label font-weight-bold">Código</label>
+                                <div class="col-md-9 border-left pb-2 pt-2 input-group">
+                                    <p>
+                                        <span class="badge rounded-pill font-weight-bold letra badge-info">
+                                            {{ sitioSeleccionado?.codigoSitio }}
+                                        </span>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="form-group row align-items-center mb-0">
+                                <label
+                                    class="col-md-3 text-right control-label col-form-label font-weight-bold">Nombre</label>
+                                <div class="col-md-9 border-left pb-2 pt-2 input-group">
+                                    <input formControlName="inputNombreSitio" type="text"
+                                        class="form-control text-uppercase border-secondary">
+                                    <div class="invalid-feedback d-block"
+                                        *ngIf="formulario.controls.inputNombreSitio.errors?.required && formulario.touched">
+                                        Ingrese nombre del sitio
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group row align-items-center mb-0">
+                                <label
+                                    class="col-md-3 text-right control-label col-form-label font-weight-bold">Localidad/Sitio/Vía</label>
+                                <div class="col-md-9 border-left pb-2 pt-2 input-group">
+                                    <input formControlName="inputCallePrincipal" type="text"
+                                        class="form-control text-uppercase border-secondary">
+                                    <div class="invalid-feedback d-block"
+                                        *ngIf="formulario.controls.inputCallePrincipal.errors?.required && formulario.touched">
+                                        Ingrese localidad/sitio/vía
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group row align-items-center mb-0">
+                                <label
+                                    class="col-md-3 text-right control-label col-form-label font-weight-bold">Teléfono</label>
+                                <div class="col-md-2 border-left pb-2 pt-2 input-group">
+                                    <input formControlName="inputTelefono" type="text"
+                                        class="form-control border-secondary"
+                                        (keypress)="soloNumeros($event)" maxlength="10">
+                                </div>
+                            </div>
+                            <div class="form-group row align-items-center mb-0">
+                                <label
+                                    class="col-md-3 text-right control-label col-form-label font-weight-bold">Coordenadas
+                                    geográficas</label>
+                                <div class="col-md-4 border-left pb-2 pt-2">
+                                    <div class="row">
+                                        <div class="col">
+                                            <h6 class="mb-0 font-weight-medium">Latitud:</h6>
+                                            <input formControlName="inputLatitud" type="text"
+                                                class="form-control text-center border-secondary">
+                                            <div class="invalid-feedback d-block"
+                                                *ngIf="formulario.controls.inputLatitud.errors?.pattern && formulario.touched">
+                                                Latitud incorrecta
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <h6 class="mb-0 font-weight-medium">Longitud:</h6>
+                                            <input formControlName="inputLongitud" type="text"
+                                                class="form-control text-center border-secondary">
+                                            <div class="invalid-feedback d-block"
+                                                *ngIf="formulario.controls.inputLongitud.errors?.pattern && formulario.touched">
+                                                Longitud incorrecta
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 align-items-center">
+                                    <h6 class="mb-0 text-white font-weight-medium">_</h6>
+                                    <button class="btn btn-primary styled-button" style="width: 70%;"
+                                        (click)="abrirGoogleMaps(formulario.get('inputLatitud').value?.toString(), formulario.get('inputLongitud').value?.toString())">
+                                        <i class="fas fa-map-marker-alt"></i>&nbsp;Ver en Google Maps
+                                    </button>
+                                </div>
+                            </div>
+                        </ng-container>
+                        <div class="form-group row align-items-center mb-0">
+                            <label
+                                class="col-md-3 text-right control-label col-form-label font-weight-bold">Marca</label>
+                            <div class="col-md-2 border-left pb-2 pt-2 input-group">
+                                <input formControlName="inputMarca" type="text" class="form-control border-secondary">
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Catastro de animales -->
+                    <hr class="mt-0">
+                    <div class="card">
+                        <ng-container *ngIf="listaAnimalesConAreteSinVacunar.length > 0">
+                            <!-- Catastro de animales con arete oficial -->
+                            <div class="card-header bg-info">
+                                <h4 class="card-title text-white font-weight-bold">A. Catastro de animales con arete
+                                    oficial
+                                </h4>
+                            </div>
+                            <div class="row">
+                                <div class="card-body">
+                                    <div class="form-group row align-items-center mb-3">
+                                        <label
+                                            class="col-md-3 text-right control-label col-form-label font-weight-bold">
+                                            Aviso importante
+                                        </label>
+                                        <div class="col-md-9 border-left pb-2 pt-2 input-group">
+                                            <p>
+                                                <i class="fas fa-tag"></i> Animal(es) con arete oficial: <span
+                                                    class="font-weight-bold">{{ totalAnimalesConArete }}</span>
+                                                &rarr;
+                                                <i class="fas fa-syringe"></i> Pendiente(s) de vacunación: <span
+                                                    class="font-weight-bold">{{ listaAnimalesConAreteSinVacunar.length -
+                                                    listaAnimalesConAreteVacunados.length }}</span>
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row align-items-center mb-0">
+                                        <label
+                                            class="col-md-3 text-right control-label col-form-label font-weight-bold">
+                                            Ingrese número de arete oficial</label>
+                                        <div class="col-md-7 border-left pb-2 pt-2 input-group">
+                                            <input #inputTicket lang="es" type='text'
+                                                formControlName="inputNumeroIdentificador"
+                                                (keydown.enter)="agregarAnimal()"
+                                                class="form-control text-center border-secondary">
+                                            <div class="input-group-append">
+                                                <button class="btn btn-success border-secondary" type="button"
+                                                    title="Agregar animal" (click)="agregarAnimal()"><i
+                                                        class="ti-plus"></i></button>
+                                                <button class="btn btn-info border-secondary" type="button"
+                                                    title="Actualizar identificadores"
+                                                    (click)="buscarAnimalesConAreteOficial()"><i
+                                                        class="ti-reload"></i></button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="card card-body-fijo border border-secondary rounded">
+                                        <div style="height: 50px;"
+                                            class="card-header bg-secondary text-white d-flex justify-content-between align-items-center">
+                                            <span class="font-weight-bold">
+                                                Lista de animales vacunados
+                                            </span>
+                                            <span
+                                                class="round rounded-circle d-inline-block text-center text-white bg-info font-weight-bold">
+                                                {{ listaAnimalesConAreteVacunados.length }}
+                                            </span>
+                                        </div>
+                                        <div class="card-body p-1">
+                                            <div #scrollContainer class="table-wrapper-scroll-y custom-scrollbar">
+                                                <table class="table table-bordered table-hover v-middle">
+                                                    <tbody>
+                                                        <tr *ngFor="let bovino of listaAnimalesConAreteVacunados">
+                                                            <td class="text-center">
+                                                                <span class="badge rounded-pill"
+                                                                    [ngClass]="bovino?.codigoIdentificacion ? 'badge-amarillo' : 'badge-secondary'">
+                                                                    {{ bovino?.codigoIdentificacion ?
+                                                                    bovino.codigoIdentificacion : bovino.idBovino
+                                                                    }}
+                                                                </span>
+                                                            </td>
+                                                            <td class="text-center">
+                                                                <span class="font-weight-bold">
+                                                                    {{ bovino?.nombreCategoria ? bovino.nombreCategoria
+                                                                    :
+                                                                    bovino.nombreComunTaxonomia + ' ' +
+                                                                    bovino.nombreSexo}}
+                                                                </span>
+                                                            </td>
+                                                            <td class="text-center">
+                                                                <img style="display: block; margin: auto;"
+                                                                    src="assets/images/icon/vaca.svg"
+                                                                    [hidden]="bovino.codigoSexo === 'macho'" width="30"
+                                                                    alt="Generic placeholder image" />
+                                                                <img style="display: block; margin: auto;"
+                                                                    src="assets/images/icon/toro.svg"
+                                                                    [hidden]="bovino.codigoSexo === 'hembra'" width="30"
+                                                                    alt="Generic placeholder image" />
+                                                            </td>
+                                                            <td class="text-center font-weight-bold">
+                                                                <div class="d-flex flex-column align-items-center">
+                                                                    <p class="mb-1">
+                                                                        <span class="font-weight-bold">
+                                                                            {{ bovino.nombreComunRaza }}
+                                                                            ({{ bovino.nombrePureza.toLowerCase() }})
+                                                                        </span>
+                                                                    </p>
+                                                                    <p class="mb-0">
+                                                                        <span
+                                                                            class="badge rounded-pill font-weight-bold"
+                                                                            [ngClass]="{'badge-gris': bovino.estadoVacunacion == 'vacunado', 'badge-light-danger': bovino.estadoVacunacion == 'nacimiento'}">
+                                                                            <span
+                                                                                *ngIf="bovino.estadoVacunacion == 'nacimiento'">
+                                                                                {{ bovino.estadoVacunacion.toLowerCase()
+                                                                                }}
+                                                                            </span>
+                                                                            <span
+                                                                                *ngIf="bovino.estadoVacunacion == 'vacunado'">
+                                                                                {{ bovino.estadoVacunacion.toLowerCase()
+                                                                                }}
+                                                                                ({{
+                                                                                bovino.nombreFaseVacunacion.toUpperCase()
+                                                                                }})
+                                                                            </span>
+                                                                        </span>
+                                                                    </p>
+                                                                </div>
+                                                            </td>
+                                                            <td class="text-center">
+                                                                <button type="button" class="btn btn-danger btn-circle"
+                                                                    (click)="quitarAnimal(bovino.idBovino)"
+                                                                    title="Eliminar animal">
+                                                                    <i class="fas fa-trash"></i>
+                                                                </button>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="card border border-secondary rounded">
+                                        <div style="display: flex; justify-content: space-between; align-items: center; height: 50px;"
+                                            class="card-header bg-secondary text-white font-weight-bold rounded-top">
+                                            <span>
+                                                Total de vacunados
+                                            </span>
+                                            <span style="float: right; padding-top: 0%;"
+                                                class="round rounded-circle text-white d-inline-block text-center bg-warning">
+                                                {{ totalAnimalesAgregados }}
+                                            </span>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <table class="table mt-3 table-borderless v-middle">
+                                                    <thead>
+                                                        <tr>
+                                                            <th></th>
+                                                            <th class="pl-0 text-center"><img width="68"
+                                                                    src="assets/images/icon/vaca.svg" alt="Income" />
+                                                            </th>
+                                                            <th></th>
+                                                            <th class="pl-0 text-center"><img width="68"
+                                                                    src="assets/images/icon/toro.svg" alt="Income" />
+                                                            </th>
+                                                            <th></th>
+                                                            <th></th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr>
+                                                            <td class="py-4"></td>
+                                                            <td class="pl-0 text-left font-weight-bold py-4">Terneras:
+                                                            </td>
+                                                            <td class="pl-0 text-left py-4">{{ ternerasAgregados }}</td>
+                                                            <td class="pl-0 text-left font-weight-bold py-4">Terneros:
+                                                            </td>
+                                                            <td class="pl-0 text-left py-4">{{ ternerosAgregados }}</td>
+                                                            <td class="py-4"></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="py-4"></td>
+                                                            <td class="pl-0 text-left font-weight-bold py-4">Vaconas:
+                                                            </td>
+                                                            <td class="pl-0 text-left py-4">{{ vaconasAgregados }}</td>
+                                                            <td class="pl-0 text-left font-weight-bold py-4">Toretes:
+                                                            </td>
+                                                            <td class="pl-0 text-left py-4">{{ toretesAgregados }}</td>
+                                                            <td class="py-4"></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="py-4"></td>
+                                                            <td class="pl-0 text-left font-weight-bold py-4">Vacas:</td>
+                                                            <td class="pl-0 text-left py-4">{{ vacasAgregados }}</td>
+                                                            <td class="pl-0 text-left font-weight-bold py-4">Toros:</td>
+                                                            <td class="pl-0 text-left py-4">{{ torosAgregados }}</td>
+                                                            <td class="py-4"></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td></td>
+                                                            <td class="pl-0 text-left font-weight-bold">Búfalo Hembra:
+                                                            </td>
+                                                            <td class="pl-0 text-left">{{ bufalosHembrasAgregados }}
+                                                            </td>
+                                                            <td class="pl-0 text-left font-weight-bold">Búfalo Macho:
+                                                            </td>
+                                                            <td class="pl-0 text-left">{{ bufalosMachosAgregados }}</td>
+                                                            <td></td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </ng-container>
+                        <!-- Catastro de animales sin arete oficial -->
+                        <div class="card-header bg-info mb-3">
+                            <h4 class="card-title text-white font-weight-bold">
+                                {{ listaAnimalesConAreteSinVacunar.length > 0 ? 'B. ' : '' }}Catastro de animales sin
+                                arete oficial
+                            </h4>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <div class="card card-body-fijo border border-secondary rounded">
+                                    <div style="height: 50px;"
+                                        class="card-header bg-secondary text-white d-flex justify-content-between align-items-center">
+                                        <span class="font-weight-bold">
+                                            Vacunados por categoría
+                                        </span>
+                                        <span
+                                            class="round rounded-circle d-inline-block text-center text-white bg-info font-weight-bold">
+                                            {{ terneras.vacunado + terneros.vacunado + vacas.vacunado
+                                            +vaconas.vacunado + toretes.vacunado +
+                                            toros.vacunado + bufalosMachos.vacunado + bufalosHembras.vacunado }}
+                                        </span>
+                                    </div>
+                                    <div class="card-body p-1">
+                                        <div class="row">
+                                            <div class="col">
+                                                <table class="table mb-0 sin-bordes" style="font-size: 14px;">
+                                                    <tbody>
+                                                        <tr style="height: 25px; line-height: 25px;">
+                                                            <td rowspan="2"
+                                                                class="text-center align-middle font-weight-bold"
+                                                                style="border-bottom: 1px solid rgb(255, 254, 254) !important;">
+                                                            </td>
+                                                            <td class="font-weight-bold">Terneras</td>
+                                                            <td>
+                                                                <input [(ngModel)]="terneras.vacunado"
+                                                                    [ngModelOptions]="{standalone: true}" type="number"
+                                                                    min="0"
+                                                                    class="form-control form-control-sm text-center font-weight-bold border-secondary"
+                                                                    style="height: 27px; padding: 0 8px;"
+                                                                    (keypress)="soloNumeros($event)"
+                                                                    (blur)="validarYAsignarCero($event, 'terneras.vacunado')">
+                                                            </td>
+                                                        </tr>
+                                                        <tr style="height: 25px; line-height: 25px;">
+                                                            <td class="font-weight-bold">Terneros</td>
+                                                            <td>
+                                                                <input [(ngModel)]="terneros.vacunado"
+                                                                    [ngModelOptions]="{standalone: true}" type="number"
+                                                                    min="0"
+                                                                    class="form-control form-control-sm text-center font-weight-bold border-secondary"
+                                                                    style="height: 27px; padding: 0 8px;"
+                                                                    (keypress)="soloNumeros($event)"
+                                                                    (blur)="validarYAsignarCero($event, 'terneros.vacunado')">
+                                                            </td>
+                                                        </tr>
+                                                        <tr style="height: 25px; line-height: 25px;">
+                                                            <td rowspan="4"
+                                                                class="text-center align-middle font-weight-bold"></td>
+                                                            <td class="font-weight-bold">Vacas</td>
+                                                            <td>
+                                                                <input [(ngModel)]="vacas.vacunado"
+                                                                    [ngModelOptions]="{standalone: true}" type="number"
+                                                                    min="0"
+                                                                    class="form-control form-control-sm text-center font-weight-bold border-secondary"
+                                                                    style="height: 27px; padding: 0 8px;"
+                                                                    (keypress)="soloNumeros($event)"
+                                                                    (blur)="validarYAsignarCero($event, 'vacas.vacunado')">
+                                                            </td>
+                                                        </tr>
+                                                        <tr style="height: 25px; line-height: 25px;">
+                                                            <td class="font-weight-bold">Vaconas</td>
+                                                            <td>
+                                                                <input [(ngModel)]="vaconas.vacunado"
+                                                                    [ngModelOptions]="{standalone: true}" type="number"
+                                                                    min="0"
+                                                                    class="form-control form-control-sm text-center font-weight-bold border-secondary"
+                                                                    style="height: 27px; padding: 0 8px;"
+                                                                    (keypress)="soloNumeros($event)"
+                                                                    (blur)="validarYAsignarCero($event, 'vaconas.vacunado')">
+                                                            </td>
+                                                        </tr>
+                                                        <tr style="height: 25px; line-height: 25px;">
+                                                            <td class="font-weight-bold">Toretes</td>
+                                                            <td>
+                                                                <input [(ngModel)]="toretes.vacunado"
+                                                                    [ngModelOptions]="{standalone: true}" type="number"
+                                                                    min="0"
+                                                                    class="form-control form-control-sm text-center font-weight-bold border-secondary"
+                                                                    style="height: 27px; padding: 0 8px;"
+                                                                    (keypress)="soloNumeros($event)"
+                                                                    (blur)="validarYAsignarCero($event, 'toretes.vacunado')">
+                                                            </td>
+                                                        </tr>
+                                                        <tr style="height: 25px; line-height: 25px;">
+                                                            <td class="font-weight-bold">Toros</td>
+                                                            <td>
+                                                                <input [(ngModel)]="toros.vacunado"
+                                                                    [ngModelOptions]="{standalone: true}" type="number"
+                                                                    min="0"
+                                                                    class="form-control form-control-sm text-center font-weight-bold border-secondary"
+                                                                    style="height: 27px; padding: 0 8px;"
+                                                                    (keypress)="soloNumeros($event)"
+                                                                    (blur)="validarYAsignarCero($event, 'toros.vacunado')">
+                                                            </td>
+                                                        </tr>
+                                                        <tr style="height: 25px; line-height: 25px;">
+                                                            <td></td>
+                                                            <td class="font-weight-bold">Búfalo macho</td>
+                                                            <td>
+                                                                <input [(ngModel)]="bufalosMachos.vacunado"
+                                                                    [ngModelOptions]="{standalone: true}" type="number"
+                                                                    min="0"
+                                                                    class="form-control form-control-sm text-center font-weight-bold border-secondary"
+                                                                    style="height: 27px; padding: 0 8px;"
+                                                                    (keypress)="soloNumeros($event)"
+                                                                    (blur)="validarYAsignarCero($event, 'bufalosMachos.vacunado')">
+                                                            </td>
+                                                        </tr>
+                                                        <tr style="height: 25px; line-height: 25px;">
+                                                            <td></td>
+                                                            <td class="font-weight-bold">Búfalo hembra</td>
+                                                            <td>
+                                                                <input [(ngModel)]="bufalosHembras.vacunado"
+                                                                    [ngModelOptions]="{standalone: true}" type="number"
+                                                                    min="0"
+                                                                    class="form-control form-control-sm text-center font-weight-bold border-secondary"
+                                                                    style="height: 27px; padding: 0 8px;"
+                                                                    (keypress)="soloNumeros($event)"
+                                                                    (blur)="validarYAsignarCero($event, 'bufalosHembras.vacunado')">
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Total global de animales vacunados (A+B) -->
+                            <div class="col">
+                                <div class="card border border-secondary rounded">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; height: 50px;"
+                                        class="card-header bg-secondary text-white font-weight-bold rounded-top">
+                                        <span>
+                                            Total de vacunados {{ listaAnimalesConAreteSinVacunar.length > 0 ? '(A+B)'
+                                            : '' }}
+                                        </span>
+                                        <span style="float: right; padding-top: 0%;"
+                                            class="round rounded-circle text-white d-inline-block text-center bg-warning">
+                                            {{ terneras.vacunado + terneros.vacunado + vacas.vacunado
+                                            +vaconas.vacunado + toretes.vacunado +
+                                            toros.vacunado + bufalosMachos.vacunado + bufalosHembras.vacunado +
+                                            totalAnimalesAgregados }}
+                                        </span>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <table class="table mt-3 table-borderless v-middle">
+                                                <thead>
+                                                    <tr>
+                                                        <th></th>
+                                                        <th class="pl-0 text-center"><img width="68"
+                                                                src="assets/images/icon/vaca.svg" alt="Income" /></th>
+                                                        <th></th>
+                                                        <th class="pl-0 text-center"><img width="68"
+                                                                src="assets/images/icon/toro.svg" alt="Income" /></th>
+                                                        <th></th>
+                                                        <th></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td class="py-4"></td>
+                                                        <td class="pl-0 text-left font-weight-bold py-4">Terneras:</td>
+                                                        <td class="pl-0 text-left py-4">{{ ternerasAgregados +
+                                                            terneras.vacunado }}</td>
+                                                        <td class="pl-0 text-left font-weight-bold py-4">Terneros:</td>
+                                                        <td class="pl-0 text-left py-4">{{ ternerosAgregados +
+                                                            terneros.vacunado }}</td>
+                                                        <td class="py-4"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="py-4"></td>
+                                                        <td class="pl-0 text-left font-weight-bold py-4">Vaconas:</td>
+                                                        <td class="pl-0 text-left py-4">{{ vaconasAgregados +
+                                                            vaconas.vacunado }}</td>
+                                                        <td class="pl-0 text-left font-weight-bold py-4">Toretes:</td>
+                                                        <td class="pl-0 text-left py-4">{{ toretesAgregados +
+                                                            toretes.vacunado }}</td>
+                                                        <td class="py-4"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="py-4"></td>
+                                                        <td class="pl-0 text-left font-weight-bold py-4">Vacas:</td>
+                                                        <td class="pl-0 text-left py-4">{{ vacasAgregados +
+                                                            vacas.vacunado }}</td>
+                                                        <td class="pl-0 text-left font-weight-bold py-4">Toros:</td>
+                                                        <td class="pl-0 text-left py-4">{{ torosAgregados +
+                                                            toros.vacunado }}</td>
+                                                        <td class="py-4"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td></td>
+                                                        <td class="pl-0 text-left font-weight-bold">Búfalo Hembra:</td>
+                                                        <td class="pl-0 text-left">{{ bufalosHembrasAgregados +
+                                                            bufalosHembras.vacunado }}</td>
+                                                        <td class="pl-0 text-left font-weight-bold">Búfalo Macho:</td>
+                                                        <td class="pl-0 text-left">{{ bufalosMachosAgregados +
+                                                            bufalosMachos.vacunado }}</td>
+                                                        <td></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Catastro de otras especies -->
+                        <div class="card-header bg-info mb-3">
+                            <h4 class="card-title text-white font-weight-bold">Catastro de otras especies</h4>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <table class="table" style="border: 1px solid black;">
+                                    <thead>
+                                        <tr style="height: 30px;">
+                                            <th rowspan="2" class="text-center align-middle"
+                                                style="border: 1px solid black;">Especie</th>
+                                            <th colspan="2" class="text-center align-middle"
+                                                style="border: 1px solid black;">Cantidad</th>
+                                        </tr>
+                                        <tr style="height: 30px;">
+                                            <th class="text-center" style="border: 1px solid black;">Machos</th>
+                                            <th class="text-center" style="border: 1px solid black;">Hembras</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr style="height: 30px;">
+                                            <td class="font-weight-bold" style="border: 1px solid black;">Ovinos</td>
+                                            <td style="border: 1px solid black;">
+                                                <input [(ngModel)]="ovinosMachos.cantidadAnimal"
+                                                    [ngModelOptions]="{standalone: true}" type="number" min="0"
+                                                    class="form-control text-center" style="height: 25px;"
+                                                    (keypress)="soloNumeros($event)"
+                                                    (blur)="validarYAsignarCero($event, 'ovinosMachos.cantidadAnimal')">
+                                            </td>
+                                            <td style="border: 1px solid black;">
+                                                <input [(ngModel)]="ovinosHembras.cantidadAnimal"
+                                                    [ngModelOptions]="{standalone: true}" type="number" min="0"
+                                                    class="form-control text-center" style="height: 25px;"
+                                                    (keypress)="soloNumeros($event)"
+                                                    (blur)="validarYAsignarCero($event, 'ovinosHembras.cantidadAnimal')">
+                                            </td>
+                                        </tr>
+                                        <tr style="height: 30px;">
+                                            <td class="font-weight-bold" style="border: 1px solid black;">Caprinos</td>
+                                            <td style="border: 1px solid black;">
+                                                <input [(ngModel)]="caprinosMachos.cantidadAnimal"
+                                                    [ngModelOptions]="{standalone: true}" type="number" min="0"
+                                                    class="form-control text-center" style="height: 25px;"
+                                                    (keypress)="soloNumeros($event)"
+                                                    (blur)="validarYAsignarCero($event, 'caprinosMachos.cantidadAnimal')">
+                                            </td>
+                                            <td style="border: 1px solid black;">
+                                                <input [(ngModel)]="caprinosHembras.cantidadAnimal"
+                                                    [ngModelOptions]="{standalone: true}" type="number" min="0"
+                                                    class="form-control text-center" style="height: 25px;"
+                                                    (keypress)="soloNumeros($event)"
+                                                    (blur)="validarYAsignarCero($event, 'caprinosHembras.cantidadAnimal')">
+                                            </td>
+                                        </tr>
+                                        <tr style="height: 30px;">
+                                            <td class="font-weight-bold" style="border: 1px solid black;">Camélidos</td>
+                                            <td style="border: 1px solid black;">
+                                                <input [(ngModel)]="camelidosMachos.cantidadAnimal"
+                                                    [ngModelOptions]="{standalone: true}" type="number" min="0"
+                                                    class="form-control text-center" style="height: 25px;"
+                                                    (keypress)="soloNumeros($event)"
+                                                    (blur)="validarYAsignarCero($event, 'camelidosMachos.cantidadAnimal')">
+                                            </td>
+                                            <td style="border: 1px solid black;">
+                                                <input [(ngModel)]="camelidosHembras.cantidadAnimal"
+                                                    [ngModelOptions]="{standalone: true}" type="number" min="0"
+                                                    class="form-control text-center" style="height: 25px;"
+                                                    (keypress)="soloNumeros($event)"
+                                                    (blur)="validarYAsignarCero($event, 'camelidosHembras.cantidadAnimal')">
+                                            </td>
+                                        </tr>
+                                        <tr style="height: 30px;">
+                                            <td class="font-weight-bold" style="border: 1px solid black;">Equinos</td>
+                                            <td style="border: 1px solid black;">
+                                                <input [(ngModel)]="equinosMachos.cantidadAnimal"
+                                                    [ngModelOptions]="{standalone: true}" type="number" min="0"
+                                                    class="form-control text-center" style="height: 25px;"
+                                                    (keypress)="soloNumeros($event)"
+                                                    (blur)="validarYAsignarCero($event, 'equinosMachos.cantidadAnimal')">
+                                            </td>
+                                            <td style="border: 1px solid black;">
+                                                <input [(ngModel)]="equinosHembras.cantidadAnimal"
+                                                    [ngModelOptions]="{standalone: true}" type="number" min="0"
+                                                    class="form-control text-center" style="height: 25px;"
+                                                    (keypress)="soloNumeros($event)"
+                                                    (blur)="validarYAsignarCero($event, 'equinosHembras.cantidadAnimal')">
+                                            </td>
+                                        </tr>
+                                        <tr style="height: 30px;">
+                                            <td class="font-weight-bold" style="border: 1px solid black;">Porcinos</td>
+                                            <td style="border: 1px solid black;">
+                                                <input [(ngModel)]="porcinosMachos.cantidadAnimal"
+                                                    [ngModelOptions]="{standalone: true}" type="number" min="0"
+                                                    class="form-control text-center" style="height: 25px;"
+                                                    (keypress)="soloNumeros($event)"
+                                                    (blur)="validarYAsignarCero($event, 'porcinosMachos.cantidadAnimal')">
+                                            </td>
+                                            <td style="border: 1px solid black;">
+                                                <input [(ngModel)]="porcinosHembras.cantidadAnimal"
+                                                    [ngModelOptions]="{standalone: true}" type="number" min="0"
+                                                    class="form-control text-center" style="height: 25px;"
+                                                    (keypress)="soloNumeros($event)"
+                                                    (blur)="validarYAsignarCero($event, 'porcinosHembras.cantidadAnimal')">
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-------- Costo de la vacunación ------>
+                        <div class="card-body">
+                            <h4 class="card-title mb-3">Costo logístico y operativo</h4>
+                            <div class="form-group row align-items-center mb-0">
+                                <label class="col-md-1 text-right control-label col-form-label">USD.($)</label>
+                                <div class="col-md-2 border-left pb-2 pt-2">
+                                    <p style="background-color:chartreuse; color:black; font-weight:bold; text-align: center; padding: 5px; border-radius: 5px;"
+                                        class="form-control text-center">
+                                        {{ (terneras.vacunado + terneros.vacunado + vacas.vacunado +vaconas.vacunado +
+                                        toretes.vacunado +
+                                        toros.vacunado + bufalosMachos.vacunado + bufalosHembras.vacunado +
+                                        totalAnimalesAgregados) * valorVacuna |
+                                        number : '1.2-2' }}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Datos del biológico -->
+                    <hr class="mt-0">
+                    <div class="card-body">
+                        <h4 class="card-title">Datos del biológico</h4>
+                        <div class="form-group row align-items-center mb-0">
+                            <label
+                                class="col-md-3 text-right control-label col-form-label font-weight-bold">Laboratorio</label>
+                            <div class="col-md-3 border-left pb-2 pt-2">
+                                <select formControlName="inputIdLaboratorio" class="form-control border-secondary"
+                                    (change)="cargarLotes()">
+                                    <option [value]="null" selected disabled>--- Seleccione una opción ---</option>
+                                    <option *ngFor="let laboratorio of listaLaboratorios"
+                                        [value]="laboratorio.idLaboratorio">{{ laboratorio.nombre.toUpperCase() }}
+                                    </option>
+                                </select>
+                                <div class="invalid-feedback d-block"
+                                    *ngIf="formulario.controls.inputIdLaboratorio.errors?.required && formulario.touched">
+                                    Seleccione laboratorio
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row align-items-center mb-0">
+                            <label
+                                class="col-md-3 text-right control-label col-form-label font-weight-bold">Lote</label>
+                            <div class="col-md-3 border-left pb-2 pt-2">
+                                <select formControlName="inputLote" class="form-control border-secondary">
+                                    <option [value]="null" selected disabled>--- Seleccione una opción ---</option>
+                                    <option *ngFor="let lote of listaLotes" [value]="lote.idLote">{{
+                                        lote.nombre.toUpperCase() }}
+                                    </option>
+                                </select>
+                                <div class="invalid-feedback d-block"
+                                    *ngIf="formulario.controls.inputLote.errors?.required && formulario.touched">
+                                    Seleccione lote
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr class="mt-0">
+                    <div class="card-body">
+                        <h4 class="card-title">Observaciones</h4>
+                        <div class="form-group row align-items-center mb-0">
+                            <label
+                                class="col-md-3 text-right control-label col-form-label font-weight-bold">Detalle</label>
+                            <div class="col-md-9 border-left pb-2 pt-2">
+                                <input type="text" formControlName="inputObservaciones"
+                                    class="form-control text-uppercase border-secondary" />
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Interrogantes -->
+                    <hr *ngIf="formulario.value.inputIdFaseVacunacion" class="mt-0">
+                    <div *ngIf="formulario.value.inputIdFaseVacunacion" class="card-body">
+                        <h4 class="card-title">Interrogantes</h4>
+                        <div class="form-group row align-items-center mb-0"
+                            *ngFor="let pregunta of listaInterrogantesCertificadosVacunacion; let i = index">
+                            <label class="col-md-3 text-right control-label col-form-label font-weight-bold">
+                                Pregunta {{ i + 1 }}
+                            </label>
+                            <div class="col-md-9 border-left pb-2 pt-2">
+                                <input type="checkbox" id="{{ pregunta.idInterrogante }}"
+                                    [checked]="pregunta.seleccionada"
+                                    (change)="pregunta.seleccionada = !pregunta.seleccionada"
+                                    class="material-inputs chk-col-blue border-secondary">
+                                <label for="{{ pregunta.idInterrogante }}">
+                                    {{ obtenerNombrePregunta(pregunta.idInterrogante) }}
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Receptor del certificado -->
+                    <hr class="mt-0">
+                    <div class="card-body">
+                        <h4 class="card-title">Datos del receptor</h4>
+                        <div *ngIf="idUsuarioProductor" class="form-group row align-items-center mb-3">
+                            <label class="col-md-3 text-right control-label col-form-label font-weight-bold">
+                                ¿Recibe el mismo productor?
+                            </label>
+                            <div class="col-md-9 border-left pb-2 pt-2 input-group">
+                                <input type="checkbox" class="material-inputs border-secondary" id="mismoProductor"
+                                    formControlName="checkReceptor" (change)="cambiarTipoReceptor()">
+                                <label for="mismoProductor" class="mb-0 ml-2">Sí</label>
+                            </div>
+                        </div>
+                        <div *ngIf="!formulario.value.checkReceptor" class="form-group row align-items-center mb-0">
+                            <label
+                                class="col-sm-3 text-right control-label col-form-label font-weight-bold">Tipo</label>
+                            <div class="col-sm-4 border-left pb-2 pt-2">
+                                <select formControlName="inputIdFigura" style="width: 80%;"
+                                    class="form-control border-secondary">
+                                    <option [value]="null" selected disabled>--- Seleccione una opción ---</option>
+                                    <option *ngFor="let figura of listaFigurasPersonas"
+                                        [value]="figura.idFiguraPersona">{{ figura.nombre.toUpperCase() }}</option>
+                                </select>
+                                <div class="invalid-feedback d-block"
+                                    *ngIf="formulario.errors?.figuraObligatoria && formulario.touched">
+                                    Seleccione tipo de receptor
+                                </div>
+                            </div>
+                        </div>
+                        <div *ngIf="!formulario.value.checkReceptor" class="form-group row align-items-center mb-0">
+                            <label class="col-md-3 text-right control-label col-form-label font-weight-bold">
+                                Número de identificación
+                            </label>
+                            <div class="col-md-9 border-left pb-2 pt-2 input-group">
+                                <input type="text" class="form-control border-secondary"
+                                    style="width: 25%; min-width: 0; flex: 0 0 25%;"
+                                    (keydown.enter)="buscarUsuarioExterno(false)" (input)="limpiarNombresReceptor()"
+                                    [readonly]="formulario.value.inputIdFigura ? false:true"
+                                    formControlName="inputIdentificacionReceptor" maxlength="25"
+                                    placeholder="Ingrese # de identificación">
+                                <div class="input-group-append">
+                                    <button type="button" class="btn btn-info border-secondary font-weight-bold"
+                                        (click)="buscarUsuarioExterno(false)"
+                                        aria-label="Buscar por número de identificación">
+                                        <i class="fas fa-search"></i> Buscar
+                                    </button>
+                                </div>
+                            </div>
+                            <!-- Apellidos y nombres -->
+                            <label class="col-md-3 text-right control-label col-form-label font-weight-bold">
+                                Apellidos y nombres
+                            </label>
+                            <div class="col-md-9 border-left pb-2 pt-2 input-group">
+                                <input type="text" class="form-control border-secondary"
+                                    formControlName="inputNombreReceptor" placeholder="Ingrese Apellidos y nombres"
+                                    readonly aria-readonly="true">
+                                <div class="invalid-feedback d-block"
+                                    *ngIf="formulario.errors?.nombresReceptorObligatorio && formulario.touched">
+                                    Ingrese Apellidos y nombres del receptor
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr class="mt-0">
+                    <!--------------------------------------------------------------------------------------------------------------------------->
+                    <div class="card-body">
+                        <div class="form-group mb-0 text-center">
+                            <button type="button"
+                                class="btn btn-info btn-lg font-weight-bold font-16 text-uppercase mx-2"
+                                (click)="registrarCertificadoVacunacion()" style="width: 48%;">Registrar CUVFA
+                            </button>
+                            <button class="btn btn-danger btn-lg font-weight-bold font-16 text-uppercase mx-2"
+                                style="width: 48%;" type="button" (click)="botonCancelar()">Cancelar</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>

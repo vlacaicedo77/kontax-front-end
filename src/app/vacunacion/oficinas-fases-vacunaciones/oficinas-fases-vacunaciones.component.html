@@ -1,0 +1,114 @@
+<!-- ============================================================== -->
+<!-- Preloader - style you can find in spinners.css -->
+<!-- ============================================================== -->
+<div class="preloader">
+    <div class="lds-ripple">
+        <div class="lds-pos"></div>
+        <div class="lds-pos"></div>
+    </div>
+</div>
+<hr class="mt-0">
+<div class="card border border-info rounded">
+    <div class="card-header bg-info text-white rounded-top">
+        Fases de vacunación
+    </div>
+    <div class="card-body">
+        <div class="form-group row align-items-center mb-0">
+            <label class="col-md-3 text-right control-label col-form-label">Fase de vacunación</label>
+            <div class="col-md-9 border-left pb-2 pt-2">
+                <select class="form-control" #fase (change)="cambioFase(fase.value)">
+                    <option [value]="null" selected disabled>Fase de Vacunación</option>
+                    <option *ngFor="let fase of fasesVacunaciones" [value]="fase.idFaseVacunacion">{{ fase.nombre }}</option>
+                </select>
+                <!-- <div class="invalid-feedback d-block" *ngIf="formulario.controls.fase_vacunacion.errors?.required && formulario.touched">
+                    Seleccione una fase de vacunación.
+                </div> -->
+            </div>
+        </div>
+    </div>
+</div>
+<div class="card border border-info rounded">
+    <div class="card-header bg-info text-white rounded-top">
+        Oficinas provinciales de Agrocalidad
+    </div>
+    <div class="card-body">
+        <div class="row p-3">
+            <div class="col">
+                <div class="table-wrapper-scroll-y custom-scrollbar">
+                    <table class="table table-bordered table-hover v-middle">
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Descripcion</th>
+                                <th>Técnico asignado</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let oficina of listaOficinas">
+                                <td>{{ oficina?.nombre }}</td>
+                                <td>{{ oficina?.descripcion }}</td>
+                                <td>
+                                    <span>
+                                        {{ oficina?.numeroIdentificacionInterno }}
+                                    </span>
+                                    <span>
+                                        {{ oficina?.nombresInterno }} {{ oficina?.apellidosInterno }}
+                                    </span>
+                                </td>
+                                <td>    
+                                    <button *ngIf="oficina?.numeroIdentificacionInterno === null" class="btn btn-success waves-effect waves-light" type="button" (click)="editarOficina(oficina)">
+                                        <span class="btn-label">
+                                            <i class="fas fa-edit"></i>
+                                        </span>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="panel-flotante" *ngIf="panelFlotante">
+    <div class="row m-5">
+        <div class="col">
+            <div class="card border border-info rounded">
+                <div class="card-header bg-info text-white rounded-top">
+                    Asignar técnico a oficina
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <form ngNativeValidate [formGroup]="formularioOficina" (ngSubmit)="actualizarOficina()" class="form-horizontal r-separator">
+                            <div class="form-group row align-items-center mb-0">
+                                <label class="col-md-3 text-right control-label col-form-label">Oficina</label>
+                                <div class="col-md-9 border-left pb-2 pt-2">
+                                    <span>
+                                        {{ oficinaSeleccionada?.nombre.toUpperCase() }}
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="form-group row align-items-center mb-0">
+                                <label class="col-md-3 text-right control-label col-form-label">Técnico</label>
+                                <div class="col-md-9 border-left pb-2 pt-2">
+                                    <select class="form-control" style="width: 750px;" formControlName="id_tecnico">
+                                        <option [value]="null" selected disabled>Técnico</option>
+                                        <option *ngFor="let usuario of listaUsuariosInternos" [value]="usuario?.idUsuariosInternos">{{ usuario?.apellidos.toUpperCase() }} {{ usuario?.nombres.toUpperCase() }}</option>
+                                    </select>
+                                    <div class="invalid-feedback d-block" *ngIf="formularioOficina.controls.id_tecnico.errors?.required && formularioOficina.touched">
+                                        Seleccione una fase de vacunación.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group mb-0 text-left ">
+                                <button type="submit" class="btn btn-info waves-effect waves-light" *ngIf="formularioOficina.value.id_tecnico">Asignar técnico</button>
+                                <button type="button" class="btn btn-danger waves-effect waves-light ml-2" (click)="cerrarPanel()">Cerrar</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

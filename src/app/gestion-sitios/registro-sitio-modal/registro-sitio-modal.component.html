@@ -1,0 +1,154 @@
+<div [ngClass]="{'ocultar':servicioRegistroSitioModal.visibilidad}">
+<div>
+    <div class="modal fade show" tabindex="-1" role="dialog" aria-labelledby="scrollableModalTitle" aria-modal="true" style="display: block; padding-left: 0px;">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header modal-colored-header bg-info">
+                    <h4 class="modal-title text-white">Registrar sitio</h4>
+                    <button type="button" class="close" (click)="cerrarPanel()" aria-hidden="true">×</button>
+                </div>
+                <div class="modal-body">
+                    <form ngNativeValidate [formGroup]="formularioSitio" (ngSubmit)="registrarSitio()" class="form-horizontal r-separator">
+                        <div class="form-group">
+                            <label>CI</label>
+                            <div class="input-group mb-3">
+                                <input class="form-control" formControlName="ci_ruc"  type="text" >
+                                <div class="input-group-append">
+                                    <button class="btn btn-success" type="button" (click)="buscarCiudadano()" ><i class="ti-search"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Ciudadano</label>
+                            <select class="form-control" formControlName="usuario_externo" >
+                                <option [value]="null" selected disabled>Seleccione un ciudadano</option>
+                                <option *ngFor="let usuario of listaUsuariosExternos" [value]="usuario.id_usuarios_externos">({{ usuario.razon_social}}) {{ usuario.nombres }} {{ usuario.apellidos }}</option>
+                            </select>
+                            <div class="invalid-feedback d-block" *ngIf="formularioSitio.controls.usuario_externo.errors?.required && formularioSitio.touched">
+                                Seleccione el ciudadano de la lista
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Nombre del predio</label>
+                            <input class="form-control" type="text" formControlName="nombre_predio" placeholder="Ingrese el nombre del predio">
+                            <div class="invalid-feedback d-block" *ngIf="formularioSitio.controls.nombre_predio.errors?.required && formularioSitio.touched">
+                                Ingrese los nombres de los usuarios
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label >Superficie total (Ha)</label>
+                            <input class="form-control" type="number" formControlName="superficie" placeholder="Ingrese la superficie de la finca en hectareas.">
+                            <div class="invalid-feedback d-block" *ngIf="formularioSitio.controls.superficie.errors?.required && formularioSitio.touched">
+                                Ingrese la superficie de la finca en hectareas
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Provincia</label>
+                            <select class="form-control" formControlName="provincia" (change)="cambioProvincia()">
+                                <option [value]="null" selected disabled>Seleccione una provincia</option>
+                                <option *ngFor="let provincia of listaProvincias" [value]="provincia.id_provincia">{{ provincia.nombre }} </option>
+                            </select>
+                            <div class="invalid-feedback d-block" *ngIf="formularioSitio.controls.provincia.errors?.required && formularioSitio.touched">
+                                Seleccione una provincia
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Cantón</label>
+                            <select class="form-control" formControlName="canton" (change)="cambioCanton()">
+                                <option [value]="null" selected disabled>Seleccione un cantón</option>
+                                <option *ngFor="let canton of listaCantones" [value]="canton.id_canton">{{ canton.nombre }} </option>
+                            </select>
+                            <div class="invalid-feedback d-block" *ngIf="formularioSitio.controls.canton.errors?.required && formularioSitio.touched">
+                                Seleccione un cantón
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Parrroquia</label>
+                            <select class="form-control" formControlName="parroquia">
+                                <option [value]="null" selected disabled>Seleccione una parroquia</option>
+                                <option *ngFor="let parroquia of listaParroquias" [value]="parroquia.id_parroquia">{{ parroquia.nombre }} </option>
+                            </select>
+                            <div class="invalid-feedback d-block" *ngIf="formularioSitio.controls.parroquia.errors?.required && formularioSitio.touched">
+                                Seleccione una parroquia
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Código predial</label>
+                            <input class="form-control" type="text" formControlName="codigo_predial" placeholder="Ingrese el código predial si se dispone">
+                        </div>
+                        <div class="form-group">
+                            <label>Calle principal</label>
+                            <input class="form-control" type="text" formControlName="calle_principal" placeholder="Ingrese el nombre de la calle principal">
+                            <div class="invalid-feedback d-block" *ngIf="formularioSitio.controls.calle_principal.errors?.required && formularioSitio.touched">
+                                Ingrese el nombre de la calle principal
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Intersección</label>
+                            <input class="form-control" type="text" formControlName="interseccion" placeholder="Ingrese la intersección">
+                            <div class="invalid-feedback d-block" *ngIf="formularioSitio.controls.interseccion.errors?.required && formularioSitio.touched">
+                                Ingrese la intersección
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Numeración</label>
+                            <input class="form-control" type="text" formControlName="numeracion" placeholder="Ingrese la numeración">
+                            <div class="invalid-feedback d-block" *ngIf="formularioSitio.controls.numeracion.errors?.required && formularioSitio.touched">
+                                Ingrese la numeración
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Referencia</label>
+                            <input class="form-control" type="text" formControlName="referencia" placeholder="Ingrese la referencia">
+                            <div class="invalid-feedback d-block" *ngIf="formularioSitio.controls.referencia.errors?.required && formularioSitio.touched">
+                                Ingrese la referencia
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Teléfono</label>
+                            <input class="form-control" type="text" formControlName="telefono" placeholder="Ingrese el teléfono">
+                            <div class="invalid-feedback d-block" *ngIf="formularioSitio.controls.telefono.errors?.required && formularioSitio.touched">
+                                Ingrese el teléfono
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Latitud</label>
+                            <input class="form-control" type="text" formControlName="latitud">
+                            <div class="invalid-feedback d-block" *ngIf="formularioSitio.controls.latitud.errors?.required && formularioSitio.touched">
+                                Ingrese la latitud
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Longitud</label>
+                            <input class="form-control" type="text" formControlName="longitud">
+                            <div class="invalid-feedback d-block" *ngIf="formularioSitio.controls.longitud.errors?.required && formularioSitio.touched">
+                                Ingrese la longitud
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Propiedad del predio</label>
+                            <select class="form-control" formControlName="tipo_propiedad">
+                                <option [value]="null" selected disabled>Seleccione el tipo de propiedad</option>
+                                <option *ngFor="let tipo of listaTiposPropiedades" [value]="tipo.id_tipo_propiedad">{{ tipo.nombre }} </option>
+                            </select>
+                            <div class="invalid-feedback d-block" *ngIf="formularioSitio.controls.tipo_propiedad.errors?.required && formularioSitio.touched">
+                                Seleccione el tipo de propiedad
+                            </div>
+                        </div>
+
+
+                        
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-light" (click)="cerrarPanel()">Cerrar</button>
+                            <button type="submit" class="btn btn-primary">Registrar sitio</button>
+                        </div>
+                    </form>
+                </div>
+                
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+    <!-- Fondo negro -->
+    <div class="modal-backdrop fade show">
+    </div>
+</div>

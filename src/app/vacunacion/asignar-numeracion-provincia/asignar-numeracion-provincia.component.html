@@ -1,0 +1,168 @@
+<!-- ============================================================== -->
+<!-- Preloader - style you can find in spinners.css -->
+<!-- ============================================================== -->
+<div class="preloader">
+    <div class="lds-ripple">
+        <div class="lds-pos"></div>
+        <div class="lds-pos"></div>
+    </div>
+</div>
+<hr class="mt-0">
+<div class="row">
+    <div class="col">
+        <div class="card border border-info rounded">
+            <div class="card-header bg-info text-white rounded-top">
+                Asignar numeración a oficina provincial
+            </div>
+            <div class="card-body">
+                <form ngNativeValidate [formGroup]="formulario" (ngSubmit)="asignarNumeracion()" class="form-horizontal r-separator">
+                    <div class="form-group row align-items-center mb-0">
+                        <label class="col-md-3 text-right control-label col-form-label">Fase</label>
+                        <div class="col-md-9 border-left pb-2 pt-2">
+                            <select formControlName="fase" class="form-control" (change)="cambioFaseVacunacion()">
+                                <option [value]="null" selected disabled>Seleccione la fase de vacunación</option>
+                                <option *ngFor="let fase of listaFasesVacunacion" [value]="fase.idFaseVacunacion" >{{ fase.nombre }}</option>
+                            </select>
+                            <div class="invalid-feedback d-block" *ngIf="formulario.controls.fase.errors?.required && formulario.touched">
+                                Seleccione la fase de vacunación
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <label class="col-md-3 text-right control-label col-form-label">Oficina origen</label>
+                        <div class="col-md-9 border-left pb-2 pt-2">
+                            <select formControlName="oficina_origen" class="form-control">
+                                <option [value]="null" selected disabled>Seleccione una oficina</option>
+                                <option *ngFor="let oficina of listaOficinasPrincipales" [value]="oficina.idOficina" >{{ oficina.nombre }}</option>
+                            </select>
+                            <div class="invalid-feedback d-block" *ngIf="formulario.controls.oficina_origen.errors?.required && formulario.touched">
+                                Seleccione la oficina origen
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <label class="col-md-3 text-right control-label col-form-label">Oficina destino</label>
+                        <div class="col-md-9 border-left pb-2 pt-2">
+                            <select formControlName="oficina_destino" class="form-control">
+                                <option [value]="null" selected disabled>Seleccione una oficina</option>
+                                <option *ngFor="let oficina of listaOficinasProvincias" [value]="oficina.idOficina" >{{ oficina.nombre }}</option>
+                            </select>
+                            <div class="invalid-feedback d-block" *ngIf="formulario.controls.oficina_destino.errors?.required && formulario.touched">
+                                Seleccione la oficina destino
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <label class="col-md-3 text-right control-label col-form-label">Número inicial</label>
+                        <div class="col-md-9 border-left pb-2 pt-2">
+                            <input type="number" class="form-control" formControlName="numero_inicial" min="0">
+                            <!-- <div class="invalid-feedback d-block" *ngIf="formulario.controls.numero_inicial.errors?.required && formulario.touched">
+                               Ingrese un número inicial
+                            </div> -->
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <label class="col-md-3 text-right control-label col-form-label">Número final</label>
+                        <div class="col-md-9 border-left pb-2 pt-2">
+                            <input type="number" class="form-control" formControlName="numero_final" min="0">
+                            <!-- <div class="invalid-feedback d-block" *ngIf="formulario.controls.numero_final.errors?.required && formulario.touched">
+                                Ingrese un número final
+                            </div> -->
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0" *ngIf="formulario.value.oficina_origen !== null ">
+                        <label class="col-md-3 text-right control-label col-form-label"></label>
+                        <div class="col-md-9 border-left pb-2 pt-2">
+                            <div class="col">
+                                <input type="checkbox" id="md_checkbox_6" class="material-inputs chk-col-blue" #seleccion [checked]="seleccionIndividual" (change)="cambioSeleccionIndividual(seleccion.checked)">
+                                <label for="md_checkbox_6">Seleccionar numeración individual</label>
+                            </div>
+                        </div>
+                    </div>
+                    <hr class="mt-0">
+                    <div class="row">
+                        <div class="col">
+                            <div class="card border border-light-info rounded" *ngIf="seleccionIndividual">
+                                <div class="card-header">Numeración disponible</div>
+                                <div class="card-body" >
+                                    <div class="p-3">
+                                        <div class="input-group">
+                                            <input type="text" [(ngModel)]="certificadoBusqueda" [ngModelOptions]="{standalone: true}" class="form-control" placeholder="Número de certificado">
+                                            <div class="input-group-append">
+                                                <button class="btn btn-info" type="button" (click)="buscarCertificado()">
+                                                    <i class="fas fa-search"></i>
+                                                </button>
+                                                <button class="btn btn-info" type="button" (click)="cancelarBusqueda()">
+                                                    <i class="fa fa-times"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="p-3">
+                                        <nav aria-label="Page navigation example">
+                                            <ul class="pagination justify-content-center">
+                                                <li class="page-item cursor-pointer"><a class="page-link" (click)="anterior()" *ngIf="inicio > 0">Anterior</a></li>
+                                                <li class="page-item cursor-pointer"><a class="page-link" (click)="siguiente()" *ngIf="listaSecuenciasCertificados.length > 0">Siguiente</a></li>
+                                            </ul>
+                                        </nav>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col table-wrapper-scroll-y custom-scrollbar">
+                                            <table class="table table-bordered">
+                                                <thead>
+                                                    <tr class="d-flex">
+                                                        <th>Número de certificado</th>
+                                                        <th></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr *ngFor="let numero of listaSecuenciasCertificados" class="d-flex">
+                                                        <td>{{ numero.secuencia }}</td>
+                                                        <td>
+                                                            <button type="button" class="btn btn-success btn-circle" (click)="agregar(numero)"><li class="fas fa-plus"></li> Agregar </button>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="card border border-light-info rounded" *ngIf="seleccionIndividual">
+                                <div class="card-header">Numeración asignada</div>
+                                <div class="card-body">
+                                    <div class="table-wrapper-scroll-y custom-scrollbar">
+                                        <table class="table table-bordered">
+                                            <thead>
+                                                <tr class="d-flex">
+                                                    <th>Número de certificado</th>
+                                                    <th></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr *ngFor="let numero of listaSecuenciasAgreadas" class="d-flex">
+                                                    <td>{{ numero.secuencia }}</td>
+                                                    <td>
+                                                        <button type="button" class="btn btn-danger btn-circle" (click)="quitar(numero)"><li class="fas fa-times"></li> Quitar </button>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group mb-0">
+                            <button type="submit" class="btn btn-info waves-effect waves-light">Asignar numeración</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

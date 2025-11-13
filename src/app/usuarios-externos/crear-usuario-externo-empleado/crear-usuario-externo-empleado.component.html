@@ -1,0 +1,171 @@
+<hr class="mt-0">
+<div class='row'>
+    <div class='col-12'>
+        <div class='card'>
+            <div class="card rounded">
+                <div class="card-header bg-info text-white rounded-top font-weight-bold">
+                    Buscar digitador/fiscalizador
+                </div>
+                <form ngNativeValidate [formGroup]="formularioBusquedaExterno" (ngSubmit)="cargarPersonalCcaBg()" class="form-horizontal r-separator">
+                    <div class="card-body">
+                        <div class="form-group row align-items-center mb-0">
+                            <label class="col-md-4 text-right control-label col-form-label">Ingrese número de identificación: </label>
+                            <div class="col-md-5 border-left pb-2 pt-2"><input type="text" formControlName="inputIdentificacion" class="form-control text-center border-secondary" placeholder=""></div>
+                            <div class="col-md-3 border-left pb-2 pt-2"><button type="submit" class="btn btn-info waves-effect waves-light border-secondary">Buscar</button></div>         
+                        </div>
+                    </div>
+                    <!-- Tabla con el resultado de la búsqueda -->
+                    <div *ngIf="this.tablaVisible" class="row" >
+                        <div class="col" >
+                            <div class="card-body">
+                                <div class="table-wrapper-scroll-y custom-scrollbar">
+                                    <table  class="table table-bordered table-hover v-middle">
+                                        <thead>
+                                            <tr>
+                                                <th class="badge-light-info text-center font-18">Identificación</th>
+                                                <th class="badge-light-info text-center font-18">Apellidos y nombres</th>
+                                                <th class="badge-light-info text-center font-18">Operador</th>
+                                                <th class="badge-light-info text-center font-18">Eliminar</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let usuario of listaUsuariosCcaBg">
+                                                <td class="text-center font-weight-bold">{{ usuario.numeroIdentificacion }}</td>
+                                                <td class="text-centerfont-weight-bold">{{ usuario.nombres }}</td>
+                                                <td class="text-centerfont-weight-bold">{{ usuario.nombreCca }}</td>
+                                                <td class="text-center">
+                                                <div class="btn-group mr-2" role="group" aria-label="Button group with nested dropdown">
+                                                    <button type="button" class="btn btn-danger" (click)="eliminarUsuario(usuario.idUsuariosExternos,'busqueda')"><i class="fa fa-times-circle"></i></button>
+                                                </div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <!-- Formulario para registro de usuarios para CCA -->
+            <div class="card-header bg-info text-white rounded-top font-weight-bold">
+                Ubicación del digitador/fiscalizador
+            </div>
+            <form class="form-horizontal r-separator" ngNativeValidate [formGroup]="formulario" (ngSubmit)="registrarPersonal()" class="form-horizontal r-separator" action="index.html">
+                <!-- CCA al que pertenece el usuario -->
+                <div class="card-body">
+                    <div class="form-group row align-items-center mb-0">
+                        <label for="area" class="col-md-1 text-right control-label col-form-label">Sitio</label>
+                        <div class="col-md-10 border-left pb-2 pt-2">
+                            <select class="form-control border-secondary" formControlName="id_area" (change)="cargarPersonalCca()">
+                                <option [value]="null" selected disabled>Seleccione un sitio</option>
+                                <!--<option *ngFor="let destino of listaDestinos" [value]="destino?.idArea">{{ destino?.nombre }} - {{ destino?.nombreSitio }} (Provincia: {{ destino?.nombreProvinciaSitio}} | Cantón: {{ destino?.nombreCantonSitio}} | Parroquia: {{ destino?.nombreParroquiaSitio }})</option>-->
+                                <option *ngFor="let cca of listaAreas" [value]="cca?.idArea">{{ cca?.codigoSitio.toUpperCase()}} | {{ cca?.nombreProvinciaSitio.toUpperCase()}} - {{ cca?.nombreCantonSitio.toUpperCase()}} | {{ cca?.nombre }} [{{ cca?.nombreTipoArea.toUpperCase() }}]</option>
+                            </select>
+                            <div class="invalid-feedback d-block" *ngIf="formulario.controls['id_area'].status==='INVALID' && formulario.touched">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Listado de Usuarios del CCA seleccionado -->
+                <div class="row" *ngIf="listaUsuariosCca.length > 0 ">
+                    <div class="col">
+                        <div class="card border rounded">
+                            <div class="card-header bg-secondary text-white rounded-top font-weight-bold">
+                                <span class="font-weight-bold">
+                                    Digitador/fiscalizador registrado
+                                </span>
+                                <!-- Cantidad mostrados -->
+                                <span class="round rounded-circle text-white d-inline-block text-center bg-warning">{{ listaUsuariosCca.length }}</span>
+                             </div>
+                             <div class="card-body">
+                                <div class="table-wrapper-scroll-y custom-scrollbar">
+                                    <table class="table table-bordered table-hover v-middle">
+                                        <thead>
+                                            <tr>
+                                                <th class="badge-light-info text-center font-18">Identificación</th>
+                                                <th class="badge-light-info text-center font-18">Apellidos y nombres</th>
+                                                <th class="badge-light-info text-center font-18">Operador</th>
+                                                <th class="badge-light-info text-center font-18">Eliminar</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let usuario of listaUsuariosCca">
+                                                <td class="text-center font-weight-bold">{{ usuario.numeroIdentificacion }}</td>
+                                                <td class="text-centerfont-weight-bold">{{ usuario.nombres }}</td>
+                                                <td class="text-centerfont-weight-bold">{{ usuario.nombreCca }}</td>
+                                                <td class="text-center">
+                                                    <div class="btn-group mr-2" role="group" aria-label="Button group with nested dropdown">
+                                                        <button type="button" class="btn btn-danger" (click)="eliminarUsuario(usuario.idUsuariosExternos,'area')"><i class="fa fa-times-circle"></i></button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                             </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Propietario de los animales -->
+                <div class="row">
+                    <div class="col">
+                        <div class="card rounded">
+                            <div class="card-header bg-info text-white rounded-top font-weight-bold">
+                                Datos del digitador/fiscalizador
+                             </div>
+                            <div class="card-body">
+                            <div class="form-group row align-items-center mb-0">
+                                <label class="col-md-3 text-right control-label col-form-label">C.C/C.I/Pasaporte</label>
+                                    <div class="col-md-3 border-left pb-2 pt-2 input-group">
+                                        <input type="text" formControlName="inputIdUsuario" (change)="borraDatosUsuario()" class="form-control border-secondary" #ciPropietario placeholder="Ingrese # de identificación">
+                                        <div class="input-group-append">
+                                            <button type="button" class="btn btn-success border-secondary" (click)="buscarUsuario(ciPropietario.value)"><i class="ti-search"></i></button>
+                                            <button type="button" class="btn btn-info border-secondary" (click)="agregarCiudadano()"><i class="ti-plus"></i></button>
+                                        </div>
+                                    </div>
+                            </div>
+                            <div class="form-group row align-items-center mb-0">
+                                <label for="inputNombres" class="col-md-3 text-right control-label col-form-label">Apellidos y Nombres</label>
+                                    <div class="col-md-9 border-left pb-2 pt-2">
+                                        <input type="text" class="form-control border-secondary" formControlName="inputNombres" name="inputNombres" placeholder="Ingrese Apellidos y Nombres" readonly>
+                                        <div class="invalid-feedback d-block" *ngIf="formulario.controls.inputNombres.errors?.required && formulario.touched"></div>
+                                    </div>
+                            </div>
+                            <div class="form-group row align-items-center mb-0" *ngIf="estadoUsuario == 1" style="display:none;">
+                                <label class="col-md-3 text-right control-label col-form-label">Contraseña Temporal</label>
+                                    <div class="col-md-9 border-left pb-2 pt-2">
+                                        <label class="col-md-7 text-left control-label col-form-label contrasena-temporal">{{this.contrasenaTemporal}}</label>
+                                    </div>
+                            </div>
+                            <div class="form-group row align-items-center mb-0" *ngIf="estadoUsuario == 1">
+                                <label for="inputEmail" class="col-md-3 text-right control-label col-form-label">Correo Electrónico</label>
+                                <div class="col-md-9 border-left pb-2 pt-2">
+                                    <input type="text" class="form-control border-secondary" formControlName="inputEmail" name="inputEmail" placeholder="Ingrese un correo electrónico válido">
+                                </div>
+                            </div>
+                            <div class="form-group row align-items-center mb-0" *ngIf="estadoUsuario == 2">
+                                <label for="inputEmail" class="col-md-3 text-right control-label col-form-label">Correo Electrónico</label>
+                                <div class="col-md-9 border-left pb-2 pt-2">
+                                    <input type="text" class="form-control border-secondary" formControlName="inputEmailRead" name="inputEmailRead" readonly>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!------------------------------------------------------------------------------------------->
+            <div class="form-group text-center mt-3" *ngIf="listaAreas.length > 0 ">
+                <div class="col-xs-12">
+                    <button class="btn btn-info btn-lg btn-block text-uppercase waves-effect waves-light" type="submit">Registrar</button>
+                </div>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Componente para crear un nuevo usuario ciudadano -->
+<app-crear-usuario-externo [correo]="false">
+</app-crear-usuario-externo>

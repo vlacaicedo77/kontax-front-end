@@ -1,0 +1,140 @@
+<hr class="mt-0">
+<div class='row container-fluid' style="width: 100%">
+    <div class="col">
+
+        <div class="card border border-info rounded">
+            <div class="card-header bg-info text-white rounded-top font-weight-bold">
+                Buscar cuenta de usuario externo inactivo
+            </div>
+            <form ngNativeValidate [formGroup]="formularioBusquedaExterno" (ngSubmit)="buscarUsuario()" class="form-horizontal r-separator" action="index.html">
+                <div class="card-body">
+                    <div class="form-group row align-items-center mb-0">
+                        <label class="col-md-4 text-right control-label col-form-label">Ingrese número de identificación: </label>
+                        <div class="col-md-5 border-left pb-2 pt-2"><input type="text" formControlName="inputIdentificacionUsuario" (keyup)="mascara($event,'numerico')" class="form-control text-center border-secondary" placeholder=""></div>
+                        <div class="col-md-3 border-left pb-2 pt-2"><button type="submit" class="btn btn-info waves-effect waves-light border-secondary">Buscar</button></div>         
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="card border border-light-info rounded" *ngIf='this.formularioVisible'>
+            <div class="card-header bg-info text-white rounded-top font-weight-bold">
+                Activar cuenta de usuario externo
+            </div>
+            <!--<div class='card-body'>-->
+                <!--<form ngNativeValidate [formGroup]="formularioBusquedaExterno" (ngSubmit)="buscarUsuario()" class="form-horizontal r-separator" action="index.html">
+                    <h4 class="card-title">Ingrese dato de búsqueda del usuario externo</h4>
+                    <div class="form-group row align-items-center mb-0">
+                        <label for="inputIdentificacionUsuario" class="col-md-3 text-right control-label col-form-label">Ingrese número de identificación</label>
+                        <div class="col-md-9 border-left pb-2 pt-2 input-group">
+                            <input type="text" class="form-control" (keyup)="mascara($event,'numerico')" formControlName="inputIdentificacionUsuario" name="inputIdentificacionUsuario" placeholder="Ingrese la identificación del usuario externo">
+                            <div class="input-group-append">
+                                <button class="btn btn-success" type="submit"><i class="ti-search"></i></button>
+                            </div>
+                            <div class="invalid-feedback d-block" *ngIf="formularioBusquedaExterno.controls.inputIdentificacionUsuario.errors?.required && formularioBusquedaExterno.touched">
+                                Ingrese la identificación del usuario externo
+                            </div>
+                        </div>
+                    </div>
+                </form>-->
+                <div class="card-body">
+                    <h4 class="card-title">Perfil del Usuario</h4>
+                    <div class="form-group row align-items-center mb-0">
+                        <label class="col-md-3 text-right control-label col-form-label">Registro Civil / SRI</label>
+                        <div class="col-md-9 border-left pb-2 pt-2">
+                            <button class="btn btn-danger font-weight-bold" type="button" (click)="validarIdentificacion(this.identificacion)">¡ actualizar datos del usuario !</button>
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <label class="col-md-3 text-right control-label col-form-label">Tipo de identificación</label>
+                        <div class="col-md-9 border-left pb-2 pt-2">
+                            <label class="col-md-7 text-left control-label col-form-label">{{this.tipoIdentificacion}}</label>
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <label class="col-md-3 text-right control-label col-form-label">Número de identificación</label>
+                        <div class="col-md-9 border-left pb-2 pt-2">
+                            <label class="col-md-7 text-left control-label col-form-label">{{this.identificacion}}</label>
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0" style="display:none;">
+                        <label class="col-md-3 text-right control-label col-form-label">Contraseña Temporal</label>
+                        <div class="col-md-9 border-left pb-2 pt-2">
+                            <label class="col-md-7 text-left control-label col-form-label contrasena-temporal">{{this.contrasenaTemporal}}</label>
+                        </div>
+                    </div>
+                    <form ngNativeValidate [formGroup]="formulario" (ngSubmit)="activarUsuario()" class="form-horizontal r-separator" action="index.html">
+                        <div class="form-group row align-items-center mb-0">
+                            <label for="inputNombres" class="col-md-3 text-right control-label col-form-label">Apellidos y Nombres / Razón Social</label>
+                            <div class="col-md-9 border-left pb-2 pt-2">
+                                <input type="text" class="form-control" formControlName="inputNombres" name="inputNombres" placeholder="Ingrese Apellidos y Nombres / Razón Social del usuario" readonly>
+                                <div class="invalid-feedback d-block" *ngIf="formulario.controls.inputNombres.errors?.required && formulario.touched">
+                                    Ingrese los Apellidos y Nombres / Razón Social del usuario
+                                </div>
+                            </div>
+                        </div>
+                        <!--<div class="form-group row align-items-center mb-0" style="display:none;">
+                            <label for="inputApellidos" class="col-md-3 text-right control-label col-form-label">Apellidos</label>
+                            <div class="col-md-9 border-left pb-2 pt-2">
+                                <input type="text" class="form-control" formControlName="inputApellidos" name="inputApellidos" placeholder="Ingrese los apellidos del usuario" readonly>
+                                <div class="invalid-feedback d-block" *ngIf="formulario.controls.inputApellidos.errors?.required && formulario.touched">
+                                    Ingrese los apellidos del usuario
+                                </div>
+                            </div>
+                        </div>-->
+                        <div class="form-group row align-items-center mb-0">
+                            <label for="inputEmail" class="col-md-3 text-right control-label col-form-label">Correo electrónico</label>
+                            <div class="col-md-9 border-left pb-2 pt-2">
+                                <input type="email" class="form-control text-lowercase" formControlName="inputEmail" name="inputEmail" placeholder="Ingrese el correo electrónico del usuario">
+                                <div class="invalid-feedback d-block" *ngIf="formulario.controls.inputEmail.errors?.required && formulario.touched">
+                                    Ingrese el correo electrónico del usuario
+                                </div>
+                            </div>
+                        </div>
+                        <!--<div class="form-group row align-items-center mb-0" *ngIf='this.ruc' style="display:none;">
+                            <label for="inputRazonSocial" class="col-md-3 text-right control-label col-form-label">Razón social</label>
+                            <div class="col-md-9 border-left pb-2 pt-2">
+                                <input type="text" class="form-control" formControlName="inputRazonSocial" name="inputRazonSocial" placeholder="Ingrese la razón social" readonly>
+                                <div class="invalid-feedback d-block" *ngIf="formulario.controls.inputRazonSocial.errors?.required && formulario.touched">
+                                    Ingrese la razón social
+                                </div>
+                            </div>
+                        </div>-->
+                        <div class="form-group row align-items-center mb-0" *ngIf='this.ruc'>
+                            <label for="inputNombreComercial" class="col-md-3 text-right control-label col-form-label">Nombre Comercial</label>
+                            <div class="col-md-9 border-left pb-2 pt-2">
+                                <input type="text" class="form-control" formControlName="inputNombreComercial" name="inputNombreComercial" placeholder="" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group row align-items-center mb-0" *ngIf='this.ruc'>
+                            <label for="inputIdentificacionRepresentante" class="col-md-3 text-right control-label col-form-label">Identificación Representante Legal</label>
+                            <div class="col-md-9 border-left pb-2 pt-2">
+                                <input type="text" class="form-control" formControlName="inputIdentificacionRepresentante" name="inputIdentificacionRepresentante" placeholder="" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group row align-items-center mb-0"*ngIf='this.ruc'>
+                            <label for="inputNombresRepresentante" class="col-md-3 text-right control-label col-form-label">Representante Legal</label>
+                            <div class="col-md-9 border-left pb-2 pt-2">
+                                <input type="text" class="form-control" formControlName="inputNombresRepresentante" name="inputNombresRepresentante" placeholder="" readonly>
+                            </div>
+                        </div>
+                        <!--<div class="form-group row align-items-center mb-0" *ngIf='this.ruc' style="display:none;">
+                            <label for="inputApellidosRepresentante" class="col-md-3 text-right control-label col-form-label">Apellidos Representante Legal</label>
+                            <div class="col-md-9 border-left pb-2 pt-2">
+                                <input type="text" class="form-control" (keyup)="mascara($event,'alfanumerico')" formControlName="inputApellidosRepresentante" name="inputApellidosRepresentante" placeholder="" readonly>
+                            </div>
+                        </div>-->
+                        <div class="card-body ">
+                            <div class="form-group mb-0 text-right ">
+                                <button class="btn btn-info btn-lg btn-block text-uppercase waves-effect waves-light" type="submit">ACTIVAR CUENTA
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            <!--</div>-->
+        </div>
+    </div>
+</div>
+
+

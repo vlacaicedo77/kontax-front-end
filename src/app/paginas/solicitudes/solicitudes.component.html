@@ -1,0 +1,149 @@
+<hr class="mt-0">
+<div class='row'>
+    <div class='col'>
+        <div class='card border border-info rounded'>
+            <div class="card-header bg-info text-white rounded-top">
+                Lista de solicitudes
+            </div>
+            <div class='card-body'>
+
+                <div class="table-wrapper-scroll-y custom-scrollbar">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr class="d-flex">
+                                <th>ID</th>
+                                <th>Tipo de solicitud</th>
+                                <th>ID Solicitante</th>
+                                <th>Nombre Solicitante</th>
+                                <th>Fecha ingreso</th>
+                                <th>Fecha último cambio</th>
+                                <th>Paso</th>
+                                <th>Estado</th>
+                                <th></th>
+                            </tr>
+                            <tr class="d-flex">
+                                <td>
+                                    <input type="text" class="form-control input-sm">
+                                </td>
+                                <td>
+                                    <select class="form-control input-sm">
+                                        <option></option>
+                                        <option>Identificadores</option>
+                                        <option>Reareteo</option>
+                                        <option>Baja de dispositivo</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <input type="text" class="form-control input-sm">
+                                </td>
+                                <td>
+                                    <input type="text" class="form-control input-sm">
+                                </td>
+                                <td>
+                                    <div class='input-group mb-3'>
+                                        <input type='text' class="form-control daterange" />
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">
+                                                <span class="ti-calendar"></span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class='input-group mb-3'>
+                                        <input type='text' class="form-control daterange" />
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">
+                                                <span class="ti-calendar"></span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <select class="form-control input-sm">
+                                        <option></option>
+                                        <option>Todos</option>
+                                        <option>Aprobación proveedor</option>
+                                        <option>Pendiente de entrega</option>
+                                        <option>Pendiente de impresión</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <select class="form-control input-sm">
+                                        <option></option>
+                                        <option>Abierta</option>
+                                        <option>Rechazada</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <div class="btn-toolbar justify-content-between" role="toolbar" aria-label="Toolbar with button groups">
+                                        <div class="btn-group" role="group" aria-label="First group">
+                                            <button type="button" class="btn btn-secondary" title="Buscar..."><i class="ti-search"></i></button>
+                                            <button type="button" class="btn btn-secondary" title="Borrar filtros"><i class="ti-reload"></i></button>
+
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="jsgrid-insert-row">
+                                <th>SOL001</th>
+                                <td>Identificadores</td>
+                                <td>170102882</td>
+                                <td>Juan Pérez</td>
+                                <td>01-May-2020</td>
+                                <td>15-May-2020</td>
+                                <td>Aprobación Proveedor</td>
+                                <td>Abierta</td>
+                                <td>
+                                    <button type="button" class="btn btn-info btn-circle waves-effect waves-light">
+                                <span class="btn-label">
+                                    <i class="fas fa-edit"></i>
+                                </span> 
+                            </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>SOL002</th>
+                                <td>Reareteo</td>
+                                <td>17171702</td>
+                                <td>Margarita Sánchez</td>
+                                <td>01-Abr-202</td>
+                                <td>13-May-2020</td>
+                                <td>Pendiente Entrega</td>
+                                <td>Abierta</td>
+                                <td>
+                                    <button type="button" class="btn btn-info btn-circle waves-effect waves-light">
+                                <span class="btn-label">
+                                    <i class="fas fa-edit"></i>
+                                </span> 
+                            </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>SOL04</th>
+                                <td>Identificadores</td>
+                                <td>1112322</td>
+                                <td>José Puertas</td>
+                                <td>15-Mar-2020</td>
+                                <td>11-May-2020</td>
+                                <td>Pendiente Impresión</td>
+                                <td>Rechazada</td>
+                                <td>
+                                    <button type="button" class="btn btn-info btn-circle waves-effect waves-light">
+                                <span class="btn-label">
+                                    <i class="fas fa-edit"></i>
+                                </span> 
+                            </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+</div>

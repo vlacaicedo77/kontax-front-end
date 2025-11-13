@@ -1,0 +1,402 @@
+<div *ngIf="!formularioVisible" id="formularioBusqueda" class='row container-fluid' style="width: 100%">
+    <div class="col">
+        <div class="card border border-info rounded">
+            <div class="card-header bg-info text-white rounded-top font-weight-bold">
+                Búsqueda de proveedores / operadores autorizados
+            </div>
+            <form ngNativeValidate [formGroup]="formularioBusqueda" class="form-horizontal r-separator"
+                (ngSubmit)="buscarProveedores()">
+                <div class="card-body">
+                    <div class="form-group row align-items-center mb-0">
+                        <label
+                            class="col-md-3 text-right control-label col-form-label font-weight-bold">Provincia</label>
+                        <div class="col-md-7 border-left pb-2 pt-2">
+                            <select formControlName="InputProvincia" (change)="limpiarListaProveedores()"
+                                class="form-control border-secondary font-weight-bold">
+                                <option [value]="-1" selected enabled>--- Todas las provincias ---</option>
+                                <option *ngFor="let provincia of listaProvincias" value="{{provincia.id_provincia}}">
+                                    {{provincia.nombre.toUpperCase()}}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <label class="col-md-3 text-right control-label col-form-label font-weight-bold">Tipo</label>
+                        <div class="col-md-7 border-left pb-2 pt-2">
+                            <select formControlName="inputTipoProveedor"
+                                class="form-control border-secondary font-weight-bold"
+                                (change)="limpiarListaProveedores()">
+                                <option [value]="-1" selected enabled>--- Todos ---</option>
+                                <option *ngFor="let tipoProveedor of listaTiposProveedores"
+                                    value="{{tipoProveedor.id_tipos_proveedores}}">{{tipoProveedor.nombre}}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <label
+                            class="col-md-3 text-right control-label col-form-label font-weight-bold font-weight-bold">Estado</label>
+                        <div class="col-md-7 border-left pb-2 pt-2">
+                            <select formControlName="InputEstado" (change)="limpiarListaProveedores()"
+                                class="form-control border-secondary">
+                                <option [value]="-1" selected enabled>--- Todos ---</option>
+                                <option [value]="1" selected enabled>ACTIVO</option>
+                                <option [value]="0" selected enabled>INACTIVO</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <label class="col-md-3 text-right control-label col-form-label font-weight-bold">Número
+                            identificación</label>
+                        <div class="col-md-7 border-left pb-2 pt-2">
+                            <input type="text" class="form-control border-secondary font-weight-bold" autocomplete="on"
+                                (change)="limpiarListaProveedores()" formControlName="InputDato"
+                                placeholder="Ingrese número de identificación del proveedor / operador autorizado"
+                                maxlength="13">
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mt-4"> <!-- Ajuste de margen -->
+                        <div class="col-md-7"></div>
+                        <div class="col-md-3 text-right">
+                            <div class="btn-group">
+                                <button type="submit" class="btn btn-info me-3 px-4" style="font-weight: bold;">
+                                    <i class="fas fa-search"></i> Buscar
+                                </button>&nbsp;&nbsp;&nbsp;&nbsp;
+                                <button class="btn btn-success px-4" (click)="accionNuevoBoton()"
+                                    style="font-weight: bold;">
+                                    <i class="fa fa-plus"></i> Nuevo
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<!-- Tabla con el resultado de la búsqueda -->
+<div class='row container-fluid' style="width: 100%" *ngIf="listaProveedores.length > 0 && !formularioVisible">
+    <div class="col">
+        <div class="card border-info rounded">
+            <div class="card-header bg-secondary text-white rounded-top font-weight-bold">
+                <span class="font-weight-bold">
+                    Listado de proveedores / operadores autorizados
+                </span>
+                <!-- Cantidad mostrados -->
+                <span class="round rounded-circle text-white font-weight-bold d-inline-block text-center bg-info">{{
+                    listaProveedores.length }}</span>
+            </div>
+            <div class="card-body">
+                <div class="table-wrapper-scroll-y custom-scrollbar">
+                    <table class="table table-bordered table-hover v-middle">
+                        <thead>
+                            <tr>
+                                <th class="badge-light-info font-18">Datos generales</th>
+                                <th class="badge-light-info font-18">Ubicación</th>
+                                <th class="badge-light-info font-18">Contacto</th>
+                                <th class="badge-light-info text-center font-18">Operación</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let proveedor of listaProveedores">
+                                <td>
+                                    <p><span class="badge rounded-pill font-weight-bold"
+                                            [ngClass]="{'badge-warning':proveedor.idTiposProveedores==1, 'badge-secondary':proveedor.idTiposProveedores==2}">
+                                            {{ proveedor.nombreTipoProveedor.toLowerCase() }}
+                                        </span>
+                                        <span>&nbsp;&nbsp;</span>
+                                        <span *ngIf="proveedor.aomz == 2"
+                                            class="badge badge-danger rounded-pill font-weight-bold">
+                                            Arete oficial medida zoosanitaria (rojo)
+                                        </span>
+                                    </p>
+                                    <p style="font-size:small;">
+                                        <span class="badge rounded-pill font-weight-bold"
+                                            [ngClass]="{'badge-danger':proveedor.estado==0, 'badge-verde':proveedor.estado==1}">
+                                            {{ proveedor.estado === 1 ? 'ACTIVO' : 'INACTIVO' }}
+                                        </span>
+                                        <span>&nbsp;&nbsp;</span>
+                                        <span class="font-weight-bold">[{{ proveedor.numeroIdentificacionUsuario }}] {{
+                                            proveedor.nombresUsuario.toUpperCase() }}
+                                        </span>
+                                    </p>
+                                    <p style="font-size:small;" *ngIf="proveedor.nombreComercialUsuario"><span
+                                            class="font-weight-bold">Nombre
+                                            comercial: </span> {{ proveedor.nombreComercialUsuario }} </p>
+                                    <p style="font-size:small;"
+                                        *ngIf="proveedor.identificacionRepresentanteLegalUsuario"><span
+                                            class="font-weight-bold">Representante: </span> [{{
+                                        proveedor.identificacionRepresentanteLegalUsuario }}] {{
+                                        proveedor.nombresRepresentanteLegalUsuario }} </p>
+                                    <p style="font-size:small;"><span class="font-weight-bold">Fecha registro: </span>{{
+                                        proveedor.fechaCreacion
+                                        }}</p>
+                                </td>
+                                <td>
+                                    <p style="font-size:small;"><span class="font-weight-bold"></span> {{
+                                        proveedor.nombreProvincia.toUpperCase()
+                                        }} / {{ proveedor.nombreCanton.toUpperCase() }} / {{
+                                        proveedor.nombreParroquia.toUpperCase() }} </p>
+                                    <p style="font-size:small;"><span class="font-weight-bold">Dirección: </span> {{
+                                        proveedor.direccion.toUpperCase() }} </p>
+                                </td>
+                                <td>
+                                    <p style="font-size:small;"><span class="font-weight-bold">Celular / WhatsApp:
+                                        </span> 09{{
+                                        proveedor.telefono }} </p>
+                                    <p style="font-size:small;" *ngIf="proveedor.email"><span
+                                            class="font-weight-bold">E-mail: </span> {{
+                                        proveedor.email }} </p>
+                                </td>
+                                <td class="text-center">
+                                    <p>
+                                        <button type="button" class="btn waves-effect waves-light"
+                                            style="background-color: #398bf7; color: white; border: none; border-radius: 25px; padding: 10px 20px; font-size: 14px; font-weight: bold; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); transition: all 0.3s ease; width: 180px;"
+                                            [title]="'Editar ' + proveedor.nombreTipoProveedor.toLowerCase()"
+                                            (click)="asignarDatosFormularioProveedor(proveedor.idProveedoresAretes)"
+                                            onmouseover="this.style.backgroundColor='#2a7be4'; this.style.boxShadow='0 6px 8px rgba(0, 0, 0, 0.3)';"
+                                            onmouseout="this.style.backgroundColor='#398bf7'; this.style.boxShadow='0 4px 6px rgba(0, 0, 0, 0.2)';">
+                                            <i class="fa fa-edit"
+                                                style="color: white; font-size: 18px; margin-right: 8px;"></i>
+                                            Actualizar
+                                        </button>
+                                    </p>
+                                    <p *ngIf="proveedor.estado == 1">
+                                        <button type="button" class="btn waves-effect waves-light"
+                                            style="background-color: #f44336; color: white; border: none; border-radius: 25px; padding: 10px 20px; font-size: 14px; font-weight: bold; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); transition: all 0.3s ease; width: 180px;"
+                                            [title]="'Inactivar ' + proveedor.nombreTipoProveedor.toLowerCase()"
+                                            (click)="actualizarEstadoProveedor(proveedor.idProveedoresAretes,'Inactivar',proveedor.nombreTipoProveedor)"
+                                            onmouseover="this.style.backgroundColor='#d32f2f'; this.style.boxShadow='0 6px 8px rgba(0, 0, 0, 0.3)';"
+                                            onmouseout="this.style.backgroundColor='#f44336'; this.style.boxShadow='0 4px 6px rgba(0, 0, 0, 0.2)';">
+                                            <i class="fa fa-times-circle"
+                                                style="color: white; font-size: 18px; margin-right: 8px;"></i>
+                                            Inactivar
+                                        </button>
+                                    </p>
+                                    <p *ngIf="proveedor.estado == 0">
+                                        <button type="button" class="btn waves-effect waves-light"
+                                            style="background-color: #4CAF50; color: white; border: none; border-radius: 25px; padding: 10px 20px; font-size: 14px; font-weight: bold; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); transition: all 0.3s ease; width: 180px;"
+                                            [title]="'Activar ' + proveedor.nombreTipoProveedor.toLowerCase()"
+                                            (click)="actualizarEstadoProveedor(proveedor.idProveedoresAretes,'Activar',proveedor.nombreTipoProveedor)"
+                                            onmouseover="this.style.backgroundColor='#388e3c'; this.style.boxShadow='0 6px 8px rgba(0, 0, 0, 0.3)';"
+                                            onmouseout="this.style.backgroundColor='#4CAF50'; this.style.boxShadow='0 4px 6px rgba(0, 0, 0, 0.2)';">
+                                            <i class="fa fa-check-square"
+                                                style="color: white; font-size: 18px; margin-right: 8px;"></i>
+                                            Activar
+                                        </button>
+                                    </p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="formularioVisible" class='row container-fluid' style="width: 100%">
+    <div class="col">
+        <div class="card border border-info rounded">
+            <div class="card-header bg-info font-weight-bold text-white rounded-top">
+                Registro de proveedor / operador autorizado
+            </div>
+            <div class='card-body'>
+                <h4 class="card-title font-weight-bold">Perfil usuario</h4>
+                <hr class="mt-0">
+                <form id="formulario" ngNativeValidate [formGroup]="formulario" (ngSubmit)="crearUsuario()"
+                    class="form-horizontal r-separator" action="index.html">
+                    <div *ngIf="!banderaEditar" class="form-group row align-items-center mb-0">
+                        <label class="col-md-3 text-right control-label col-form-label font-weight-bold">RUC<span
+                                class="text-danger font-weight-bold"> *</span></label>
+                        <div class="col-md-3 border-left pb-2 pt-2 input-group">
+                            <input type="text" formControlName="inputIdUsuario" mask="0000000000000"
+                                (change)="limpiarCamposUsuario()" class="form-control border-secondary" #ciPropietario
+                                placeholder="Ingrese # de RUC">
+                            <div class="input-group-append">
+                                <button type="button" class="btn btn-success border-secondary"
+                                    (click)="buscarUsuario(ciPropietario.value)"><i class="ti-search"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                    <div *ngIf="banderaEditar" class="form-group row align-items-center mb-0">
+                        <label class="col-md-3 text-right control-label col-form-label font-weight-bold">RUC</label>
+                        <div class="col-md-2 border-left pb-2 pt-2 input-group">
+                            <input type="text" formControlName="inputIdUsuarioLock"
+                                class="form-control border-secondary" readonly>
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <label for="inputRazonSocial"
+                            class="col-md-3 text-right control-label col-form-label font-weight-bold">Razón
+                            social<span class="text-danger font-weight-bold"> *</span></label>
+
+                        <div class="col-md-9 border-left pb-2 pt-2">
+                            <input type="text" class="form-control border-secondary" formControlName="inputRazonSocial"
+                                name="inputRazonSocial" placeholder="Ingrese razón social" readonly>
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <label for="inputNombreComercial"
+                            class="col-md-3 text-right control-label col-form-label font-weight-bold">Nombre
+                            comercial</label>
+                        <div class="col-md-9 border-left pb-2 pt-2">
+                            <input type="text" class="form-control border-secondary"
+                                formControlName="inputNombreComercial" name="inputNombreComercial" placeholder=""
+                                readonly>
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <label for="inputIdentificacionRepresentante"
+                            class="col-md-3 text-right control-label col-form-label font-weight-bold">Identificación
+                            representante
+                            legal</label>
+                        <div class="col-md-9 border-left pb-2 pt-2">
+                            <input type="text" class="form-control border-secondary"
+                                formControlName="inputIdentificacionRepresentante"
+                                name="inputIdentificacionRepresentante" placeholder="" readonly>
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <label for="inputNombresRepresentante"
+                            class="col-md-3 text-right control-label col-form-label font-weight-bold">Representante
+                            legal</label>
+                        <div class="col-md-9 border-left pb-2 pt-2">
+                            <input type="text" class="form-control border-secondary"
+                                formControlName="inputNombresRepresentante" name="inputNombresRepresentante"
+                                placeholder="" readonly>
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <label class="col-md-3 text-right control-label col-form-label font-weight-bold">Tipo<span
+                                class="text-danger font-weight-bold"> *</span></label>
+                        <div class="col-md-3 border-left pb-2 pt-2">
+                            <select formControlName="inputTipoProveedor" class="form-control border-secondary"
+                                (change)="asignarTiposProveedores($event)">
+                                <option [value]="null" selected disabled>--- Seleccione un tipo ---</option>
+                                <option *ngFor="let tipoProveedor of listaTiposProveedores"
+                                    value="{{tipoProveedor.id_tipos_proveedores}}">{{tipoProveedor.nombre}}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div *ngIf="this.visualizarAomz" class="form-group row align-items-center mb-0">
+                        <label
+                            class="col-md-3 text-right control-label col-form-label font-weight-bold">Habilitar</label>
+                        <div class="col-md-3 border-left pb-2 pt-2">
+                            <input type="checkbox" class="material-inputs" id="inputCheckAomz" ng-model="unchecked"
+                                formControlName="inputCheckAomz" (change)="activarAreteRojo()">
+                            <label for="inputCheckAomz">Arete oficial
+                                medida zoosanitaria (rojo)</label>
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0" style="display:none;">
+                        <label class="col-md-3 text-right control-label col-form-label font-weight-bold">Contraseña
+                            Temporal</label>
+                        <div class="col-md-9 border-left pb-2 pt-2">
+                            <label
+                                class="col-md-7 text-left control-label col-form-label contrasena-temporal">{{this.contrasenaTemporal}}</label>
+                        </div>
+                    </div>
+                    <h4 class="card-title font-weight-bold">Ubicación</h4>
+                    <hr class="mt-0">
+                    <div class="form-group row align-items-center mb-0">
+                        <label for="inputProvincia"
+                            class="col-md-3 text-right control-label col-form-label font-weight-bold">Provincia<span
+                                class="text-danger font-weight-bold"> *</span></label>
+                        <div class="col-md-9 border-left pb-2 pt-2">
+                            <select class="form-control border-secondary" formControlName="inputProvincia"
+                                name="inputProvincia" #idProvincia
+                                (change)="cargarCantonesPorProvincia(idProvincia.value)">
+                                <option [value]="null" selected disabled>--- Seleccione una opción ---</option>
+                                <option *ngFor="let provincia of listaProvincias" value="{{provincia.id_provincia}}">
+                                    {{provincia.nombre.toUpperCase()}}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <label for="inputCanton"
+                            class="col-md-3 text-right control-label col-form-label font-weight-bold">Cantón<span
+                                class="text-danger font-weight-bold"> *</span></label>
+                        <div class="col-md-9 border-left pb-2 pt-2">
+                            <select class="form-control border-secondary" #idCanton
+                                (change)="cargarParroquiasPorCanton(idCanton.value)" formControlName="inputCanton"
+                                name="inputCanton">
+                                <option [value]="null" selected disabled>--- Seleccione una opción ---</option>
+                                <option *ngFor="let canton of listaCantones" value="{{canton.id_canton}}">
+                                    {{canton.nombre.toUpperCase()}}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <label for="inputParroquia"
+                            class="col-md-3 text-right control-label col-form-label font-weight-bold">Parroquia<span
+                                class="text-danger font-weight-bold"> *</span></label>
+                        <div class="col-md-9 border-left pb-2 pt-2">
+                            <select class="form-control border-secondary" formControlName="inputParroquia"
+                                name="inputParroquia">
+                                <option [value]="null" selected disabled>--- Seleccione una opción ---</option>
+                                <option *ngFor="let parroquia of listaParroquias" value="{{parroquia.id_parroquia}}">
+                                    {{parroquia.nombre.toUpperCase()}}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <label for="inputDireccion"
+                            class="col-md-3 text-right control-label col-form-label font-weight-bold">Dirección<span
+                                class="text-danger font-weight-bold"> *</span></label>
+                        <div class="col-md-9 border-left pb-2 pt-2">
+                            <input type="text" class="form-control border-secondary" formControlName="inputDireccion"
+                                name="inputDireccion" placeholder="Ingrese dirección del establecimiento matriz"
+                                maxlength="150">
+                        </div>
+                    </div>
+                    <h4 class="card-title font-weight-bold">Contacto</h4>
+                    <hr class="mt-0">
+                    <div class="form-group row align-items-center mb-0">
+                        <label for="inputTelefono"
+                            class="col-md-3 text-right control-label col-form-label font-weight-bold">Celular /
+                            WhatsApp<span class="text-danger font-weight-bold"> *</span></label>
+                        <div class="col-md-9 border-left pb-2 pt-2">
+                            <input id="telefono" type="text" class="form-control border-secondary"
+                                formControlName="inputTelefono" name="inputTelefono"
+                                placeholder="Ingrese número de celular o WhatsApp" mask="0000-0000" prefix="09-">
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <label for="inputEmail"
+                            class="col-md-3 text-right control-label col-form-label font-weight-bold">Correo
+                            electrónico<span class="text-danger font-weight-bold"> *</span></label>
+                        <div class="col-md-9 border-left pb-2 pt-2">
+                            <input type="email" class="form-control border-secondary text-lowercase"
+                                formControlName="inputEmail" name="inputEmail"
+                                placeholder="Ingrese el correo electrónico" maxlength="160">
+                        </div>
+                    </div>
+                    <hr class="mt-0">
+                    <div class="form-group row align-items-center mb-0">
+                        <div class="col-md-9 pb-2 pt-2">
+                            <p class="text-muted mb-3 font-weight-bold" style="font-size: 0.9rem; padding-left: 4%;">
+                                <em>Los campos marcados con <span class="text-danger font-weight-bold">*</span> son
+                                    obligatorios.</em>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group mb-0 text-center">
+                            <button *ngIf="!banderaEditar"
+                                class="btn btn-info btn-lg font-weight-bold font-16 text-uppercase mx-2 btn-block-custom"
+                                style="width: 48%;" type="submit">Guardar</button>
+                            <button *ngIf="banderaEditar"
+                                class="btn btn-info btn-lg font-weight-bold font-16 text-uppercase mx-2 btn-block-custom"
+                                style="width: 48%;" type="button"
+                                (click)="actualizarProveedor(this.idProveedoresAretes)">Actualizar</button>
+                            <button
+                                class="btn btn-danger btn-lg font-weight-bold font-16 text-uppercase mx-2 btn-block-custom"
+                                style="width: 48%;" type="button" (click)="botonCancelar()">Cancelar</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

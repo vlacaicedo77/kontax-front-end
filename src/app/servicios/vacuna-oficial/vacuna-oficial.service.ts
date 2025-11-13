@@ -1,0 +1,41 @@
+import { Injectable } from '@angular/core';
+import { VacunaOficial } from '../../modelos/vacuna-oficial.modelo';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environment';
+import { map } from 'rxjs/operators';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class VacunaOficialService {
+
+  private vacunaOficial: VacunaOficial[] = [];
+
+  constructor(
+    private http: HttpClient
+  ) { }
+
+  // Método que obtiene el catálogo de vacunas oficiales
+  obtenerVacunasOficiales(parametros?: any): Observable<any> {
+    // Si no hay parámetros y ya se tienen datos cacheados, retornarlos directamente
+    if (!parametros && this.vacunaOficial.length > 0) {
+      return new Observable(observador => {
+        observador.next(this.vacunaOficial);
+        observador.complete();
+      });
+    }
+    // Construir la URL con los parámetros opcionales
+    const url = `${environment.URL_SERVICIOS}catalogos/vacunasOficiales`;
+    return this.http.get(url, { params: parametros }).pipe(
+      map((respuesta: any) => {
+        // Actualizar el cache solo si no se usaron parámetros
+        if (!parametros) {
+          this.vacunaOficial = respuesta.resultado;
+        }
+        return respuesta.resultado;
+      })
+    );
+  }
+
+}

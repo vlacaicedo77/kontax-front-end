@@ -1,0 +1,49 @@
+<hr class="mt-0">
+<div class='row'>
+    <div class='col-12'>
+        <div class='card'>
+            <div class="card-header bg-info text-white rounded-top">
+                Generar correo de verificación de Email
+            </div>
+            <hr class="mt-0">
+            <div class="card-body">
+                <h4 class="card-title">Consultar datos del usuario externo</h4>
+                <div class="form-group row align-items-center mb-0 input-group">
+                    <label for="inputIdentificacionUsuario" class="col-md-3 text-right control-label col-form-label">Número de identificación del usuario externo</label>
+                    <div class="col-md-9 border-left pb-2 pt-2">
+                        <input type="text" class="form-control" (keyup)="mascara($event,'ruc')" #idUsuario name="inputIdentificacionUsuario" placeholder="Ingrese el RUC identificación del usuario externo">
+                        <div class="input-group-append">
+                            <button class="btn btn-success" type="button" (click)="buscarUsuario(idUsuario.value)"><i class="ti-search"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr class="mt-0">
+                 <div class="card-body" *ngIf="this.detalleVisible">
+                    <h4 class="card-title">Datos del usuario</h4>
+                    <div class="form-group row align-items-center mb-0">
+                        <label class="col-md-3 text-right control-label col-form-label">Nombres</label>
+                        <div class="col-md-9 border-left pb-2 pt-2">
+                            <label class="col-md-6 text-left control-label col-form-label">{{usuario.nombres}}</label>
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <label class="col-md-3 text-right control-label col-form-label">Apellidos</label>
+                        <div class="col-md-9 border-left pb-2 pt-2">
+                            <label class="col-md-6 text-left control-label col-form-label">{{usuario.apellidos}}</label>
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <label class="col-md-3 text-right control-label col-form-label">Email</label>
+                        <div class="col-md-9 border-left pb-2 pt-2">
+                            <label class="col-md-6 text-left control-label col-form-label">{{usuario.email}}</label>
+                        </div>
+                    </div>
+                    <div class="card-body ">
+                        <div class="form-group mb-0 text-right ">
+                            <button type="button" (click)="reenviarCorreoVerificacion()" class="btn btn-info waves-effect waves-light ">Generar correo de verificación de email</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+</div>

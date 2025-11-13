@@ -1,0 +1,56 @@
+<hr class="mt-0">
+<div class='row'>
+    <div class='col-12'>
+        <h4 class="card-title">Proveedores de identificación aprobados por AGROCALIDAD</h4>
+        <div class='card' *ngFor="let proveedor of proveedores">
+            <div class="card-header bg-info text-white rounded-top">
+                {{proveedor.nombre}}
+            </div>
+            <hr class="mt-0">
+            <div class="card-body">
+                <div class="form-group row align-items-center mb-0">
+                    <label class="col-md-3 text-right control-label col-form-label">Nombre del proveedor</label>
+                    <div class="col-md-9 border-left pb-2 pt-2">
+                        <label class="col-md-3 text-left control-label col-form-label">{{proveedor.nombre}}</label>
+                    </div>
+                </div>
+                <div class="form-group row align-items-center mb-0">
+                    <label class="col-md-3 text-right control-label col-form-label">Teléfonos</label>
+                    <div class="col-md-9 border-left pb-2 pt-2">
+                        <label class="col-md-3 text-left control-label col-form-label">{{proveedor.telefono}}</label>
+                    </div>
+                </div>
+                <!--div class="form-group row align-items-center mb-0">
+                    <label class="col-md-3 text-right control-label col-form-label">Email</label>
+                    <div class="col-md-9 border-left pb-2 pt-2">
+                        <label class="col-md-3 text-left control-label col-form-label">{{proveedor.email}}</label>
+                    </div>
+                </div>
+                <div class="form-group row align-items-center mb-0">
+                    <label class="col-md-3 text-right control-label col-form-label">Dirección</label>
+                    <div class="col-md-9 border-left pb-2 pt-2">
+                        <label class="col-md-3 text-left control-label col-form-label">{{proveedor.direccion}}</label>
+                    </div>
+                </div>
+                <div class="form-group row align-items-center mb-0">
+                    <label for="inputMapa" class="col-md-3 text-right control-label col-form-label">Ubicación</label>
+                    <div class="col-md-9 border-left pb-2 pt-2">
+                        <google-map
+                            [zoom]="zoom"
+                            [center]="proveedor.mapa"
+                            [options]="opcionesMapa"
+                            >
+                            <map-marker
+                                [position]="proveedor.mapa"
+                                [label]="proveedor.nombre"
+                                [options]="opcionesMarcador"
+                            >
+                            </map-marker>
+                        </google-map>
+                    </div>
+                </div-->    
+            </div>
+        </div>
+    </div>
+</div>
+
