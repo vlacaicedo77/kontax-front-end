@@ -1,5 +1,5 @@
 import { Router } from '@angular/router';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms';
 import { Component, OnInit, NgZone, AfterViewInit } from '@angular/core';
 import { showLoading, showWarning, showSuccessAutoClose, showError } from '../../config/alertas';
 import { JSEncrypt } from 'jsencrypt';
@@ -18,7 +18,7 @@ import * as mascaras from 'src/app/config/mascaras';
 })
 export class PasswordRecoveryComponent implements OnInit, AfterViewInit {
 
-  formulario: FormGroup;
+  formulario: UntypedFormGroup;
   encriptar: any;
   ipPublica: string = '';
   mostrarPassword = false;
@@ -38,9 +38,9 @@ export class PasswordRecoveryComponent implements OnInit, AfterViewInit {
   }
 
   inicializarFormulario() {
-    this.formulario = new FormGroup({
-      identificacion: new FormControl(null, Validators.required),
-      email: new FormControl(null, [Validators.required])
+    this.formulario = new UntypedFormGroup({
+      identificacion: new UntypedFormControl(null, Validators.required),
+      email: new UntypedFormControl(null, [Validators.required])
     });
   }
 
@@ -74,7 +74,7 @@ export class PasswordRecoveryComponent implements OnInit, AfterViewInit {
     }).then((result) => {
       if (result.value) {
         
-        Swal.fire({
+        /*Swal.fire({
           title: 'Espere...',
           text: 'Sus datos se están registrando',
           confirmButtonText: '',
@@ -82,7 +82,7 @@ export class PasswordRecoveryComponent implements OnInit, AfterViewInit {
           onBeforeOpen: () => {
               Swal.showLoading();
           }
-      });
+      });*/
       this._servicioUsuario.recuperarContraseñaUsuarioExterno(this.formulario.value.identificacion,this.formulario.value.email)
         .subscribe((resp: any) => {
           if ( resp.estado === 'OK') {

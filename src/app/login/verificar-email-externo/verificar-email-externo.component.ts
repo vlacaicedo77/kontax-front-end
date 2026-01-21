@@ -30,7 +30,7 @@ export class VerificarEmailExternoComponent implements OnInit {
     }
     else
     {
-      Swal.fire({
+      /*Swal.fire({
         title: 'Espere...',
         text: 'Se está realizando la validación',
         confirmButtonText: '',
@@ -38,7 +38,7 @@ export class VerificarEmailExternoComponent implements OnInit {
         onBeforeOpen: () => {
         Swal.showLoading();
         }
-      });
+      });*/
         this._servicioUsuario.validarEmailExterno(idUsuario, token)
           .subscribe((resp: any) => {
             if ( resp.estado === 'OK') {

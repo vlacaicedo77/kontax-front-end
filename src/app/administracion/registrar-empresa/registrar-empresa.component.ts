@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms';
 import Swal from 'sweetalert2';
 import { showLoading, showWarning, showSuccessAutoClose, showError, closeAlert, showInfo, showSuccess, showHtmlAlert } from '../../config/alertas';
 import { Router } from '@angular/router';
@@ -33,8 +33,8 @@ export class RegistrarEmpresaComponent implements OnInit {
   @ViewChild('fileInput') fileInput!: ElementRef;
 
   //**** Objeto que maneja el formulario ****/
-  formulario: FormGroup;
-  formularioBusqueda: FormGroup;
+  formulario: UntypedFormGroup;
+  formularioBusqueda: UntypedFormGroup;
   //**** Cuerpo de modelos ****/
   usuario: Usuario = new Usuario();
   //**** Listas ****/
@@ -113,49 +113,49 @@ export class RegistrarEmpresaComponent implements OnInit {
 
   //**** Inicializar formularios ****/
   inicializarFormulario() {
-    this.formulario = new FormGroup({
+    this.formulario = new UntypedFormGroup({
       // PERFIL USUARIO
-      idUsuario: new FormControl(''),
-      idUsuarioLock: new FormControl(''),
-      razonSocial: new FormControl('', [Validators.required, Validators.maxLength(200)]),
-      nombreComercial: new FormControl('', [Validators.maxLength(200)]),
-      identificacionRepresentante: new FormControl('', [Validators.maxLength(13)]),
-      nombresRepresentante: new FormControl('', [Validators.maxLength(200)]),
+      idUsuario: new UntypedFormControl(''),
+      idUsuarioLock: new UntypedFormControl(''),
+      razonSocial: new UntypedFormControl('', [Validators.required, Validators.maxLength(200)]),
+      nombreComercial: new UntypedFormControl('', [Validators.maxLength(200)]),
+      identificacionRepresentante: new UntypedFormControl('', [Validators.maxLength(13)]),
+      nombresRepresentante: new UntypedFormControl('', [Validators.maxLength(200)]),
       // CLASIFICACIÓN TRIBUTARIA
-      idRegimenesTributarios: new FormControl(null, [Validators.required]),
-      esContribuyenteEspecial: new FormControl(false),
-      numeroResolucionContribuyenteEspecial: new FormControl('', [Validators.maxLength(50)]),
-      fechaDesignacionContribuyenteEspecial: new FormControl(null),
+      idRegimenesTributarios: new UntypedFormControl(null, [Validators.required]),
+      esContribuyenteEspecial: new UntypedFormControl(false),
+      numeroResolucionContribuyenteEspecial: new UntypedFormControl('', [Validators.maxLength(50)]),
+      fechaDesignacionContribuyenteEspecial: new UntypedFormControl(null),
       // AGENTE DE RETENCIÓN
-      esAgenteRetencion: new FormControl(false),
-      esAgenteRetencionRenta: new FormControl(false),
-      esAgenteRetencionIva: new FormControl(false),
-      esAgenteRetencionIsd: new FormControl(false),
-      numeroResolucionAgenteRetencion: new FormControl('', [Validators.maxLength(50)]),
-      fechaDesignacionAgenteRetencion: new FormControl(null),
+      esAgenteRetencion: new UntypedFormControl(false),
+      esAgenteRetencionRenta: new UntypedFormControl(false),
+      esAgenteRetencionIva: new UntypedFormControl(false),
+      esAgenteRetencionIsd: new UntypedFormControl(false),
+      numeroResolucionAgenteRetencion: new UntypedFormControl('', [Validators.maxLength(50)]),
+      fechaDesignacionAgenteRetencion: new UntypedFormControl(null),
       // AUTORRETENEDOR
-      esAutorretenedor: new FormControl(false),
-      numeroResolucionAutorretenedor: new FormControl('', [Validators.maxLength(50)]),
-      fechaInicioAutorretencion: new FormControl(null),
-      porcentajeAutorretencion: new FormControl(0, [Validators.maxLength(6)]),
+      esAutorretenedor: new UntypedFormControl(false),
+      numeroResolucionAutorretenedor: new UntypedFormControl('', [Validators.maxLength(50)]),
+      fechaInicioAutorretencion: new UntypedFormControl(null),
+      porcentajeAutorretencion: new UntypedFormControl(0, [Validators.maxLength(6)]),
       // INFORMACIÓN ECONÓMICA
-      actividadEconomicaPrincipal: new FormControl('', [Validators.required, Validators.maxLength(200)]),
-      fechaInicioActividades: new FormControl(null, [Validators.required]),
+      actividadEconomicaPrincipal: new UntypedFormControl('', [Validators.required, Validators.maxLength(200)]),
+      fechaInicioActividades: new UntypedFormControl(null, [Validators.required]),
       // OBLIGACIONES TRIBUTARIAS
-      obligadoContabilidad: new FormControl(false),
-      tipoContabilidad: new FormControl(null),
-      debePresentarRenta: new FormControl(false),
-      frecuenciaDeclaracionRenta: new FormControl(null),
-      debePresentarIva: new FormControl(false),
-      frecuenciaDeclaracionIva: new FormControl(null),
+      obligadoContabilidad: new UntypedFormControl(false),
+      tipoContabilidad: new UntypedFormControl(null),
+      debePresentarRenta: new UntypedFormControl(false),
+      frecuenciaDeclaracionRenta: new UntypedFormControl(null),
+      debePresentarIva: new UntypedFormControl(false),
+      frecuenciaDeclaracionIva: new UntypedFormControl(null),
       // FIRMA DIGITAL
-      rutaCertificadoPfx: new FormControl('', [Validators.maxLength(500)]),
-      passwordCertificado: new FormControl('', [Validators.maxLength(25)]),
-      fechaVencimientoCertificado: new FormControl(null),
-      estadoCertificado: new FormControl(1),
+      rutaCertificadoPfx: new UntypedFormControl('', [Validators.maxLength(500)]),
+      passwordCertificado: new UntypedFormControl('', [Validators.maxLength(25)]),
+      fechaVencimientoCertificado: new UntypedFormControl(null),
+      estadoCertificado: new UntypedFormControl(1),
       // CONTACTO
-      telefonoContactoAdministrativo: new FormControl('', [Validators.required, Validators.maxLength(10)]),
-      emailContactoAdministrativo: new FormControl('', [Validators.required, Validators.email, Validators.maxLength(160)])
+      telefonoContactoAdministrativo: new UntypedFormControl('', [Validators.required, Validators.maxLength(10)]),
+      emailContactoAdministrativo: new UntypedFormControl('', [Validators.required, Validators.email, Validators.maxLength(160)])
     }, {
       validators: [
         this.contribuyenteEspecialValidator.bind(this),
@@ -167,9 +167,9 @@ export class RegistrarEmpresaComponent implements OnInit {
       ]
     });
 
-    this.formularioBusqueda = new FormGroup({
-      numeroRUC: new FormControl(null, [Validators.maxLength(13)]),
-      estado: new FormControl('-1')
+    this.formularioBusqueda = new UntypedFormGroup({
+      numeroRUC: new UntypedFormControl(null, [Validators.maxLength(13)]),
+      estado: new UntypedFormControl('-1')
     });
   }
 
@@ -209,7 +209,7 @@ export class RegistrarEmpresaComponent implements OnInit {
 
   // Validador cuando se activa Contribuyente Especial 
   contribuyenteEspecialValidator() {
-    return (formGroup: FormGroup) => {
+    return (formGroup: UntypedFormGroup) => {
       const esContribuyente = formGroup.get('esContribuyenteEspecial').value;
       const numeroResolucion = formGroup.get('numeroResolucionContribuyenteEspecial').value;
       const fechaDesignacion = formGroup.get('fechaDesignacionContribuyenteEspecial').value;
@@ -239,7 +239,7 @@ export class RegistrarEmpresaComponent implements OnInit {
 
   // Validador cuando se activa Agente de Retención
   agenteRetencionValidator() {
-    return (formGroup: FormGroup) => {
+    return (formGroup: UntypedFormGroup) => {
       const esAgenteRetencion = formGroup.get('esAgenteRetencion').value;
       const esAgenteRetencionRenta = formGroup.get('esAgenteRetencionRenta').value;
       const esAgenteRetencionIva = formGroup.get('esAgenteRetencionIva').value;
@@ -276,7 +276,7 @@ export class RegistrarEmpresaComponent implements OnInit {
 
   // Validador cuando se activa Autorretenedor
   autorretenedorValidator() {
-    return (formGroup: FormGroup) => {
+    return (formGroup: UntypedFormGroup) => {
       const esAutorretenedor = formGroup.get('esAutorretenedor').value;
       const numeroResolucion = formGroup.get('numeroResolucionAutorretenedor').value;
       const fechaInicio = formGroup.get('fechaInicioAutorretencion').value;
@@ -321,7 +321,7 @@ export class RegistrarEmpresaComponent implements OnInit {
 
   // Validador cuando se activa Contabilidad
   contabilidadValidator() {
-    return (formGroup: FormGroup) => {
+    return (formGroup: UntypedFormGroup) => {
       const obligadoContabilidad = formGroup.get('obligadoContabilidad').value;
       const tipoContabilidad = formGroup.get('tipoContabilidad').value;
 
@@ -336,7 +336,7 @@ export class RegistrarEmpresaComponent implements OnInit {
 
   // Validador cuando se activa Renta
   rentaValidator() {
-    return (formGroup: FormGroup) => {
+    return (formGroup: UntypedFormGroup) => {
       const debePresentarRenta = formGroup.get('debePresentarRenta').value;
       const frecuenciaDeclaracionRenta = formGroup.get('frecuenciaDeclaracionRenta').value;
 
@@ -351,7 +351,7 @@ export class RegistrarEmpresaComponent implements OnInit {
 
   // Validador cuando se activa IVA
   ivaValidator() {
-    return (formGroup: FormGroup) => {
+    return (formGroup: UntypedFormGroup) => {
       const debePresentarIva = formGroup.get('debePresentarIva').value;
       const frecuenciaDeclaracionIva = formGroup.get('frecuenciaDeclaracionIva').value;
 

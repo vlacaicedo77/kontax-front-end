@@ -122,7 +122,7 @@ export class ListarNotificacionesComponent implements OnInit {
     notificacion.idNotificacion = idNotificacion;
     notificacion.estado = 2; // Marcar como leída
     
-    Swal.fire({
+    /*Swal.fire({
       title: 'Espere...',
       text: 'Sus datos se están registrando',
       confirmButtonText: '',
@@ -130,7 +130,7 @@ export class ListarNotificacionesComponent implements OnInit {
       onBeforeOpen: () => {
           Swal.showLoading();
       }
-    });
+    });*/
     if(this.usuarioServicio.usuarioExterno)
     {
       this._notificacionServicio.actualizarNotificacionExterno(notificacion)

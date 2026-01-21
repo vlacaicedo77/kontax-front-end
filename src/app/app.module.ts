@@ -6,7 +6,8 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { DatePipe } from '@angular/common';
 
 // Módulos de terceros
-import { NgxMaskModule } from 'ngx-mask';
+//import { NgxMaskModule } from 'ngx-mask';
+import { NgxMaskDirective, NgxMaskPipe, provideNgxMask } from 'ngx-mask';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 // Rutas de la aplicación
@@ -28,7 +29,6 @@ import { PasswordRecoveryComponent } from './login/password-recovery/password-re
 import { VerificarEmailExternoComponent } from './login/verificar-email-externo/verificar-email-externo.component';
 
 // Componentes de Usuarios Externos
-import { CrearUsuarioExternoComponent } from './usuarios-externos/crear-usuario-externo/crear-usuario-externo.component';
 import { CambiarContrasenaExternoComponent } from './usuarios-externos/cambiar-contrasena-externo/cambiar-contrasena-externo.component';
 import { GenerarVerificacionEmailComponent } from './usuarios-externos/generar-verificacion-email/generar-verificacion-email.component';
 import { ActualizarPerfilUsuarioExternoComponent } from './usuarios-externos/actualizar-perfil-usuario-externo/actualizar-perfil-usuario-externo.component';
@@ -57,7 +57,6 @@ import { InterceptorAutenticacion } from './servicios/autenticacion/interceptor'
     VerificarEmailExternoComponent,
     
     // Componentes de Usuarios Externos (agrupados)
-    CrearUsuarioExternoComponent,
     CambiarContrasenaExternoComponent,
     GenerarVerificacionEmailComponent,
     ActualizarPerfilUsuarioExternoComponent,
@@ -84,12 +83,13 @@ import { InterceptorAutenticacion } from './servicios/autenticacion/interceptor'
     
     // Módulos de terceros
     FontAwesomeModule,
-    NgxMaskModule.forRoot()
+    NgxMaskDirective,
+    NgxMaskPipe
   ],
   providers: [
     // Solo quedan servicios que NO tienen providedIn: 'root'
     DatePipe, // DatePipe no es un servicio @Injectable, es de Angular
-    
+    provideNgxMask(),
     // Interceptores HTTP (necesitan registro manual)
     {
       provide: HTTP_INTERCEPTORS,

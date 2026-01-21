@@ -10,7 +10,7 @@ import  * as fondos from 'src/app/config/random-background';
 // Importamos las máscaras de validacion
 import * as mascaras from 'src/app/config/mascaras';
 import { UsuarioService } from 'src/app/servicios/usuario/usuario.service';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
 @Component({
@@ -21,7 +21,7 @@ import { Router } from '@angular/router';
 export class CambiarClaveCaducadaExternoComponent implements OnInit {
 
   // Objeto que maneja el formulario.
-  formulario: FormGroup;
+  formulario: UntypedFormGroup;
   regExpPassword :RegExp = mascaras.MASK_PASSWORD_EXT;
   encriptar: any;
   mostrarPassword1 = false;
@@ -42,10 +42,10 @@ export class CambiarClaveCaducadaExternoComponent implements OnInit {
   
      // Inicializar formulario.
      inicializarFormulario() {
-      this.formulario = new FormGroup({
-        password_actual: new FormControl(null, [Validators.required]),
-        confirmar_password: new FormControl(null, [Validators.required]),
-        nuevo_password: new FormControl(null, [Validators.required])
+      this.formulario = new UntypedFormGroup({
+        password_actual: new UntypedFormControl(null, [Validators.required]),
+        confirmar_password: new UntypedFormControl(null, [Validators.required]),
+        nuevo_password: new UntypedFormControl(null, [Validators.required])
       });
     }
   
@@ -91,7 +91,7 @@ export class CambiarClaveCaducadaExternoComponent implements OnInit {
       }).then((result) => {
         if (result.value) {
           
-          Swal.fire({
+          /*Swal.fire({
             title: 'Espere...',
             text: 'Sus datos se están registrando',
             confirmButtonText: '',
@@ -99,7 +99,7 @@ export class CambiarClaveCaducadaExternoComponent implements OnInit {
             onBeforeOpen: () => {
                 Swal.showLoading();
             }
-        });
+        });*/
         this._servicioUsuario.cambiarContraseñaUsuarioExterno(parseInt(localStorage.getItem('idUsuario')), claveEncriptada, claveAnteriorEncriptada)
           .subscribe((resp: any) => {
             if ( resp.estado === 'OK') {

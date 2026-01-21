@@ -2,7 +2,7 @@ import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import Swal from 'sweetalert2';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, UntypedFormGroup } from '@angular/forms';
 import { ScriptsService } from '../../servicios/scripts/scripts.service';
 // Importación de modelos.
 import { Usuario } from '../../modelos/usuario.modelo';
@@ -23,8 +23,8 @@ import { AlertaSesionService } from '../../servicios/autenticacion/alerta-sesion
 export class InicioComponent implements OnInit, AfterViewInit, OnDestroy {
 
   //**** Objeto que maneja el formulario ****/
-  formularioBusqueda: FormGroup;
-  formularioSitio: FormGroup;
+  formularioBusqueda: UntypedFormGroup;
+  formularioSitio: UntypedFormGroup;
   //**** Cuerpo de modelos ****/
   usuario: Usuario;
   //**** Listas ****/

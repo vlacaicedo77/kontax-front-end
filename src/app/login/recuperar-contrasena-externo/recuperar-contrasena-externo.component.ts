@@ -4,7 +4,7 @@ import Swal from 'sweetalert2';
 // Importamos las máscaras de validacion
 import * as mascaras from 'src/app/config/mascaras';
 import { UsuarioService } from 'src/app/servicios/usuario/usuario.service';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ScriptsService } from '../../servicios/scripts/scripts.service';
 
@@ -19,7 +19,7 @@ import  * as fondos from 'src/app/config/random-background';
 export class RecuperarContrasenaExternoComponent implements OnInit {
 
   // Objeto que maneja el formulario.
-  formulario: FormGroup;
+  formulario: UntypedFormGroup;
   /*19Apr2021 DSRE Ingreso de varios tipos de identificación para usuarios externos*/
   //regExpRUC :RegExp = mascaras.MASK_RUC;
   randomBackground = fondos.RandomBackground();
@@ -37,9 +37,9 @@ export class RecuperarContrasenaExternoComponent implements OnInit {
 
    // Inicializar formulario.
    inicializarFormulario() {
-    this.formulario = new FormGroup({
-      identificacion: new FormControl(null, [Validators.minLength(1), Validators.maxLength(20)]),
-      email: new FormControl(null, [Validators.required])
+    this.formulario = new UntypedFormGroup({
+      identificacion: new UntypedFormControl(null, [Validators.minLength(1), Validators.maxLength(20)]),
+      email: new UntypedFormControl(null, [Validators.required])
     });
   }
 
@@ -73,7 +73,7 @@ export class RecuperarContrasenaExternoComponent implements OnInit {
     }).then((result) => {
       if (result.value) {
         
-        Swal.fire({
+        /*Swal.fire({
           title: 'Espere...',
           text: 'Sus datos se están registrando',
           confirmButtonText: '',
@@ -81,7 +81,8 @@ export class RecuperarContrasenaExternoComponent implements OnInit {
           onBeforeOpen: () => {
               Swal.showLoading();
           }
-      });
+      });*/
+      
       this._servicioUsuario.recuperarContraseñaUsuarioExterno(this.formulario.value.identificacion,this.formulario.value.email)
         .subscribe((resp: any) => {
           if ( resp.estado === 'OK') {

@@ -97,7 +97,7 @@ Swal.fire({
 }).then((result) => {
       if (result.value) {
 
-        Swal.fire({
+        /*Swal.fire({
           title: 'Espere...',
           text: 'Sus datos se están registrando',
           confirmButtonText: '',
@@ -105,7 +105,7 @@ Swal.fire({
           onBeforeOpen: () => {
               Swal.showLoading();
           }
-      });
+      });*/
 
         this._usuarioService.reenviarConfirmacionEmailExterno(this.usuario.idUsuario)
         .subscribe( (resp: any) => {

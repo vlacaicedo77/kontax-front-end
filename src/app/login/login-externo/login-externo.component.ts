@@ -1,5 +1,5 @@
 import { Router } from '@angular/router';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms';
 import { Component, OnInit, NgZone, AfterViewInit } from '@angular/core';
 import { showLoading, showWarning, showSuccessAutoClose, showError } from '../../config/alertas';
 import { JSEncrypt } from 'jsencrypt';
@@ -19,7 +19,7 @@ import * as mascaras from 'src/app/config/mascaras';
 })
 export class LoginExternoComponent implements OnInit, AfterViewInit {
 
-  formulario: FormGroup;
+  formulario: UntypedFormGroup;
   encriptar: any;
   ipPublica: string = '';
   mostrarPassword = false;
@@ -47,16 +47,16 @@ export class LoginExternoComponent implements OnInit, AfterViewInit {
   }
 
   inicializarFormulario() {
-    this.formulario = new FormGroup({
-      identificacion: new FormControl(null, Validators.required),
-      password: new FormControl(null, Validators.required)
+    this.formulario = new UntypedFormGroup({
+      identificacion: new UntypedFormControl(null, Validators.required),
+      password: new UntypedFormControl(null, Validators.required)
     }, {
       validators: this.validarCredenciales('identificacion', 'password')
     });
   }
 
   validarCredenciales(formControlUser: string, formControlPassWord: string) {
-    return (formulario_login: FormGroup) => {
+    return (formulario_login: UntypedFormGroup) => {
       const user = formulario_login.get(formControlUser)?.value;
       const password = formulario_login.get(formControlPassWord)?.value;
       if ((!user || user.trim() === '') || (!password || password.trim() === '')) {

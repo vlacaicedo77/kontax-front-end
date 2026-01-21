@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms';
 import Swal from 'sweetalert2';
 import { Router } from '@angular/router';
 // Encriptar la contraseña.
@@ -37,7 +37,7 @@ declare function funciones_index();
 export class RegistrarUsuarioExternoComponent implements OnInit {
 
   // Objeto que maneja el formulario.
-  formulario: FormGroup;
+  formulario: UntypedFormGroup;
   regExpPassword :RegExp = mascaras.MASK_PASSWORD_EXT;
   regExpRUC : RegExp = mascaras.MASK_RUC;
   regExpCedula : RegExp = mascaras.MASK_CEDULA;
@@ -68,21 +68,21 @@ export class RegistrarUsuarioExternoComponent implements OnInit {
   }
   // Inicializar formulario.
   inicializarFormulario() {
-    this.formulario = new FormGroup({
-      inputTipoIdentificacion: new FormControl(null, [Validators.required]),
-      numero_identificacion_RUC: new FormControl(null, [Validators.pattern(mascaras.MASK_RUC)]),
-      numero_identificacion_cedula: new FormControl(null, [Validators.required, Validators.pattern(mascaras.MASK_CEDULA)]),
+    this.formulario = new UntypedFormGroup({
+      inputTipoIdentificacion: new UntypedFormControl(null, [Validators.required]),
+      numero_identificacion_RUC: new UntypedFormControl(null, [Validators.pattern(mascaras.MASK_RUC)]),
+      numero_identificacion_cedula: new UntypedFormControl(null, [Validators.required, Validators.pattern(mascaras.MASK_CEDULA)]),
       /* 19APR2021 DSRE Campos Nombre y Apellidos del usuario solamente de lectura*/
       /*nombres: new FormControl(null, [Validators.required, Validators.pattern(mascaras.MASK_ALFANUMERICO)]),
       apellidos: new FormControl(null, [Validators.required, Validators.pattern(mascaras.MASK_ALFANUMERICO)]),*/
       /* 20APR2021 DSRE Inclusión de Términos y condiciones*/
-      terminos_condiciones: new FormControl(null, [Validators.required]),
-      razon_social: new FormControl(''),
-      nombre_comercial: new FormControl(''),
-      identificacion_representante: new FormControl(''),
-      nombre_representante: new FormControl(''),
-      apellido_representante: new FormControl(''),
-      email: new FormControl(null, [Validators.required, Validators.email]),
+      terminos_condiciones: new UntypedFormControl(null, [Validators.required]),
+      razon_social: new UntypedFormControl(''),
+      nombre_comercial: new UntypedFormControl(''),
+      identificacion_representante: new UntypedFormControl(''),
+      nombre_representante: new UntypedFormControl(''),
+      apellido_representante: new UntypedFormControl(''),
+      email: new UntypedFormControl(null, [Validators.required, Validators.email]),
       /* 07APR2021 DSRE Activación de Usuarios Externos desde Agrocalidad
       password: new FormControl(null, [Validators.required, Validators.pattern(mascaras.MASK_ALFANUMERICO)]),
       confirmar_password: new FormControl(null, [Validators.required, Validators.pattern(mascaras.MASK_ALFANUMERICO)])
@@ -195,7 +195,7 @@ export class RegistrarUsuarioExternoComponent implements OnInit {
       }).then((result) => {
         if (result.value) {
           
-          Swal.fire({
+         /* Swal.fire({
             title: 'Espere...',
             text: 'Sus datos se están registrando',
             confirmButtonText: '',
@@ -203,8 +203,7 @@ export class RegistrarUsuarioExternoComponent implements OnInit {
             onBeforeOpen: () => {
                 Swal.showLoading();
             }
-        });
-
+        });*/
         this._servicioUsuario.registrarUsuarioExterno(usuario)
           .subscribe((resp: any) => {
             if (resp.estado === 'OK') {
@@ -245,7 +244,7 @@ export class RegistrarUsuarioExternoComponent implements OnInit {
     }
     else
     {
-      Swal.fire({
+      /*Swal.fire({
         title: 'Espere...',
         text: 'Consultando información del SRI',
         confirmButtonText: '',
@@ -253,7 +252,7 @@ export class RegistrarUsuarioExternoComponent implements OnInit {
         onBeforeOpen: () => {
             Swal.showLoading();
         }
-      });
+      });*/
 
     this._servicioDinardap.obtenerUbicacionesSri(identificacion)
     .subscribe( ( ubicaciones: UbicacionSri[] ) => {
@@ -326,7 +325,7 @@ export class RegistrarUsuarioExternoComponent implements OnInit {
     }
     else
     {
-      Swal.fire({
+      /*Swal.fire({
         title: 'Espere...',
         text: 'Consultando información del Registro Civil',
         confirmButtonText: '',
@@ -334,7 +333,7 @@ export class RegistrarUsuarioExternoComponent implements OnInit {
         onBeforeOpen: () => {
             Swal.showLoading();
         }
-      });
+      });*/
 
 
       this._servicioDinardap.obtenerDatosDemograficos(identificacion)

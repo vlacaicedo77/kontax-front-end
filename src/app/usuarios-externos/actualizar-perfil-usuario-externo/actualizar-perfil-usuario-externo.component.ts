@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms';
 import Swal from 'sweetalert2';
 import { Router } from '@angular/router';
 // Importación de modelos.
@@ -18,7 +18,7 @@ import  * as mascaras from 'src/app/config/mascaras';
 export class ActualizarPerfilUsuarioExternoComponent implements OnInit {
 
   // Objeto que maneja el formulario.
-  formulario: FormGroup;
+  formulario: UntypedFormGroup;
   idUsuario : number;
   identificacion : string;
   tipoIdentificacion: string;
@@ -38,12 +38,12 @@ export class ActualizarPerfilUsuarioExternoComponent implements OnInit {
   }
   // Inicializar formulario.
   inicializarFormulario() {
-    this.formulario = new FormGroup({
-      inputRazonSocial: new FormControl(null, [Validators.required, Validators.pattern(mascaras.MASK_ALFANUMERICO)]),
-      inputNombreComercial: new FormControl(null, [Validators.required, Validators.pattern(mascaras.MASK_ALFANUMERICO)]),
-      inputIdentificacionRepresentante: new FormControl(null, [Validators.required, Validators.pattern(mascaras.MASK_NUMERICO)]),
-      inputNombresRepresentante: new FormControl(null, [Validators.required, Validators.pattern(mascaras.MASK_ALFANUMERICO)]),
-      inputApellidosRepresentante: new FormControl(null, [Validators.required, Validators.pattern(mascaras.MASK_ALFANUMERICO)])
+    this.formulario = new UntypedFormGroup({
+      inputRazonSocial: new UntypedFormControl(null, [Validators.required, Validators.pattern(mascaras.MASK_ALFANUMERICO)]),
+      inputNombreComercial: new UntypedFormControl(null, [Validators.required, Validators.pattern(mascaras.MASK_ALFANUMERICO)]),
+      inputIdentificacionRepresentante: new UntypedFormControl(null, [Validators.required, Validators.pattern(mascaras.MASK_NUMERICO)]),
+      inputNombresRepresentante: new UntypedFormControl(null, [Validators.required, Validators.pattern(mascaras.MASK_ALFANUMERICO)]),
+      inputApellidosRepresentante: new UntypedFormControl(null, [Validators.required, Validators.pattern(mascaras.MASK_ALFANUMERICO)])
     });
   }
 
@@ -70,7 +70,7 @@ export class ActualizarPerfilUsuarioExternoComponent implements OnInit {
     }).then((result) => {
       if (result.value) {
         
-        Swal.fire({
+        /*Swal.fire({
           title: 'Espere...',
           text: 'Sus datos se están registrando',
           confirmButtonText: '',
@@ -78,7 +78,7 @@ export class ActualizarPerfilUsuarioExternoComponent implements OnInit {
           onBeforeOpen: () => {
               Swal.showLoading();
           }
-      });
+      });*/
 
       let usuario = new Usuario();
 
