@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
 declare function funciones_index();
-declare function funcion_js_custom();
+declare function funcion_js_custom_optimizada();
 // Función para inicializar el menú en horizontal pantalla completa.
 declare function initHorizontalFullWitdth();
 // Función para inicializar el menú izquierdo al cambio de tamaño de pantall.
@@ -16,7 +16,7 @@ export class ScriptsService {
 
   // Carga los scripts necesarios para establecer configuraciones visuales.
   inicializarScripts(){
-    funcion_js_custom();
+    funcion_js_custom_optimizada();
     initHorizontalFullWitdth();
     styleSwitcherHorizontal();
     funciones_index();

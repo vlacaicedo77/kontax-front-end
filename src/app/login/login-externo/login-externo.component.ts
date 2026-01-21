@@ -1,128 +1,156 @@
-import { Component, OnInit } from '@angular/core';
-import Swal from 'sweetalert2';
-import { HttpErrorResponse } from '@angular/common/http';
-// Encriptar la contraseña.
-import { JSEncrypt } from 'jsencrypt';
-// Importación de clave pública para encriptar la contraseña.
-import { clavePublica } from '../../config/config';
-// Importación de servicios.
-import { AutenticacionService } from '../../servicios/autenticacion/autenticacion.service';
-// Importamos la función de fondos aleatorios
-import  * as fondos from 'src/app/config/random-background';
-
-// Importamos las máscaras de validacion
-import * as mascaras from 'src/app/config/mascaras';
-import { ScriptsService } from '../../servicios/scripts/scripts.service';
-import { UsuarioService } from '../../servicios/usuario/usuario.service';
 import { Router } from '@angular/router';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-
+import { Component, OnInit, NgZone, AfterViewInit } from '@angular/core';
+import { showLoading, showWarning, showSuccessAutoClose, showError } from '../../config/alertas';
+import { JSEncrypt } from 'jsencrypt';
+import { clavePublica } from '../../config/config';
+// Importación de servicios
+import { ScriptsService } from '../../servicios/scripts/scripts.service';
+import { AutenticacionService } from '../../servicios/autenticacion/autenticacion.service';
+import { SesionVerificacionService } from '../../servicios/autenticacion/sesion-verificacion.service';
+import { AlertaSesionService } from '../../servicios/autenticacion/alerta-sesion.service';
+// Importamos las máscaras de validacion
+import * as mascaras from 'src/app/config/mascaras';
 
 @Component({
   selector: 'app-login-externo',
   templateUrl: './login-externo.component.html',
-  styles: [
-  ]
+  styleUrls: ['./login-externo.component.css']
 })
-export class LoginExternoComponent implements OnInit {
+export class LoginExternoComponent implements OnInit, AfterViewInit {
 
-   // Objeto que maneja el formulario.
-   formulario: FormGroup;
-   encriptar: any;
-   direccionIP: any;
-   mostrarPassword = false;
-   randomBackground = fondos.RandomBackground();
+  formulario: FormGroup;
+  encriptar: any;
+  ipPublica: string = '';
+  mostrarPassword = false;
 
   constructor(
-    private usuarioServicio: UsuarioService,
-    public _servicioAutenticacion: AutenticacionService,
+    public  autenticacionService: AutenticacionService,
+    private sesionVerificacionService: SesionVerificacionService,
+    private alertaSesionService: AlertaSesionService,
+    private ngZone: NgZone,
     private router: Router,
-    private scriptServicio: ScriptsService
+    private scriptService: ScriptsService
   ) { }
 
   ngOnInit(): void {
-    if (this.usuarioServicio.sesionIniciada()){
+    this.alertaSesionService.resetearEstado();
+    this.inicializarFormulario();
+    if (this.autenticacionService.sesionIniciada()) {
       this.router.navigate(['/inicio']);
     }
     this.encriptar = new JSEncrypt();
-    this.inicializarFormulario();
-    this.obtenerDireccionIP();
-    this.scriptServicio.inicializarScripts();
   }
-  // Inicializar formulario.
+
+  ngAfterViewInit() {
+      this.scriptService.inicializarScripts();
+  }
+
   inicializarFormulario() {
     this.formulario = new FormGroup({
       identificacion: new FormControl(null, Validators.required),
       password: new FormControl(null, Validators.required)
+    }, {
+      validators: this.validarCredenciales('identificacion', 'password')
     });
   }
 
-  // Método que permite a un usuario iniciar sesion
+  validarCredenciales(formControlUser: string, formControlPassWord: string) {
+    return (formulario_login: FormGroup) => {
+      const user = formulario_login.get(formControlUser)?.value;
+      const password = formulario_login.get(formControlPassWord)?.value;
+      if ((!user || user.trim() === '') || (!password || password.trim() === '')) {
+        return { credencialesObligatorias: true };
+      }
+      return null;
+    };
+  }
+
   iniciarSesion() {
+    
+    if (this.formulario.invalid) { return; }
+
     this.encriptar.setPublicKey(clavePublica);
     let claveEncriptada = this.encriptar.encrypt(this.formulario.value.password);
-    if (this.formulario.invalid) {
-      Swal.fire('Error', 'Existen errores en los datos de ingreso', 'error');
-      return;
-    }
-
-    Swal.fire({
-      title: 'Espere...',
-      text: 'Autenticando',
-      confirmButtonText: '',
-      allowOutsideClick: false,
-      onBeforeOpen: () => {
-        Swal.showLoading();
-      }
-    });
-
-    this._servicioAutenticacion.autenticarUsuarioExterno(this.formulario.value.identificacion, claveEncriptada, this.direccionIP)
-      .subscribe((resp: any) => {
-        if (resp.estado === 'OK') {
-          Swal.fire({
-            position: 'center',
-            icon: 'success',
-            title: 'El usuario fue autenticado correctamente.',
-            showConfirmButton: false,
-            timer: 1500
-          });
-          if(resp.resultado['contraseñaExpirada'] == 'SI')
-          {
-            Swal.fire({
-              position: 'center',
-              icon: 'warning',
-              title: 'Su contraseña ha expirado, por favor cambie su contraseña.',
-              showConfirmButton: true
+    showLoading('Autenticando...');
+    this.autenticacionService.autenticar(this.formulario.value.identificacion, claveEncriptada)
+      .subscribe({
+        next: (resp: any) => {
+          if (resp.estado === 'OK') {
+            showSuccessAutoClose('¡Hola, bienvenido/a!', 1500);
+            // Guardar flag si hubo sesión anterior cerrada
+            if (resp.resultado.sesionActivaAnterior) {
+              localStorage.setItem('mostrarAlertaSesionAnterior', 'true');
+              localStorage.setItem('alertaSesionAnteriorTimestamp', Date.now().toString());
+            }
+            // Iniciar verificación periódica en todos los dispositivos
+            this.ngZone.runOutsideAngular(() => {
+              setTimeout(() => {
+                this.ngZone.run(() => {
+                  this.sesionVerificacionService.iniciarVerificacionPeriodica();
+                });
+              }, 500);
             });
-            this.router.navigate(['/cambiar-clave-caducada-externo']);  
+
+            // Manejar navegación según escenario
+            this.ngZone.run(() => {
+              if (resp.resultado['contraseñaExpirada'] == 'SI') {
+                showWarning('Su contraseña ha expirado, por favor cámbiela.');
+                this.router.navigate(['/cambiar-clave-caducada-externo']);
+              } else {
+                this.navegarAlInicio();
+              }
+            });
+          } else {
+            showError('Error', resp.mensaje || 'Error desconocido');
           }
-          else
-          {
-            this.router.navigate(['inicio']);
-          }
+        },
+        error: (error: any) => {
+          showError('Error', error.mensaje || 'Error de autenticación');
         }
-        else {
-          Swal.fire('Error', resp.mensaje, 'error');
-        }
-      }, (err: HttpErrorResponse) => {
-        Swal.fire('Error', err.message, 'error');
       });
   }
 
-  obtenerDireccionIP() {
-    /*this.http.get<{ip:string}>('https://jsonip.com')
-    .subscribe( data => {
-      this.direccionIP = data.ip
-    })*/
-    this.direccionIP = '192.0.0.1';
+  /**
+   * Maneja la navegación a la página de inicio según el dispositivo
+   */
+  private navegarAlInicio(): void {
+    const esMovil = window.innerWidth <= 768;
+
+    if (esMovil) {
+      // En móvil: usar recarga controlada
+      this.recargarParaMovil();
+    } else {
+      // En desktop: navegación normal de Angular
+      this.router.navigate(['inicio']);
+    }
   }
 
-  // Función que aplica la máscara a un input al presionarse una tecla
+  /**
+ * Recarga controlada para dispositivos móviles
+ */
+  private recargarParaMovil(): void {
+    // Primero navegar normalmente
+    this.router.navigate(['inicio']).then(() => {
+      // Usar ngZone.run para operaciones asíncronas que puedan afectar la UI
+      this.ngZone.runOutsideAngular(() => {
+        setTimeout(() => {
+          // Verificar si necesitamos recargar
+          this.ngZone.run(() => {
+            // Solo recargar si estamos realmente en la página de inicio
+            if (this.router.url.includes('/inicio')) {
+              window.location.reload();
+            }
+          });
+        }, 300);
+      });
+    });
+  }
+
   mascara(event: KeyboardEvent, mascara: string) {
     mascaras.Mascara(event, mascara);
   }
 
-  //Función para activar y desactivar la visibilidad del password
   cambiarVisibilidadPassword() {
     this.mostrarPassword = !this.mostrarPassword;
   }

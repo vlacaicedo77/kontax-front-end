@@ -1,151 +1,91 @@
-function funcion_js_custom() {
-    $(function() {
+function funcion_js_custom_optimizada() {
+    $(function () {
         "use strict";
 
+        // 1. SOLO LO ESENCIAL
         $(".preloader").fadeOut();
 
-        // Feather Icon Init Js
-        feather.replace();
+        if (typeof feather !== 'undefined') {
+            feather.replace();
+        }
 
-        $(".left-sidebar").hover(
-            function() {
-                $(".navbar-header").addClass("expand-logo");
-            },
-            function() {
-                $(".navbar-header").removeClass("expand-logo");
-            }
-        );
-        // this is for close icon when navigation open in mobile view
-        $(".nav-toggler").on('click', function() {
-            $("#main-wrapper").toggleClass("show-sidebar");
-            $(".nav-toggler i").toggleClass("ti-menu");
-        });
-        $(".nav-lock").on('click', function() {
-            $("body").toggleClass("lock-nav");
-            $(".nav-lock i").toggleClass("mdi-toggle-switch-off");
+        // 3. TOGGLE DEL SIDEBAR MODIFICADO (no interferir con Angular)
+        function configurarToggleSidebar() {
+            $(".nav-toggler").off('click.custom-toggle').on('click.custom-toggle', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+
+                const $this = $(this);
+                const $mainWrapper = $("#main-wrapper");
+
+                // Usar método nativo en lugar de toggleClass directo
+                const tieneClase = $mainWrapper.hasClass("show-sidebar");
+
+                if (tieneClase) {
+                    $mainWrapper.removeClass("show-sidebar");
+                    $this.find("i").removeClass("ti-close").addClass("ti-menu");
+                } else {
+                    $mainWrapper.addClass("show-sidebar");
+                    $this.find("i").removeClass("ti-menu").addClass("ti-close");
+                }
+
+                return false;
+            });
+        }
+        configurarToggleSidebar();
+
+        // 4. Tooltips básicos (si los usas)
+        if (typeof $.fn.tooltip !== 'undefined') {
+            $('[data-toggle="tooltip"]').tooltip();
+        }
+
+        // 5. Popovers básicos (si los usas)
+        if (typeof $.fn.popover !== 'undefined') {
+            $('[data-toggle="popover"]').popover();
+        }
+
+        // 6. Resize trigger (para algunos layouts)
+        setTimeout(function () {
             $("body, .page-wrapper").trigger("resize");
-        });
-        $(".search-box a, .search-box .app-search .srh-btn").on('click', function() {
-            $(".app-search").toggle(200);
-            $(".app-search input").focus();
-        });
+            $(".page-wrapper").delay(20).show();
+        }, 100);
 
-        // ==============================================================
-        // Right sidebar options
-        // ==============================================================
-        /*$(function() {
-            $(".service-panel-toggle").on('click', function() {
-                $(".customizer").toggleClass('show-service-panel');
+        // 7. FORZAR skin7 y prevenir cambios
+        setTimeout(function () {
+            // Forzar tema verde
+            $('.left-sidebar').attr('data-sidebarbg', 'skin7');
 
+            // Prevenir cambios de tema
+            $('.theme-color .theme-item .theme-link').off('click').on('click', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('Cambio de tema bloqueado');
+                return false;
             });
-            $('.page-wrapper').on('click', function() {
-                $(".customizer").removeClass('show-service-panel');
-            });
-        });*/
-        // ==============================================================
-        // This is for the floating labels
-        // ==============================================================
-        $('.floating-labels .form-control').on('focus blur', function(e) {
-            $(this).parents('.form-group').toggleClass('focused', (e.type === 'focus' || this.value.length > 0));
-        }).trigger('blur');
+        }, 200);
+    });
 
-        // ==============================================================
-        //tooltip
-        // ==============================================================
-        $(function() {
-                $('[data-toggle="tooltip"]').tooltip()
-            })
-            // ==============================================================
-            //Popover
-            // ==============================================================
-        $(function() {
-            $('[data-toggle="popover"]').popover()
-        })
+    // 8. CIERRE AUTOMÁTICO SIMPLE (AGREGAR AL FINAL)
+    $(document).on('click', '.left-sidebar .sidebar-link', function () {
+        const $enlace = $(this);
 
-        // ==============================================================
-        // Perfact scrollbar
-        // ==============================================================
-        $('.message-center, .customizer-body, .scrollable').perfectScrollbar({
-            wheelPropagation: !0
-        });
+        // Solo cerrar si tiene routerLink o href (no es solo para expandir)
+        if ($enlace.attr('routerLink') ||
+            ($enlace.attr('href') && !$enlace.attr('href').startsWith('javascript'))) {
 
-        /*var ps = new PerfectScrollbar('.message-body');
-        var ps = new PerfectScrollbar('.notifications');
-        var ps = new PerfectScrollbar('.scroll-sidebar');
-        var ps = new PerfectScrollbar('.customizer-body');*/
+            // Pequeño delay para permitir la navegación
+            setTimeout(function () {
+                $("#main-wrapper").removeClass("show-sidebar");
+                $(".nav-toggler i").removeClass("ti-close").addClass("ti-menu");
+            }, 300);
+        }
+    });
 
-        // ==============================================================
-        // Resize all elements
-        // ==============================================================
-        $("body, .page-wrapper").trigger("resize");
-        $(".page-wrapper").delay(20).show();
-
-        // ==============================================================
-        // To do list
-        // ==============================================================
-        $(".list-task li label").click(function() {
-            $(this).toggleClass("task-done");
-        });
-
-        // ==============================================================
-        // Collapsable cards
-        // ==============================================================
-        $('a[data-action="collapse"]').on('click', function(e) {
-            e.preventDefault();
-            $(this).closest('.card').find('[data-action="collapse"] i').toggleClass('ti-minus ti-plus');
-            $(this).closest('.card').children('.card-body').collapse('toggle');
-        });
-        // Toggle fullscreen
-        $('a[data-action="expand"]').on('click', function(e) {
-            e.preventDefault();
-            $(this).closest('.card').find('[data-action="expand"] i').toggleClass('mdi-arrow-expand mdi-arrow-compress');
-            $(this).closest('.card').toggleClass('card-fullscreen');
-        });
-        // Close Card
-        $('a[data-action="close"]').on('click', function() {
-            $(this).closest('.card').removeClass().slideUp('fast');
-        });
-        // ==============================================================
-        // LThis is for mega menu
-        // ==============================================================
-        $(document).on('click', '.mega-dropdown', function(e) {
-            e.stopPropagation()
-        });
-        // ==============================================================
-        // Last month earning
-        // ==============================================================
-        $('#monthchart').sparkline([5, 6, 2, 9, 4, 7, 10, 12], {
-            type: 'bar',
-            height: '35',
-            barWidth: '4',
-            resize: true,
-            barSpacing: '4',
-            barColor: '#1e88e5'
-        });
-        $('#lastmonthchart').sparkline([5, 6, 2, 9, 4, 7, 10, 12], {
-            type: 'bar',
-            height: '35',
-            barWidth: '4',
-            resize: true,
-            barSpacing: '4',
-            barColor: '#7460ee'
-        });
-        var sparkResize;
-
-        // ==============================================================
-        // This is for the innerleft sidebar
-        // ==============================================================
-        $(".show-left-part").on('click', function() {
-            $('.left-part').toggleClass('show-panel');
-            $('.show-left-part').toggleClass('ti-menu');
-        });
-
-        // For Custom File Input
-        $('.custom-file-input').on('change', function() {
-            //get the file name
-            var fileName = $(this).val();
-            //replace the "Choose a file" label
-            $(this).next('.custom-file-label').html(fileName);
-        })
+    // 9. Cerrar al cambiar tamaño a desktop
+    $(window).on('resize', function () {
+        if (window.innerWidth > 768) {
+            $("#main-wrapper").removeClass("show-sidebar");
+            $(".nav-toggler i").removeClass("ti-close").addClass("ti-menu");
+        }
     });
 }

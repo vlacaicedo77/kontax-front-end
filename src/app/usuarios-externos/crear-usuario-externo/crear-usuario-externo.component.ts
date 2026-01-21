@@ -88,24 +88,24 @@ export class CrearUsuarioExternoComponent implements OnInit {
     const claveEncriptada = this.encriptar.encrypt('12345678Agro');
     const usuario = new Usuario();
     if ( this.formularioUsuario.value.ci.length <= 10 ) {
-      usuario.tipoIdentificacion = 1;
+      usuario.idTipoIdentificacion = 1;
     } else {
-      usuario.tipoIdentificacion = 2;
+      usuario.idTipoIdentificacion = 2;
     }
     usuario.numeroIdentificacion = this.formularioUsuario.value.ci;
-    usuario.nombres = this.formularioUsuario.value.nombres;
-    usuario.apellidos = this.formularioUsuario.value.apellidos;
+    usuario.nombreCompleto = this.formularioUsuario.value.nombres;
+    //usuario.apellidos = this.formularioUsuario.value.apellidos;
     usuario.nombreComercial = this.formularioUsuario.value.nombre_comercial;
     usuario.identificacionRepresentanteLegal = this.formularioUsuario.value.identificacion_representante;
-    usuario.nombresRepresentanteLegal = this.formularioUsuario.value.nombre_representante_legal;
-    usuario.apellidosRepresentanteLegal = this.formularioUsuario.value.apellido_representante_legal;
+    usuario.nombreCompletoRepresentanteLegal = this.formularioUsuario.value.nombre_representante_legal;
+    //usuario.apellidosRepresentanteLegal = this.formularioUsuario.value.apellido_representante_legal;
     usuario.razonSocial = this.formularioUsuario.value.razon_social;
     if (this.correo ) {
       usuario.email = this.formularioUsuario.value.email;
     } else {
       usuario.email = 'info@noset.com';
     }
-    usuario.contraseña = claveEncriptada;
+    usuario.contrasenia = claveEncriptada;
     console.log(usuario);
     Swal.fire({
       title: 'Espere...',
@@ -116,7 +116,7 @@ export class CrearUsuarioExternoComponent implements OnInit {
           Swal.showLoading();
       }
     });
-    this.servicioUsuario.registrarUsuarioExternoVacunacion(usuario)
+    this.servicioUsuario.registrarUsuarioBasico(usuario)
     .subscribe( (respuesta: any) => {
       if ( respuesta.estado === 'ERR' ){
         Swal.fire('Error', respuesta.mensaje , 'error');

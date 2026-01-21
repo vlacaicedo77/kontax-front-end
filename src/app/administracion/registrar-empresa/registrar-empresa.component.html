@@ -1,0 +1,926 @@
+<!-- Formulario de búsqueda -->
+<div *ngIf="!formularioVisible" id="formularioBusqueda" class="row" style="padding-left: 10px; padding-right: 10px;">
+    <div class="col">
+        <div class="card border border-primary-dark rounded">
+            <div class="card-header bg-primary-dark rounded-top">
+                Búsqueda de empresas
+            </div>
+            <form ngNativeValidate [formGroup]="formularioBusqueda" class="form-horizontal r-separator"
+                (ngSubmit)="buscarEmpresas()">
+                <div class="card-body">
+                    <div class="form-group row align-items-center mb-0">
+                        <label for="numeroRUC"
+                            class="col-12 col-md-3 text-md-right text-left control-label col-form-label font-weight-bold">
+                            RUC
+                        </label>
+                        <div class="col-md-7 border-left pb-2 pt-2">
+                            <input type="text" class="form-control border-secondary font-weight-bold" autocomplete="on"
+                                (change)="limpiarListaDatos()" formControlName="numeroRUC" name="numeroRUC"
+                                id="numeroRUC" placeholder="Ingrese número de RUC" maxlength="13" autofocus>
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <label for="estado"
+                            class="col-12 col-md-3 text-md-right text-left control-label col-form-label font-weight-bold">
+                            Estado
+                        </label>
+                        <div class="col-md-7 border-left pb-2 pt-2">
+                            <select formControlName="estado" name="estado" id="estado" (change)="limpiarListaDatos()"
+                                class="form-control border-secondary font-weight-bold">
+                                <option [value]="-1">--- Todos ---</option>
+                                <option [value]="1">ACTIVO</option>
+                                <option [value]="0">INACTIVO</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mt-4">
+                        <div class="col-md-7"></div>
+                        <div class="col-md-3 text-right">
+                            <div class="d-flex gap-2 justify-content-center justify-content-md-end">
+                                <button type="submit" class="btn btn-buscar-action px-4">
+                                    <i class="fas fa-search me-2"></i> Buscar
+                                </button>&nbsp;&nbsp;&nbsp;&nbsp;
+                                <button class="btn btn-nuevo-action px-4" (click)="accionNuevoBoton()">
+                                    <i class="fa fa-plus me-2"></i> Nuevo
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Tabla con el resultado de la búsqueda -->
+<div *ngIf="listaDatos.length > 0 && !formularioVisible" class='row'>
+    <div class="card-body">
+        <!-- Tabla para desktop -->
+        <div class="d-none d-md-block">
+            <div class="table-responsive">
+                <table class="table tabla-skin table-bordered table-hover v-middle bordered mb-0">
+                    <thead>
+                        <tr>
+                            <th class="font-weight-bold text-center font-14" style="width: 50px;">Nro.</th>
+                            <th class="font-weight-bold font-14">Datos generales</th>
+                            <th class="font-weight-bold font-14">Clasificación tributaria</th>
+                            <th class="font-weight-bold font-14">Contacto administrativo</th>
+                            <th class="font-weight-bold text-center font-14">Operación</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let tag of listaDatos; let i = index">
+                            <td class="text-center align-middle">
+                                <span class="font-weight-bold text-primary-dark">
+                                    {{ ((currentPage - 1) * itemsPerPage) + i + 1 }}
+                                </span>
+                            </td>
+                            <td class="align-top">
+                                <p class="mb-1">
+                                    <span class="badge rounded-pill font-weight-bold badge-secondary">
+                                        {{ tag.nombreTipoIdentificacionProp }}
+                                    </span>
+                                </p>
+                                <p class="mb-2 small">
+                                    <span class="badge rounded-pill font-weight-bold"
+                                        [ngClass]="{'badge-danger':tag.estado==0, 'badge-verde':tag.estado==1}">
+                                        {{ tag.estado === 1 ? 'ACTIVO' : 'INACTIVO' }}
+                                    </span>
+                                    <span>&nbsp;&nbsp;</span>
+                                    <span class="font-weight-bold">[{{ tag.numeroIdentificacion }}] {{
+                                        tag.razonSocial.toUpperCase() }}
+                                    </span>
+                                </p>
+                                <p class="mb-1 small" *ngIf="tag.nombreComercialUsuario">
+                                    <span class="font-weight-bold">Nombre comercial: </span> {{ tag.nombreComercial }}
+                                </p>
+                                <p class="mb-1 small" *ngIf="tag.identificacionRepresentanteLegal">
+                                    <span class="font-weight-bold">Representante: </span>
+                                    [{{ tag.identificacionRepresentanteLegal }}] {{ tag.apellidosRepresentanteLegal }}
+                                </p>
+                                <p class="mb-0 small">
+                                    <span class="font-weight-bold">Fecha registro: </span>
+                                    {{ tag.fechaCreacionFormateada }}
+                                </p>
+                            </td>
+                            <td class="align-top">
+                                <p class="mb-1 small">
+                                    <span class="badge rounded-pill font-weight-bold"
+                                        [ngClass]="{'badge-gris':tag.codigoRegimenTributario=='RIMPE_NEGOCIO_POPULAR', 'badge-secondary':tag.codigoRegimenTributario=='RIMPE_EMPRENDEDOR', 'badge-amarillo':tag.codigoRegimenTributario=='GENERAL'}">
+                                        {{ tag.nombreRegimenTributario }}
+                                    </span>
+                                </p>
+                                <p class="mb-1 small">
+                                    <span class="font-weight-bold">Obligado contabilidad: </span>
+                                    {{ tag.obligadoContabilidadTexto }}
+                                </p>
+                                <p class="mb-1 small">
+                                    <span class="font-weight-bold">Contribuyente especial: </span>
+                                    {{ tag.contribuyenteEspecialTexto }}
+                                </p>
+                                <p class="mb-0 small">
+                                    <span class="font-weight-bold">Agente de retención: </span>
+                                    {{ tag.agenteRetencionTexto }}
+                                </p>
+                            </td>
+                            <td class="align-top">
+                                <p class="mb-1 small">
+                                    <span class="font-weight-bold">Celular / WhatsApp: </span>
+                                    09{{ tag.telefonoContactoAdministrativo }}
+                                </p>
+                                <p class="mb-0 small">
+                                    <span class="font-weight-bold">E-mail: </span>
+                                    {{ tag.emailContactoAdministrativo }}
+                                </p>
+                            </td>
+                            <td class="text-center align-middle">
+                                <p class="mb-2">
+                                    <button type="button"
+                                        class="btn btn-sm waves-effect waves-light btn-action btn-editar"
+                                        [title]="'Editar ' + tag.razonSocial.toLowerCase()"
+                                        (click)="asignarDatosFormulario(tag.idEmpresa)">
+                                        <i class="fa fa-edit"></i>
+                                        Actualizar
+                                    </button>
+                                </p>
+                                <p class="mb-0" *ngIf="tag.estado == 1">
+                                    <button type="button"
+                                        class="btn btn-sm waves-effect waves-light btn-action btn-inactivar"
+                                        [title]="'Inactivar ' + tag.razonSocial.toLowerCase()"
+                                        (click)="actualizarEstado(tag.idEmpresa,'Inactivar',tag.razonSocial)">
+                                        <i class="fa fa-times-circle"></i>
+                                        Inactivar
+                                    </button>
+                                </p>
+                                <p class="mb-0" *ngIf="tag.estado == 0">
+                                    <button type="button"
+                                        class="btn btn-sm waves-effect waves-light btn-action btn-activar"
+                                        [title]="'Activar ' + tag.razonSocial.toLowerCase()"
+                                        (click)="actualizarEstado(tag.idEmpresa,'Activar',tag.razonSocial)">
+                                        <i class="fa fa-check-square"></i>
+                                        Activar
+                                    </button>
+                                </p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!-- Lista para móvil - UNA SOLA COLUMNA -->
+        <div class="d-md-none">
+            <div class="list-group">
+                <div *ngFor="let tag of listaDatos; let i = index" class="list-group-item border-0 p-0 mb-3">
+                    <div class="card shadow-sm border">
+                        <!-- Encabezado de la tarjeta -->
+                        <div class="card-header bg-primary-dark text-white font-weight-bold py-2 px-3"
+                            style="font-size: small;">
+                            {{ tag.numeroIdentificacion }} - {{ tag.nombreRegimenTributario }}
+                        </div>
+                        <!-- Cuerpo de la tarjeta -->
+                        <div class="card-body p-3">
+                            <div class="mb-3">
+                                <div class="small mb-3 font-weight-bold" style="font-size: x-small;">
+                                    <span class="badge rounded-pill font-weight-bold"
+                                        [ngClass]="{'badge-danger':tag.estado==0, 'badge-verde':tag.estado==1}">
+                                        {{ tag.estado === 1 ? 'ACTIVO' : 'INACTIVO' }}
+                                    </span>
+                                    <span>&nbsp;&nbsp;</span>
+                                    <span class="font-weight-bold" style="font-size: small;">
+                                        {{ (tag.nombreComercial && tag.nombreComercial.trim() !== '') ?
+                                        tag.nombreComercial : tag.razonSocial }}
+                                    </span>
+                                </div>
+                                <div class="small">
+                                    <span class="font-weight-bold">Fecha registro:</span>
+                                    {{ tag.fechaCreacionFormateada }}
+                                </div>
+                            </div>
+                            <!-- Botones en móvil -->
+                            <div class="d-flex justify-content-between mt-3 pt-3 border-top">
+                                <button type="button" class="btn btn-sm btn-action btn-editar flex-fill mx-1"
+                                    (click)="asignarDatosFormulario(tag.idEmpresa)">
+                                    <i class="fa fa-edit"></i>
+                                </button>
+                                <button *ngIf="tag.estado == 1" type="button"
+                                    class="btn btn-sm btn-action btn-inactivar flex-fill mx-1"
+                                    (click)="actualizarEstado(tag.idEmpresa,'Inactivar',tag.razonSocial)">
+                                    <i class="fa fa-times-circle"></i>
+                                </button>
+                                <button *ngIf="tag.estado == 0" type="button"
+                                    class="btn btn-sm btn-action btn-activar flex-fill mx-1"
+                                    (click)="actualizarEstado(tag.idEmpresa,'Activar',tag.razonSocial)">
+                                    <i class="fa fa-check-square"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <!-- Pie de tarjeta con número -->
+                        <div class="card-footer bg-white py-1 px-3 text-right">
+                            <small>
+                                <span class="badge badge-verde font-weight-bold">
+                                    {{ ((currentPage - 1) * itemsPerPage) + i + 1 }}
+                                </span>
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Paginación -->
+        <!-- Este contenedor se muestra SIEMPRE que haya registros -->
+        <div *ngIf="totalRegistros > 0" class="pagination-container mt-3">
+
+            <!-- Navegación SOLO si hay múltiples páginas -->
+            <div *ngIf="totalPages > 1">
+                <nav aria-label="Paginación de empresas">
+                    <ul class="pagination justify-content-center mb-0">
+                        <!-- Botón Anterior -->
+                        <li class="page-item" [class.disabled]="currentPage === 1">
+                            <a class="page-link pagina-navegacion" (click)="previousPage()"
+                                [class.pe-none]="currentPage === 1" aria-label="Anterior">
+                                <i class="fa fa-chevron-left"></i>
+                                <span class="d-none d-md-inline ml-1">Anterior</span>
+                            </a>
+                        </li>
+
+                        <!-- Primera página -->
+                        <li class="page-item" *ngIf="currentPage > 4">
+                            <a class="page-link pagina-numero" (click)="goToPage(1)">
+                                1
+                            </a>
+                        </li>
+                        <li class="page-item disabled" *ngIf="currentPage > 5">
+                            <span class="page-link">...</span>
+                        </li>
+
+                        <!-- Números de página dinámicos -->
+                        <li class="page-item" *ngFor="let page of getPagesArray()"
+                            [class.active]="currentPage === page">
+                            <a class="page-link pagina-numero" (click)="goToPage(page)">
+                                {{ page }}
+                            </a>
+                        </li>
+
+                        <!-- Elipsis y última página -->
+                        <li class="page-item disabled" *ngIf="currentPage < totalPages - 4">
+                            <span class="page-link">...</span>
+                        </li>
+                        <li class="page-item" *ngIf="currentPage < totalPages - 3">
+                            <a class="page-link pagina-numero" (click)="goToPage(totalPages)">
+                                {{ totalPages }}
+                            </a>
+                        </li>
+
+                        <!-- Botón Siguiente -->
+                        <li class="page-item" [class.disabled]="currentPage === totalPages">
+                            <a class="page-link pagina-navegacion" (click)="nextPage()"
+                                [class.pe-none]="currentPage === totalPages" aria-label="Siguiente">
+                                <span class="d-none d-md-inline mr-1">Siguiente</span>
+                                <i class="fa fa-chevron-right"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+
+            <!-- Información de la página actual -->
+            <div class="text-center mt-2">
+                <small class="text-muted font-weight-medium">
+                    {{ getDisplayRange() }}
+                </small>
+            </div>
+
+            <!-- Selector de items por página -->
+            <div class="text-center mt-3 d-none d-md-block">
+                <div class="btn-group btn-group-sm" role="group" aria-label="Items por página">
+                    <button type="button" class="btn btn-outline-secondary" [class.active]="itemsPerPage === 5"
+                        (click)="changeItemsPerPage(5)">
+                        5
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary" [class.active]="itemsPerPage === 10"
+                        (click)="changeItemsPerPage(10)">
+                        10
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary" [class.active]="itemsPerPage === 25"
+                        (click)="changeItemsPerPage(25)">
+                        25
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary" [class.active]="itemsPerPage === 50"
+                        (click)="changeItemsPerPage(50)">
+                        50
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Indicador de carga 
+        <div *ngIf="cargando" class="row mt-3">
+            <div class="col-12 text-center py-4">
+                <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+                    <span class="sr-only">Cargando...</span>
+                </div>
+                <p class="mt-3 text-muted font-italic">Cargando datos...</p>
+            </div>
+        </div>-->
+    </div>
+</div>
+
+<!-- Formulario de registro -->
+<div *ngIf="formularioVisible" class='row'>
+    <div class="col">
+        <div class="card border border-primary-dark rounded">
+            <div class="card-header bg-primary-dark rounded-top">
+                Registro de empresas
+            </div>
+            <div class='card-body'>
+                <h4 class="card-title font-weight-bold">Perfil usuario</h4>
+                <hr class="mt-0">
+                <form id="formulario" ngNativeValidate [formGroup]="formulario"
+                    (keydown.enter)="$event.preventDefault()" class="form-horizontal r-separator">
+
+                    <div *ngIf="!banderaEditar" class="form-group row align-items-center mb-0">
+                        <label for="idUsuario"
+                            class="col-12 col-md-3 text-md-right text-left control-label col-form-label font-weight-bold">
+                            RUC<span class="text-danger font-weight-bold"> *</span>
+                        </label>
+                        <div class="col-md-3 border-left pb-2 pt-2 input-group">
+                            <input type="text" formControlName="idUsuario" name="idUsuario" id="idUsuario"
+                                mask="0000000000000" (keydown.enter)="buscarUsuario(ciPropietario.value)"
+                                (input)="limpiarCamposUsuario()" class="form-control border-secondary" #ciPropietario
+                                placeholder="Ingrese número RUC">
+                            <div class="input-group-append">
+                                <button type="button" class="btn btn-secondary border-secondary font-weight-bold"
+                                    (click)="buscarUsuario(ciPropietario.value)" aria-label="Buscar por número de RUC">
+                                    <i class="fas fa-search"></i> Buscar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div *ngIf="banderaEditar" class="form-group row align-items-center mb-0">
+                        <label for="idUsuarioLock"
+                            class="col-12 col-md-3 text-md-right text-left control-label col-form-label font-weight-bold">
+                            RUC
+                        </label>
+                        <div class="col-md-2 border-left pb-2 pt-2 input-group">
+                            <input type="text" formControlName="idUsuarioLock" name="idUsuarioLock" id="idUsuarioLock"
+                                class="form-control border-secondary" readonly>
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <label for="razonSocial"
+                            class="col-12 col-md-3 text-md-right text-left control-label col-form-label font-weight-bold">
+                            Razón social<span class="text-danger font-weight-bold"> *</span>
+                        </label>
+                        <div class="col-md-9 border-left pb-2 pt-2">
+                            <input type="text" class="form-control border-secondary" formControlName="razonSocial"
+                                name="razonSocial" id="razonSocial" placeholder="Ingrese razón social" readonly
+                                maxlength="200">
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <label for="inputNombreComercial"
+                            class="col-12 col-md-3 text-md-right text-left control-label col-form-label font-weight-bold">
+                            Nombre comercial
+                        </label>
+                        <div class="col-md-9 border-left pb-2 pt-2">
+                            <input type="text" class="form-control border-secondary" formControlName="nombreComercial"
+                                name="nombreComercial" id="nombreComercial" placeholder="Ingrese nombre comercial"
+                                maxlength="200">
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <label for="inputIdentificacionRepresentante"
+                            class="col-12 col-md-3 text-md-right text-left control-label col-form-label font-weight-bold">
+                            Identificación representante legal
+                        </label>
+                        <div class="col-md-9 border-left pb-2 pt-2">
+                            <input type="text" class="form-control border-secondary"
+                                formControlName="identificacionRepresentante" name="identificacionRepresentante"
+                                id="identificacionRepresentante" placeholder="" readonly maxlength="13">
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <label for="nombresRepresentante"
+                            class="col-12 col-md-3 text-md-right text-left control-label col-form-label font-weight-bold">
+                            Representante legal
+                        </label>
+                        <div class="col-md-9 border-left pb-2 pt-2">
+                            <input type="text" class="form-control border-secondary"
+                                formControlName="nombresRepresentante" name="nombresRepresentante"
+                                id="nombresRepresentante" placeholder="" readonly maxlength="200">
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0" style="display:none;">
+                        <label class="col-md-3 text-right control-label col-form-label font-weight-bold">
+                            Contraseña Temporal
+                        </label>
+                        <div class="col-md-9 border-left pb-2 pt-2">
+                            <label class="col-md-7 text-left control-label col-form-label contrasena-temporal">
+                                {{this.contrasenaTemporal}}
+                            </label>
+                        </div>
+                    </div>
+                    <h4 class="card-title font-weight-bold pt-4">Información económica</h4>
+                    <hr class="mt-0">
+                    <!-- Actividad Económica Principal -->
+                    <div class="form-group row align-items-center mb-0">
+                        <label for="actividadEconomicaPrincipal"
+                            class="col-12 col-md-3 text-md-right text-left control-label col-form-label font-weight-bold">
+                            Actividad económica principal<span class="text-danger font-weight-bold"> *</span>
+                        </label>
+                        <div class="col-md-9 border-left pb-2 pt-2">
+                            <input type="text" class="form-control border-secondary"
+                                formControlName="actividadEconomicaPrincipal" name="actividadEconomicaPrincipal"
+                                id="actividadEconomicaPrincipal" placeholder="Descripción de la actividad principal"
+                                autocomplete="off" autocomplete="new-password" readonly maxlength="200"
+                                onfocus="this.removeAttribute('readonly');">
+                        </div>
+                    </div>
+                    <!-- Fecha Inicio Actividades -->
+                    <div class="form-group row align-items-center mb-0">
+                        <label for="fechaInicioActividades"
+                            class="col-12 col-md-3 text-md-right text-left control-label col-form-label font-weight-bold">
+                            Fecha inicio actividades<span class="text-danger font-weight-bold"> *</span>
+                        </label>
+                        <div class="col-md-3 border-left pb-2 pt-2">
+                            <input type="date" class="form-control border-secondary"
+                                formControlName="fechaInicioActividades" name="fechaInicioActividades"
+                                id="fechaInicioActividades">
+                        </div>
+                    </div>
+                    <h4 class="card-title font-weight-bold pt-4">Clasificación tributaria</h4>
+                    <hr class="mt-0">
+                    <div class="form-group row align-items-center mb-3">
+                        <label for="idRegimenesTributarios"
+                            class="col-12 col-md-3 text-md-right text-left control-label col-form-label font-weight-bold">
+                            Régimen tributario<span class="text-danger font-weight-bold"> *</span>
+                        </label>
+                        <div class="col-md-7 border-left pb-2 pt-2">
+                            <select formControlName="idRegimenesTributarios" name="idRegimenesTributarios"
+                                id="idRegimenesTributarios" class="form-control border-secondary"
+                                (change)="limpiarRegimenesTributarios()">
+                                <option [value]="null" selected disabled>--- Seleccione una opción ---</option>
+                                <option *ngFor="let item of catalogos.regimenesTributarios"
+                                    value="{{item.idRegimenesTributarios}}">
+                                    {{item.nombre}}
+                                    [
+                                    {{ item.limiteInferiorIngresos !== null ? item.limiteInferiorIngresos : 'sin límite'
+                                    }}
+                                    →
+                                    {{ item.limiteSuperiorIngresos !== null ? item.limiteSuperiorIngresos : 'sin límite'
+                                    }}
+                                    ] {{item.descripcion}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <!-- Es Contribuyente Especial -->
+                    <div *ngIf="formulario.get('idRegimenesTributarios').value == 3"
+                        class="form-group row align-items-center mb-0">
+                        <label
+                            class="col-12 col-md-3 text-md-right text-left control-label col-form-label font-weight-bold">
+                            ¿Es Contribuyente Especial?
+                        </label>
+                        <div class="col-md-3 border-left pb-2 pt-2 input-group">
+                            <input type="checkbox" class="material-inputs border-secondary" id="esContribuyenteEspecial"
+                                formControlName="esContribuyenteEspecial" name="esContribuyenteEspecial"
+                                (change)="limpiarContribuyenteEspecial()">
+                            <label for="esContribuyenteEspecial" class="mb-0 ml-2"></label>
+                        </div>
+                    </div>
+
+                    <!-- Número Resolución Contribuyente Especial -->
+                    <div *ngIf="formulario.value.esContribuyenteEspecial"
+                        class="form-group row align-items-center mb-0">
+                        <label for="numeroResolucionContribuyenteEspecial"
+                            class="col-12 col-md-3 text-md-right text-left control-label col-form-label font-weight-bold">
+                            Resolución N°<span class="text-danger font-weight-bold"> *</span>
+                        </label>
+                        <div class="col-md-3 border-left pb-2 pt-2">
+                            <input type="text" class="form-control border-secondary"
+                                formControlName="numeroResolucionContribuyenteEspecial"
+                                name="numeroResolucionContribuyenteEspecial" id="numeroResolucionContribuyenteEspecial"
+                                placeholder="Número de resolución" maxlength="50">
+                        </div>
+                    </div>
+
+                    <!-- Fecha Designación Contribuyente Especial -->
+                    <div *ngIf="formulario.value.esContribuyenteEspecial"
+                        class="form-group row align-items-center mb-0">
+                        <label for="fechaDesignacionContribuyenteEspecial"
+                            class="col-12 col-md-3 text-md-right text-left control-label col-form-label font-weight-bold">
+                            Fecha designación<span class="text-danger font-weight-bold"> *</span>
+                        </label>
+                        <div class="col-md-3 border-left pb-2 pt-2">
+                            <input type="date" class="form-control border-secondary"
+                                formControlName="fechaDesignacionContribuyenteEspecial"
+                                name="fechaDesignacionContribuyenteEspecial" id="fechaDesignacionContribuyenteEspecial">
+                        </div>
+                    </div>
+                    <h4 class="card-title font-weight-bold pt-4">Agente de retención</h4>
+                    <hr class="mt-0">
+                    <!-- Es Agente de Retención (Checkbox) -->
+                    <div class="form-group row align-items-center mb-3">
+                        <label
+                            class="col-12 col-md-3 text-md-right text-left control-label col-form-label font-weight-bold">
+                            ¿Es agente de retención?
+                        </label>
+                        <div class="col-md-3 border-left pb-2 pt-2 input-group">
+                            <input type="checkbox" class="material-inputs border-secondary" id="esAgenteRetencion"
+                                formControlName="esAgenteRetencion" (change)="limpiarAgenteRetencion()">
+                            <label for="esAgenteRetencion" class="mb-0 ml-2"></label>
+                        </div>
+                    </div>
+                    <!-- Tipo Agente Retención (Combo) -->
+                    <div *ngIf="formulario.value.esAgenteRetencion" class="form-group row align-items-center mb-0">
+                        <label
+                            class="col-12 col-md-3 text-md-right text-left control-label col-form-label font-weight-bold">
+                            Imp. que retiene<span class="text-danger font-weight-bold"> *</span>
+                        </label>
+                        <div class="col-md-9 border-left pb-2 pt-2">
+                            <div class="d-flex flex-wrap align-items-center">
+                                <!-- Checkbox para RENTA -->
+                                <div class="mr-3 mb-2">
+                                    <div class="form-check d-flex align-items-center">
+                                        <input type="checkbox" class="form-check-input material-inputs mr-2"
+                                            id="esAgenteRetencionRenta" formControlName="esAgenteRetencionRenta">
+                                        <label class="form-check-label mb-0" for="esAgenteRetencionRenta">
+                                            <span class="badge badge-amarillo font-weight-bold">RENTA</span>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <!-- Checkbox para IVA -->
+                                <div class="mr-3 mb-2">
+                                    <div class="form-check d-flex align-items-center">
+                                        <input type="checkbox" class="form-check-input material-inputs mr-2"
+                                            id="esAgenteRetencionIva" formControlName="esAgenteRetencionIva">
+                                        <label class="form-check-label mb-0" for="esAgenteRetencionIva">
+                                            <span class="badge badge-info font-weight-bold">IVA</span>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <!-- Checkbox para ISD -->
+                                <div class="mb-2">
+                                    <div class="form-check d-flex align-items-center">
+                                        <input type="checkbox" class="form-check-input material-inputs mr-2"
+                                            id="esAgenteRetencionIsd" formControlName="esAgenteRetencionIsd">
+                                        <label class="form-check-label mb-0" for="esAgenteRetencionIsd">
+                                            <span class="badge badge-danger font-weight-bold">ISD</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Número Resolución Agente Retención -->
+                    <div *ngIf="formulario.value.esAgenteRetencion" class="form-group row align-items-center mb-0">
+                        <label for="numeroResolucionAgenteRetencion"
+                            class="col-12 col-md-3 text-md-right text-left control-label col-form-label font-weight-bold">
+                            Resolución N°<span class="text-danger font-weight-bold"> *</span>
+                        </label>
+                        <div class="col-md-3 border-left pb-2 pt-2">
+                            <input type="text" class="form-control border-secondary"
+                                formControlName="numeroResolucionAgenteRetencion" name="numeroResolucionAgenteRetencion"
+                                id="numeroResolucionAgenteRetencion" placeholder="Número de resolución" maxlength="50">
+                        </div>
+                    </div>
+
+                    <!-- Fecha Designación Agente Retención -->
+                    <div *ngIf="formulario.value.esAgenteRetencion" class="form-group row align-items-center mb-0">
+                        <label for="fechaDesignacionAgenteRetencion"
+                            class="col-12 col-md-3 text-md-right text-left control-label col-form-label font-weight-bold">
+                            Fecha designación<span class="text-danger font-weight-bold"> *</span>
+                        </label>
+                        <div class="col-md-3 border-left pb-2 pt-2">
+                            <input type="date" class="form-control border-secondary"
+                                formControlName="fechaDesignacionAgenteRetencion" name="fechaDesignacionAgenteRetencion"
+                                id="fechaDesignacionAgenteRetencion">
+                        </div>
+                    </div>
+
+                    <!-- Autorretenedor -->
+                    <ng-container *ngIf="formulario.value.esAgenteRetencion">
+                        <h4 class="card-title font-weight-bold pt-4">
+                            Autorretenedor</h4>
+                        <hr class="mt-0">
+                        <!-- Es Autorretenedor (Checkbox) -->
+                        <div class="form-group row align-items-center mb-3">
+                            <label
+                                class="col-12 col-md-3 text-md-right text-left control-label col-form-label font-weight-bold">
+                                ¿Es autorretenedor?
+                            </label>
+                            <div class="col-md-3 border-left pb-2 pt-2 input-group">
+                                <input type="checkbox" class="material-inputs border-secondary" id="esAutorretenedor"
+                                    formControlName="esAutorretenedor" (change)="limpiarAutorretenedor()">
+                                <label for="esAutorretenedor" class="mb-0 ml-2"></label>
+                            </div>
+                        </div>
+
+                        <!-- Número Resolución Autorretenedor -->
+                        <div *ngIf="formulario.value.esAutorretenedor" class="form-group row align-items-center mb-0">
+                            <label for="numeroResolucionAutorretenedor"
+                                class="col-12 col-md-3 text-md-right text-left control-label col-form-label font-weight-bold">
+                                Resolución N°<span class="text-danger font-weight-bold"> *</span>
+                            </label>
+                            <div class="col-md-3 border-left pb-2 pt-2">
+                                <input type="text" class="form-control border-secondary"
+                                    formControlName="numeroResolucionAutorretenedor"
+                                    name="numeroResolucionAutorretenedor" id="numeroResolucionAutorretenedor"
+                                    placeholder="Número de resolución" maxlength="50">
+                            </div>
+                        </div>
+
+                        <!-- Fecha Inicio Autorretención -->
+                        <div *ngIf="formulario.value.esAutorretenedor" class="form-group row align-items-center mb-0">
+                            <label for="fechaInicioAutorretencion"
+                                class="col-12 col-md-3 text-md-right text-left control-label col-form-label font-weight-bold">
+                                Fecha inicio<span class="text-danger font-weight-bold"> *</span>
+                            </label>
+                            <div class="col-md-3 border-left pb-2 pt-2">
+                                <input type="date" class="form-control border-secondary"
+                                    formControlName="fechaInicioAutorretencion" name="fechaInicioAutorretencion"
+                                    id="fechaInicioAutorretencion">
+                            </div>
+                        </div>
+
+                        <!-- Porcentaje Autorretención -->
+                        <div *ngIf="formulario.value.esAutorretenedor" class="form-group row align-items-center mb-0">
+                            <label for="porcentajeAutorretencion"
+                                class="col-12 col-md-3 text-md-right text-left control-label col-form-label font-weight-bold">
+                                Porcentaje (%)<span class="text-danger font-weight-bold"> *</span>
+                            </label>
+                            <div class="col-md-3 border-left pb-2 pt-2">
+                                <input type="number" step="0.01" class="form-control border-secondary"
+                                    formControlName="porcentajeAutorretencion" name="porcentajeAutorretencion"
+                                    id="porcentajeAutorretencion" placeholder="0.00" maxlength="6">
+                            </div>
+                        </div>
+                    </ng-container>
+                    <h4 class="card-title font-weight-bold pt-4">Obligaciones tributarias</h4>
+                    <hr class="mt-0">
+                    <!-- Obligado Contabilidad (Checkbox) -->
+                    <div class="form-group row align-items-center mb-0">
+                        <label
+                            class="col-12 col-md-3 text-md-right text-left control-label col-form-label font-weight-bold">
+                            ¿Está obligado a llevar contabilidad?
+                        </label>
+                        <div class="col-md-3 border-left pb-2 pt-2 input-group">
+                            <input type="checkbox" class="material-inputs border-secondary" id="obligadoContabilidad"
+                                formControlName="obligadoContabilidad" (change)="limpiarObligadoContabilidad()">
+                            <label for="obligadoContabilidad" class="mb-0 ml-2"></label>
+                        </div>
+                    </div>
+                    <!-- Tipo Contabilidad (Combo) -->
+                    <div *ngIf="formulario.value.obligadoContabilidad" class="form-group row align-items-center mb-3">
+                        <label for="tipoContabilidad"
+                            class="col-12 col-md-3 text-md-right text-left control-label col-form-label font-weight-bold">
+                            Tipo contabilidad<span class="text-danger font-weight-bold"> *</span>
+                        </label>
+                        <div class="col-md-3 border-left pb-2 pt-2">
+                            <select formControlName="tipoContabilidad" name="tipoContabilidad" id="tipoContabilidad"
+                                class="form-control border-secondary">
+                                <option [value]="null" selected disabled>--- Seleccione una opción ---</option>
+                                <option *ngFor="let item of catalogos.tiposContabilidad"
+                                    value="{{item.idTiposContabilidad}}">
+                                    {{item.nombre}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <!-- Debe Presentar Renta (Checkbox) -->
+                    <div class="form-group row align-items-center mb-0">
+                        <label
+                            class="col-12 col-md-3 text-md-right text-left control-label col-form-label font-weight-bold">
+                            ¿Debe presentar declaración de IR (renta)?
+                        </label>
+                        <div class="col-md-3 border-left pb-2 pt-2 input-group">
+                            <input type="checkbox" class="material-inputs border-secondary" id="debePresentarRenta"
+                                formControlName="debePresentarRenta" (change)="limpiarDebePresentarRenta()">
+                            <label for="debePresentarRenta" class="mb-0 ml-2"></label>
+                        </div>
+                    </div>
+                    <!-- Frecuencia Declaración Renta (Combo) -->
+                    <div *ngIf="formulario.value.debePresentarRenta" class="form-group row align-items-center mb-3">
+                        <label for="frecuenciaDeclaracionRenta"
+                            class="col-12 col-md-3 text-md-right text-left control-label col-form-label font-weight-bold">
+                            Frecuencia declaración IR (renta)<span class="text-danger font-weight-bold"> *</span>
+                        </label>
+                        <div class="col-md-3 border-left pb-2 pt-2">
+                            <select formControlName="frecuenciaDeclaracionRenta" name="frecuenciaDeclaracionRenta"
+                                id="frecuenciaDeclaracionRenta" class="form-control border-secondary">
+                                <option [value]="null" selected disabled>--- Seleccione una opción ---</option>
+                                <option *ngFor="let item of catalogos.tiempoFrecuencia"
+                                    value="{{item.idTiempoFrecuencia}}">
+                                    {{item.nombre}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <!-- Debe Presentar IVA (Checkbox) -->
+                    <div class="form-group row align-items-center mb-0">
+                        <label
+                            class="col-12 col-md-3 text-md-right text-left control-label col-form-label font-weight-bold">
+                            ¿Debe presentar declaración de IVA?
+                        </label>
+                        <div class="col-md-3 border-left pb-2 pt-2 input-group">
+                            <input type="checkbox" class="material-inputs border-secondary" id="debePresentarIva"
+                                formControlName="debePresentarIva" (change)="limpiarDebePresentarIva()">
+                            <label for="debePresentarIva" class="mb-0 ml-2"></label>
+                        </div>
+                    </div>
+                    <!-- Frecuencia Declaración IVA (Combo) -->
+                    <div *ngIf="formulario.value.debePresentarIva" class="form-group row align-items-center mb-0">
+                        <label for="frecuenciaDeclaracionIva"
+                            class="col-12 col-md-3 text-md-right text-left control-label col-form-label font-weight-bold">
+                            Frecuencia declaración IVA<span class="text-danger font-weight-bold"> *</span>
+                        </label>
+                        <div class="col-md-3 border-left pb-2 pt-2">
+                            <select formControlName="frecuenciaDeclaracionIva" name="frecuenciaDeclaracionIva"
+                                id="frecuenciaDeclaracionIva" class="form-control border-secondary">
+                                <option [value]="null" selected disabled>--- Seleccione una opción ---</option>
+                                <option *ngFor="let item of catalogos.tiempoFrecuencia"
+                                    value="{{item.idTiempoFrecuencia}}">
+                                    {{item.nombre}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <h4 class="card-title font-weight-bold pt-4">Firma electrónica</h4>
+                    <hr class="mt-0">
+                    <div class="form-group row align-items-center mb-0">
+                        <label for="certificadoP12"
+                            class="col-12 col-md-3 text-md-right text-left control-label col-form-label font-weight-bold">
+                            Cargar certificado (.p12)
+                        </label>
+                        <div class="col-md-7 border-left pb-2 pt-2">
+                            <!-- Área de arrastrar y soltar - SOLO cuando NO hay certificado -->
+                            <div *ngIf="!hayCertificadoCargado"
+                                class="dropzone border border-secondary rounded p-4 text-center mb-3"
+                                [class.border-primary]="isDragging" [class.bg-light]="isDragging"
+                                (dragover)="onDragOver($event)" (dragleave)="onDragLeave($event)"
+                                (drop)="onDrop($event)" (click)="seleccionarArchivo()" style="cursor: pointer;">
+
+                                <i class="fas fa-file-certificate fa-3x text-muted mb-3"></i>
+                                <span class="badge badge-amarillo mr-2 font-weight-bold">
+                                    Clic para seleccionar, o arrastre y suelte su certificado (.p12) aquí
+                                </span>
+
+                                <input type="file" id="certificadoP12" accept=".p12" class="d-none"
+                                    (change)="onFileSelected($event)" #fileInput>
+                            </div>
+
+                            <!-- Información del archivo - SOLO cuando hay certificado -->
+                            <div *ngIf="hayCertificadoCargado" class="alert alert-success py-2 mb-3">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-check-circle text-success mr-3 fa-lg"></i>
+                                        <div>
+                                            <h6 class="mb-0">{{certificadoNombre}}</h6>
+                                            <small class="text-muted">
+                                                {{certificadoTamanio}}
+                                            </small>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <button type="button" class="btn btn-sm btn-danger font-weight-bold"
+                                            (click)="eliminarCertificado()">
+                                            <i class="fas fa-trash mr-1"></i>Eliminar
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Mensaje cuando no hay archivo - SOLO cuando NO hay certificado -->
+                            <div *ngIf="!hayCertificadoCargado" class="alert alert-light py-2 mb-3 border">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-info-circle text-info mr-3"></i>
+                                    <div>
+                                        <small class="text-muted">
+                                            <strong><i>Archivo de firma electrónica obligatorio para iniciar
+                                                    facturación.</i></strong>
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Validaciones solo de formato -->
+                            <div *ngIf="errorValidacion" class="alert alert-danger py-2">
+                                <i class="fas fa-exclamation-triangle mr-2"></i>
+                                <span>{{errorValidacion}}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Password Certificado (solo mostrar si hay archivo) -->
+                    <div *ngIf="certificadoSeleccionado" class="form-group row align-items-center mb-0">
+                        <label for="passwordCertificado"
+                            class="col-12 col-md-3 text-md-right text-left control-label col-form-label font-weight-bold">
+                            Contraseña<span class="text-danger font-weight-bold"> *</span>
+                            <i class="fas fa-info-circle ml-1"
+                                title="Contraseña del archivo .p12 para firma electrónica."></i>
+                        </label>
+                        <div class="col-md-3 border-left pb-2 pt-2">
+                            <div class="input-group">
+                                <input [type]="mostrarPassword ? 'text' : 'password'"
+                                    class="form-control border-secondary" id="passwordCertificado"
+                                    formControlName="passwordCertificado" name="passwordCertificado"
+                                    placeholder="Ingrese la contraseña del certificado" autocomplete="new-password"
+                                    readonly onfocus="this.removeAttribute('readonly');" maxlength="16">
+                                <div class="input-group-append">
+                                    <button class="btn btn-secondary border-secondary" type="button"
+                                        (click)="mostrarPassword = !mostrarPassword">
+                                        <i class="fas" [class.fa-eye]="!mostrarPassword"
+                                            [class.fa-eye-slash]="mostrarPassword"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Fecha Vencimiento Certificado -->
+                    <div *ngIf="certificadoSeleccionado" class="form-group row align-items-center mb-0">
+                        <label for="fechaVencimientoCertificado"
+                            class="col-12 col-md-3 text-md-right text-left control-label col-form-label font-weight-bold">
+                            Fecha vencimiento<span class="text-danger font-weight-bold"> *</span>
+                        </label>
+                        <div class="col-md-3 border-left pb-2 pt-2">
+                            <input type="date" class="form-control border-secondary"
+                                formControlName="fechaVencimientoCertificado" name="fechaVencimientoCertificado"
+                                id="fechaVencimientoCertificado">
+                        </div>
+                    </div>
+
+                    <h4 class="card-title font-weight-bold pt-4">Contacto administrativo</h4>
+                    <hr class="mt-0">
+                    <div class="form-group row align-items-center mb-0">
+                        <label for="telefonoContactoAdministrativo"
+                            class="col-12 col-md-3 text-md-right text-left control-label col-form-label font-weight-bold">
+                            Celular / WhatsApp<span class="text-danger font-weight-bold"> *</span>
+                        </label>
+                        <div class="col-md-3 border-left pb-2 pt-2">
+                            <input id="telefonoContactoAdministrativo" type="text" class="form-control border-secondary"
+                                formControlName="telefonoContactoAdministrativo" name="telefonoContactoAdministrativo"
+                                id="telefonoContactoAdministrativo" placeholder="Ingrese número de celular o WhatsApp"
+                                mask="0000-0000" prefix="09-">
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <label for="emailContactoAdministrativo"
+                            class="col-12 col-md-3 text-md-right text-left control-label col-form-label font-weight-bold">
+                            Correo electrónico<span class="text-danger font-weight-bold"> *</span>
+                        </label>
+                        <div class="col-md-3 border-left pb-2 pt-2">
+                            <input type="email" class="form-control border-secondary text-lowercase"
+                                formControlName="emailContactoAdministrativo" name="emailContactoAdministrativo"
+                                id="emailContactoAdministrativo" placeholder="Ingrese el correo electrónico"
+                                maxlength="160">
+                        </div>
+                    </div>
+
+                    <hr class="mt-0">
+                    <div class="form-group row align-items-center mb-0">
+                        <div class="col-md-9 pb-2 pt-2">
+                            <p class="text-muted mb-3 font-weight-bold" style="font-size: 0.9rem; padding-left: 4%;">
+                                <em>Los campos marcados con <span class="text-danger font-weight-bold">*</span> son
+                                    obligatorios.</em>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group mb-0">
+                            <div class="row justify-content-center">
+                                <!-- Columna para Guardar/Actualizar -->
+                                <div class="col-12 col-md-5 mb-2 mb-md-0">
+                                    <button *ngIf="!banderaEditar"
+                                        class="btn-guardar-form w-100 btn-lg font-weight-bold font-16 text-uppercase py-3"
+                                        type="submit" (click)="crearUsuario()">
+                                        <i class="fas fa-save me-2"></i>
+                                        Guardar
+                                    </button>
+
+                                    <button *ngIf="banderaEditar"
+                                        class="btn-guardar-form w-100 btn-lg font-weight-bold font-16 text-uppercase py-3"
+                                        type="button" (click)="actualizarEmpresa(this.idEmpresa)">
+                                        <i class="fas fa-sync-alt me-2"></i>
+                                        Actualizar
+                                    </button>
+                                </div>
+
+                                <!-- Columna para Cancelar -->
+                                <div class="col-12 col-md-5">
+                                    <button
+                                        class="btn-cancelar-form w-100 btn-lg font-weight-bold font-16 text-uppercase py-3"
+                                        type="button" (click)="botonCancelar()">
+                                        <i class="fas fa-times me-2"></i>
+                                        Cancelar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

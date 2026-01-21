@@ -14,22 +14,12 @@ import { PaginasComponent } from './paginas.component';
 // Componentes del directorio "paginas"
 import { InicioComponent } from './inicio/inicio.component';
 import { APP_ROUTES } from '../app.routes';
-//import { CatastroGrupalComponent } from './catastro-grupal/catastro-grupal.component';
-//import { SlctdCorrecionCGComponent } from './slctd-correcion-c-g/slctd-correcion-c-g.component';
-import { SolicitudesComponent } from './solicitudes/solicitudes.component';
-import { SlctrAnulacionCsmiComponent } from './slctr-anulacion-csmi/slctr-anulacion-csmi.component';
-//import { CrearCsmiComponent } from './crear-csmi/crear-csmi.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
     declarations: [
         PaginasComponent,
-        InicioComponent,
-        //CatastroGrupalComponent,
-        //SlctdCorrecionCGComponent,
-        SolicitudesComponent,
-        //CrearCsmiComponent,
-        SlctrAnulacionCsmiComponent
+        InicioComponent
     ],
     // Para poder usarlos fuera del módulo.
     exports: [

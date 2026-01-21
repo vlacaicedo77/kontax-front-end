@@ -6,9 +6,7 @@ export class Sesion
     public refreshToken: string;
     public menu: [];
     public idUsuario: number;
-    public tokenJasper: string;
-    public idOficina: number;
-    public idProvincia: number;
+    public sesionActivaAnterior: number;
 
     constructor(){}
 }

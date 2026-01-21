@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  URL_SERVICIOS: 'http://localhost:8888/SIFAE/index.php?ruta=',
+  URL_SERVICIOS: 'http://localhost:8888/KONTAX/index.php?ruta=',
   URL_IMAGENES:'http://localhost:8888/imagenes/',
   URL_DOCUMENTOS_PUBLICOS: 'http://localhost:8888/documentos_publicos/'
 };

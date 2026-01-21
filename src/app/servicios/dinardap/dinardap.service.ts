@@ -36,8 +36,8 @@ export class DinardapService {
   }
   // Método que permite consultar la actividad económica de una persona
   obtenerActividadEconomica(ruc: string) {
-    const url = `${environment.URL_SERVICIOS}actividad_economica/${ruc}`;
-    //const url = `https://sifae.agrocalidad.gob.ec/SIFAEBack/index.php?ruta=actividad_economica/${ruc}`;
+    //const url = `${environment.URL_SERVICIOS}actividad_economica/${ruc}`;
+    const url = `https://sifae.agrocalidad.gob.ec/SIFAEBack/index.php?ruta=actividad_economica/${ruc}`;
     return this.http.get(url).pipe(
       map((respuesta: any) => {
         return respuesta.resultado;
@@ -107,8 +107,8 @@ export class DinardapService {
    */
   obtenerMarcaVehiculo(placa: string) {
     placa = placa.toUpperCase();
-    //const url = `https://sifae.agrocalidad.gob.ec/SIFAEBack/index.php?ruta=vehiculo_ant/${placa}`;
-    const url = `${environment.URL_SERVICIOS}vehiculo_ant/${placa}`;
+    const url = `https://sifae.agrocalidad.gob.ec/SIFAEBack/index.php?ruta=vehiculo_ant/${placa}`;
+    //const url = `${environment.URL_SERVICIOS}vehiculo_ant/${placa}`;
     return this.http.get(url, {
       params: {
         tipoConsulta: 'PLACA'
@@ -127,8 +127,8 @@ export class DinardapService {
    */
   obtenerMatriculaVehiculo(placa: string) {
     placa = placa.toUpperCase();
-    const url = `${environment.URL_SERVICIOS}matricula_ant/${placa}`;
-    //const url = `https://sifae.agrocalidad.gob.ec/SIFAEBack/index.php?ruta=matricula_ant/${placa}`;
+    //const url = `${environment.URL_SERVICIOS}matricula_ant/${placa}`;
+    const url = `https://sifae.agrocalidad.gob.ec/SIFAEBack/index.php?ruta=matricula_ant/${placa}`;
     return this.http.get(url, {
       params: {
         tipoConsulta: 'PLACA'

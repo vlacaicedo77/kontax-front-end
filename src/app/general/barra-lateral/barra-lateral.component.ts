@@ -1,82 +1,56 @@
 import { Component, OnInit } from '@angular/core';
-import { AutenticacionService } from '../../servicios/autenticacion/autenticacion.service';
-import { Router } from '@angular/router';
-import Swal from 'sweetalert2';
-import { HttpErrorResponse } from '@angular/common/http';
-import { environment } from 'src/environments/environment';
-
 // Importación de servicios.
 import { MenuService } from 'src/app/servicios/menu/menu.service';
 
 @Component({
   selector: 'app-barra-lateral',
-  templateUrl: './barra-lateral.component.html',
-  styles: []
+  templateUrl: './barra-lateral.component.html'
 })
 export class BarraLateralComponent implements OnInit {
 
-  //Objetos para gestionar catálogos
   public menu = [];
 
-  public rutaTerminos = `${environment.URL_DOCUMENTOS_PUBLICOS}Términos y Condiciones.pdf`;
-  public rutaManual = `${environment.URL_DOCUMENTOS_PUBLICOS}SIFAE2.0_Manual_usuario.pdf`;;
-
   constructor(
-    private _menuService: MenuService,    
-    private rutas: Router,
-    private autenticacionServicio: AutenticacionService) 
-  {}
+    private _menuService: MenuService
+  ){ }
 
   ngOnInit() {
     this.buscarMenu();
   }
 
-  // Método que obtiene los datos del menu
-buscarMenu() {
-  this.menu = this._menuService.consultaMenu();
-}
+  // Método que obtiene los datos del menu y asigna los íconos
+  buscarMenu() {
+    const menuOriginal = this._menuService.consultaMenu();
+    this.menu = this.asignarIconosAlMenu(menuOriginal);
+  }
 
-  // Método que se usa para cerrar la sesión de un usuario.
-  cerrarSesion(){
-    Swal.fire({
-      title: 'Cerrar sesión',
-      text: '¿Está seguro de cerrar la sesión?',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Sí',
-      cancelButtonText: 'No',
-    }).then((resultado) => {
-      if (resultado.value) {
-        // Mostramos el mensaje espera para el cierre de sesión.
-        Swal.fire({
-          text: 'Cerrando sesión',
-          confirmButtonText: '',
-          allowOutsideClick: false,
-          onBeforeOpen: () => {
-              Swal.showLoading();
-          }
-        });
-        this.autenticacionServicio.logout()
-        .subscribe(
-          ( respuesta: any ) => {
-            Swal.fire({
-              position: 'center',
-              icon: 'success',
-              title: 'Sesión cerrada.',
-              showConfirmButton: false,
-              timer: 1500
-            });
-            this.rutas.navigate(['login']);
-          }
-        , (err: HttpErrorResponse) => {
-          if (err.error.estado === 'ERR') {
-            Swal.fire('Error', err.error.mensaje , 'error');
-          }
-        });
-      }
+  // Método para asignar íconos al menú
+  asignarIconosAlMenu(menu: any[]): any[] {
+    if (!menu) return [];
+    return menu.map(menuItem => {
+      const icono = this.obtenerIconoPorEtiqueta(menuItem.etiqueta);
+      return {
+        ...menuItem,
+        icono: icono
+      };
     });
   }
 
+  // Método para mapear etiquetas a íconos
+  obtenerIconoPorEtiqueta(etiqueta: string): string {
+    const etiquetaLower = etiqueta.toLowerCase();
+    const mapeoIconos: { [key: string]: string } = {
+      'inicio': 'mdi mdi-home',
+      'inventario': 'mdi mdi-package-variant',
+      'negocio': 'mdi mdi-briefcase',
+      'crédito': 'mdi mdi-credit-card',
+      'gastos': 'mdi mdi-cash',
+      'incidentes': 'mdi mdi-alert',
+      'reportes': 'mdi mdi-chart-bar',
+      'consulta': 'mdi mdi-magnify',
+      'gestión de usuarios': 'mdi mdi-account-group'
+    };
+
+    return mapeoIconos[etiquetaLower] || 'mdi mdi-menu';
+  }
 }

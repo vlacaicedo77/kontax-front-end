@@ -210,7 +210,7 @@ export class RegistrarUsuarioExternoComponent implements OnInit {
             if (resp.estado === 'OK') {
               Swal.fire('Éxito', 'Su usuario ha sido pregregistrado exitosamente. Por favor, acérquese a la oficina de Agrocalidad más cercana con su documento de identidad para realizar la activación de su cuenta de usuario', 'success');
               this.formulario.reset();
-              this.router.navigate(['login']);
+              this.router.navigate(['home']);
             }
             else 
             {
